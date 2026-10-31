@@ -49,10 +49,10 @@
       max-width: 600px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
-    /* Header */
+    /* Header Bar */
     .header-bar {
       display: flex;
       justify-content: space-between;
@@ -101,17 +101,171 @@
       font-weight: 600;
     }
 
+    /* BPM & Metronome Bar */
+    .bpm-metronome-bar {
+      background: #18191e;
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .bpm-control-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bpm-label {
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-yellow);
+    }
+
+    .bpm-input {
+      width: 58px;
+      background: #0f1013;
+      border: 1px solid #333640;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: monospace;
+      text-align: center;
+      padding: 4px;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    .btn-tap {
+      background: #2b2e38;
+      border: 1px solid #444754;
+      color: #cbd5e1;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-tap:active {
+      background: var(--accent-orange);
+      color: #fff;
+    }
+
+    .auto-bpm-pill {
+      font-family: monospace;
+      font-size: 11px;
+      color: #5af0ad;
+      background: rgba(90, 240, 173, 0.12);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px dashed rgba(90, 240, 173, 0.4);
+      display: none;
+      cursor: pointer;
+    }
+
+    .click-toggle-label {
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .click-toggle-label input {
+      accent-color: var(--accent-orange);
+    }
+
+    /* 4-beat LED Metronome */
+    .metronome-leds {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .metro-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #1b2621;
+      border: 1px solid #143525;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-family: monospace;
+      font-weight: 700;
+      color: #2e4f3f;
+      transition: all 0.05s ease-out;
+    }
+
+    .metro-dot.flash-down {
+      background: var(--accent-yellow);
+      border-color: #ffd166;
+      box-shadow: 0 0 12px var(--accent-yellow);
+      color: #000;
+      transform: scale(1.18);
+    }
+
+    .metro-dot.flash-sub {
+      background: var(--lcd-text);
+      border-color: #5af0ad;
+      box-shadow: 0 0 8px var(--lcd-text);
+      color: #000;
+      transform: scale(1.1);
+    }
+
     /* Live Tuner & Waveform Screen */
     .lcd-screen {
       background: var(--lcd-bg);
       border: 2px solid #16382a;
       border-radius: 12px;
-      padding: 14px;
+      padding: 12px 14px;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.7), 0 0 15px rgba(90, 240, 173, 0.1);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       position: relative;
+    }
+
+    /* Count-in Overlay */
+    .count-in-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(13, 30, 24, 0.94);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      gap: 4px;
+    }
+
+    .count-in-label {
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--accent-yellow);
+      letter-spacing: 2px;
+    }
+
+    .count-in-number {
+      font-family: "Courier New", monospace;
+      font-size: 72px;
+      font-weight: 900;
+      color: #5af0ad;
+      text-shadow: 0 0 20px rgba(90, 240, 173, 0.8);
+      line-height: 1;
     }
 
     .lcd-header {
@@ -129,15 +283,25 @@
       color: var(--lcd-text);
     }
 
+    .bar-beat-tag {
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-orange);
+      background: rgba(247, 127, 0, 0.15);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
     .tuner-display {
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 4px 0;
+      padding: 2px 0;
     }
 
     .pitch-note {
-      font-size: 48px;
+      font-size: 46px;
       font-weight: 900;
       font-family: "Courier New", monospace;
       color: var(--lcd-text);
@@ -149,12 +313,12 @@
     .pitch-info {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
 
     .freq-text {
       font-family: monospace;
-      font-size: 16px;
+      font-size: 15px;
       color: var(--lcd-text);
       font-weight: 700;
     }
@@ -229,13 +393,13 @@
     /* Waveform Canvas */
     .wave-canvas {
       width: 100%;
-      height: 44px;
+      height: 38px;
       background: rgba(0,0,0,0.3);
       border-radius: 6px;
       display: block;
     }
 
-    /* Main Record Action Area */
+    /* Control Buttons */
     .control-deck {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -290,6 +454,53 @@
       opacity: 0.35;
       cursor: not-allowed;
       filter: grayscale(0.8);
+    }
+
+    /* Speaker Tip */
+    .speaker-tip {
+      font-size: 11px;
+      color: #94a3b8;
+      background: #18191f;
+      border: 1px solid #2d3039;
+      border-radius: 8px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Settings & Quantize */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .setting-box {
+      background: #22242b;
+      border: 1px solid #2d3039;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .setting-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .setting-select {
+      background: #16171b;
+      border: 1px solid #333640;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px;
+      border-radius: 6px;
+      outline: none;
     }
 
     /* Piano Roll Canvas & Timeline */
@@ -362,38 +573,17 @@
       height: 100%;
     }
 
-    /* Settings & Quantize */
-    .settings-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .setting-box {
-      background: #22242b;
-      border: 1px solid #2d3039;
-      border-radius: 8px;
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .setting-label {
+    .notes-list-preview {
+      font-family: monospace;
       font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .setting-select {
-      background: #16171b;
-      border: 1px solid #333640;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px;
+      color: #94a3b8;
+      max-height: 50px;
+      overflow-y: auto;
+      background: #141518;
+      padding: 6px 8px;
       border-radius: 6px;
-      outline: none;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
 
     /* Export Bar */
@@ -434,26 +624,6 @@
     .btn-export-midi:active:not(:disabled) {
       transform: scale(0.97);
     }
-
-    .notes-list-preview {
-      font-family: monospace;
-      font-size: 11px;
-      color: #94a3b8;
-      max-height: 60px;
-      overflow-y: auto;
-      background: #141518;
-      padding: 6px 8px;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-
-    .error-hint {
-      color: #ef4444;
-      font-size: 11px;
-      margin-top: 4px;
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -470,11 +640,42 @@
       <a href="index.html" class="nav-link">← LOB60 サンプラー</a>
     </header>
 
+    <!-- BPM & Metronome Bar -->
+    <section class="bpm-metronome-bar">
+      <div class="bpm-control-box">
+        <span class="bpm-label">BPM:</span>
+        <input type="number" id="bpm-input" value="120" min="50" max="220" class="bpm-input">
+        <button id="btn-tap" class="btn-tap" title="タップしてテンポ指定">TAP</button>
+        <span id="auto-bpm-pill" class="auto-bpm-pill" title="クリックして適用">推定: 120 適用</span>
+      </div>
+
+      <label class="click-toggle-label">
+        <input type="checkbox" id="click-audio-chk">
+        <span>クリック音 (イヤホン)</span>
+      </label>
+
+      <div class="metronome-leds">
+        <div class="metro-dot" id="dot-1">1</div>
+        <div class="metro-dot" id="dot-2">2</div>
+        <div class="metro-dot" id="dot-3">3</div>
+        <div class="metro-dot" id="dot-4">4</div>
+      </div>
+    </section>
+
     <!-- Tuner & Waveform Screen -->
     <section class="lcd-screen">
+      <!-- 4-Beat Pre-count Banner -->
+      <div class="count-in-banner" id="count-in-banner">
+        <div class="count-in-label">COUNT IN</div>
+        <div class="count-in-number" id="count-in-num">4</div>
+      </div>
+
       <div class="lcd-header">
         <span>TUNER & PITCH TRACKER</span>
-        <span id="mic-status">MIC: STANDBY (タップして開始)</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="bar-beat-tag" id="bar-beat-display" style="display:none;">BAR 1 : 1</span>
+          <span id="mic-status">MIC: STANDBY (タップして開始)</span>
+        </div>
       </div>
 
       <div class="tuner-display">
@@ -502,21 +703,25 @@
 
       <!-- Live audio wave -->
       <canvas class="wave-canvas" id="wave-canvas"></canvas>
-
-      <div id="error-hint" class="error-hint"></div>
     </section>
 
     <!-- Control Buttons -->
     <section class="control-deck">
       <button class="btn-action btn-rec" id="btn-rec">
-        <span id="rec-dot">●</span> <span id="rec-text">鼻歌を録音</span>
+        <span id="rec-dot">●</span> <span id="rec-text">鼻歌を録音 (4カウント)</span>
       </button>
       <button class="btn-action btn-play-synth" id="btn-play" disabled>
         <span>►</span> <span id="play-text">シンセで再生</span>
       </button>
     </section>
 
-    <!-- Settings: Synth Sound & Scale Quantize -->
+    <!-- Speaker Tip -->
+    <div class="speaker-tip">
+      <span>📢</span>
+      <span>iPhoneで音が鳴らない時は、本体横の<strong>消音スイッチ（マナーモード）をOFF</strong>にして音量を上げてください。</span>
+    </div>
+
+    <!-- Settings: Synth Sound, Scale, Quantize -->
     <section class="settings-grid">
       <div class="setting-box">
         <label class="setting-label">シンセ音色</label>
@@ -537,6 +742,24 @@
           <option value="pentatonic">マイナー・ペンタトニック</option>
         </select>
       </div>
+
+      <div class="setting-box">
+        <label class="setting-label">BPMグリッド揃え (クオンタイズ)</label>
+        <select class="setting-select" id="grid-quantize">
+          <option value="none">オフ (自然な鼻歌タイミング)</option>
+          <option value="8th" selected>8分音符グリッド (推奨)</option>
+          <option value="16th">16分音符グリッド (細かめ)</option>
+          <option value="4th">4分音符グリッド (ゆったり)</option>
+        </select>
+      </div>
+
+      <div class="setting-box">
+        <label class="setting-label">予備拍カウントイン</label>
+        <select class="setting-select" id="count-in-select">
+          <option value="4" selected>4カウント (1小節)</option>
+          <option value="0">カウントなし (すぐ録音)</option>
+        </select>
+      </div>
     </section>
 
     <!-- Piano Roll Display -->
@@ -553,7 +776,7 @@
         <canvas id="pianoroll-canvas" width="600" height="180"></canvas>
       </div>
 
-      <div class="notes-list-preview" id="notes-preview">録音ボタンを押してマイクを許可し、「フフーン♪」と鼻歌を歌ってください。</div>
+      <div class="notes-list-preview" id="notes-preview">録音ボタンを押すと4カウント後に録音が始まります。テンポに合わせて歌ってみてください！</div>
     </section>
 
     <!-- Export Area -->
@@ -574,8 +797,18 @@
       let silentSink = null;
       let inputGain = null;
       let isRecording = false;
+      let isCountingIn = false;
       let isPlaying = false;
       let animId = null;
+      let metroTimer = null;
+      let currentMetroBeat = 0;
+      let currentBar = 1;
+      let activeAudioEl = null;
+
+      let state = {
+        bpm: 120,
+        estimatedBpm: 120
+      };
 
       const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
       
@@ -584,6 +817,22 @@
       let recordStartTime = 0;
 
       // DOM Elements
+      const bpmInput = document.getElementById('bpm-input');
+      const btnTap = document.getElementById('btn-tap');
+      const autoBpmPill = document.getElementById('auto-bpm-pill');
+      const clickAudioChk = document.getElementById('click-audio-chk');
+      const countInBanner = document.getElementById('count-in-banner');
+      const countInNum = document.getElementById('count-in-num');
+      const barBeatDisplay = document.getElementById('bar-beat-display');
+      const countInSelect = document.getElementById('count-in-select');
+      const gridQuantize = document.getElementById('grid-quantize');
+      const metroDots = [
+        document.getElementById('dot-1'),
+        document.getElementById('dot-2'),
+        document.getElementById('dot-3'),
+        document.getElementById('dot-4')
+      ];
+
       const noteDisplay = document.getElementById('note-display');
       const freqDisplay = document.getElementById('freq-display');
       const centsDisplay = document.getElementById('cents-display');
@@ -591,7 +840,6 @@
       const micStatus = document.getElementById('mic-status');
       const levelBar = document.getElementById('level-bar');
       const levelText = document.getElementById('level-text');
-      const errorHint = document.getElementById('error-hint');
       const waveCanvas = document.getElementById('wave-canvas');
       const waveCtx = waveCanvas.getContext('2d');
       const btnRec = document.getElementById('btn-rec');
@@ -607,7 +855,102 @@
       const pianoCanvas = document.getElementById('pianoroll-canvas');
       const pianoCtx = pianoCanvas.getContext('2d');
 
-      // Robust iOS AudioContext unlocking
+      // 1. Metronome & Click Audio
+      function playClickSound(isDownbeat) {
+        if (!clickAudioChk.checked || !audioCtx) return;
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(isDownbeat ? 1200 : 800, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.06);
+        } catch (e) {}
+      }
+
+      function startMetronome() {
+        stopMetronome();
+        currentMetroBeat = 0;
+        currentBar = 1;
+        barBeatDisplay.style.display = 'inline-block';
+        tickMetronome();
+      }
+
+      function stopMetronome() {
+        clearTimeout(metroTimer);
+        metroDots.forEach(d => {
+          d.classList.remove('flash-down', 'flash-sub');
+        });
+        barBeatDisplay.style.display = 'none';
+      }
+
+      function tickMetronome() {
+        const beatInterval = (60.0 / state.bpm) * 1000;
+        const isDown = (currentMetroBeat === 0);
+
+        metroDots.forEach((dot, idx) => {
+          if (idx === currentMetroBeat) {
+            dot.classList.add(isDown ? 'flash-down' : 'flash-sub');
+            setTimeout(() => dot.classList.remove('flash-down', 'flash-sub'), 120);
+          } else {
+            dot.classList.remove('flash-down', 'flash-sub');
+          }
+        });
+
+        barBeatDisplay.textContent = `BAR ${currentBar} : ${currentMetroBeat + 1}`;
+        playClickSound(isDown);
+
+        currentMetroBeat++;
+        if (currentMetroBeat >= 4) {
+          currentMetroBeat = 0;
+          currentBar++;
+        }
+
+        metroTimer = setTimeout(tickMetronome, beatInterval);
+      }
+
+      // Tap Tempo Logic
+      let tapTimes = [];
+      btnTap.onclick = () => {
+        const now = performance.now();
+        tapTimes.push(now);
+        if (tapTimes.length > 4) tapTimes.shift();
+
+        if (tapTimes.length >= 2) {
+          const diffs = [];
+          for (let i = 1; i < tapTimes.length; i++) {
+            diffs.push(tapTimes[i] - tapTimes[i - 1]);
+          }
+          const avgDiff = diffs.reduce((a, b) => a + b, 0) / diffs.length;
+          const calculatedBpm = Math.round(60000 / avgDiff);
+          if (calculatedBpm >= 50 && calculatedBpm <= 220) {
+            state.bpm = calculatedBpm;
+            bpmInput.value = calculatedBpm;
+          }
+        }
+      };
+
+      bpmInput.onchange = () => {
+        const val = parseInt(bpmInput.value, 10);
+        if (!isNaN(val) && val >= 50 && val <= 220) {
+          state.bpm = val;
+        } else {
+          bpmInput.value = state.bpm;
+        }
+      };
+
+      autoBpmPill.onclick = () => {
+        state.bpm = state.estimatedBpm;
+        bpmInput.value = state.bpm;
+        autoBpmPill.style.display = 'none';
+        if (recordedFrames.length > 0) processFramesToNotes();
+      };
+
+      // 2. Microphone & Pitch Tracker
       async function ensureAudioContext() {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!audioCtx) {
@@ -619,42 +962,73 @@
         return audioCtx;
       }
 
-      // Safe cross-browser getUserMedia
-      async function getMicrophoneStream() {
-        // Plain audio: true works on all iOS Safari without OverconstrainedError
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          return await navigator.mediaDevices.getUserMedia({ audio: true });
+      async function triggerRecordAction() {
+        if (isRecording || isCountingIn) {
+          stopRecording();
+          return;
         }
-        const legacyGetMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        if (legacyGetMedia) {
-          return new Promise((resolve, reject) => {
-            legacyGetMedia.call(navigator, { audio: true }, resolve, reject);
+
+        await ensureAudioContext();
+
+        // Check if 4-beat Count-in is enabled
+        const countInBeats = parseInt(countInSelect.value, 10);
+        if (countInBeats > 0) {
+          runCountIn(countInBeats, () => startRecording());
+        } else {
+          startRecording();
+        }
+      }
+
+      function runCountIn(beats, onComplete) {
+        isCountingIn = true;
+        countInBanner.style.display = 'flex';
+        let count = beats;
+        const beatInterval = (60.0 / state.bpm) * 1000;
+
+        function step() {
+          if (!isCountingIn) return;
+          countInNum.textContent = count;
+          playClickSound(count === beats);
+
+          // Flash LED
+          const dotIdx = (beats - count) % 4;
+          metroDots.forEach((dot, idx) => {
+            if (idx === dotIdx) {
+              dot.classList.add(dotIdx === 0 ? 'flash-down' : 'flash-sub');
+              setTimeout(() => dot.classList.remove('flash-down', 'flash-sub'), 140);
+            }
           });
+
+          count--;
+          if (count > 0) {
+            setTimeout(step, beatInterval);
+          } else {
+            setTimeout(() => {
+              countInBanner.style.display = 'none';
+              isCountingIn = false;
+              onComplete();
+            }, beatInterval);
+          }
         }
-        throw new Error('お使いのブラウザはマイク入力に対応していません。');
+        step();
       }
 
       async function startRecording() {
-        errorHint.style.display = 'none';
-        micStatus.textContent = 'MIC: 権限確認中...';
+        micStatus.textContent = 'MIC: 接続中...';
         micStatus.style.color = '#ffb703';
 
         try {
           await ensureAudioContext();
-          micStream = await getMicrophoneStream();
+          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         } catch (err) {
           micStatus.textContent = 'MIC: エラー';
           micStatus.style.color = '#ef4444';
-          errorHint.style.display = 'block';
-          errorHint.textContent = 'マイク許可エラー: ' + (err.message || err.name) + ' (Safari設定でマイクを許可してください)';
-          alert('マイクへのアクセスがブロックされました。iPhoneの「設定 > Safari > マイク」が許可されているか確認してください。');
+          alert('マイクへのアクセスが許可されませんでした。Safariの「マイクの許可」を確認してください。');
           return;
         }
 
         try {
           micSource = audioCtx.createMediaStreamSource(micStream);
-          
-          // Boost gain to reliably catch subtle humming
           inputGain = audioCtx.createGain();
           inputGain.gain.value = 2.5;
 
@@ -662,9 +1036,6 @@
           analyser.fftSize = 2048;
           analyser.smoothingTimeConstant = 0.05;
 
-          // CRITICAL FOR IOS SAFARI:
-          // Unconnected AudioNodes are NOT processed by Web Audio engine!
-          // Connect analyser to a zero-gain destination node to force pulling samples!
           silentSink = audioCtx.createGain();
           silentSink.gain.value = 0.0;
 
@@ -672,11 +1043,8 @@
           inputGain.connect(analyser);
           analyser.connect(silentSink);
           silentSink.connect(audioCtx.destination);
-
         } catch (err) {
-          micStatus.textContent = 'MIC: ノード接続エラー';
-          errorHint.style.display = 'block';
-          errorHint.textContent = 'AudioNodeエラー: ' + err.message;
+          micStatus.textContent = 'MIC: 接続エラー';
           return;
         }
 
@@ -687,16 +1055,21 @@
 
         btnRec.classList.add('recording');
         recText.textContent = '録音停止 (STOP)';
-        micStatus.textContent = 'MIC: 録音中（声を出してください）';
+        micStatus.textContent = 'MIC: 録音中（テンポに合わせて歌ってください）';
         micStatus.style.color = '#f77f00';
         btnPlay.disabled = true;
         btnExport.disabled = true;
 
+        startMetronome();
         trackPitchLoop();
       }
 
       function stopRecording() {
+        isCountingIn = false;
+        countInBanner.style.display = 'none';
         isRecording = false;
+        stopMetronome();
+
         if (micStream) {
           micStream.getTracks().forEach(t => t.stop());
           micStream = null;
@@ -704,8 +1077,9 @@
         if (silentSink) {
           try { silentSink.disconnect(); } catch (e) {}
         }
+
         btnRec.classList.remove('recording');
-        recText.textContent = '鼻歌を録音';
+        recText.textContent = '鼻歌を録音 (4カウント)';
         micStatus.textContent = 'MIC: 解析完了';
         micStatus.style.color = '#5af0ad';
         levelBar.style.width = '0%';
@@ -714,17 +1088,14 @@
         processFramesToNotes();
       }
 
-      // Fast Autocorrelation / NSDF Pitch Detector
       function detectPitch(buf, sampleRate) {
         let sum = 0;
         for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
         let rms = Math.sqrt(sum / buf.length);
-        
-        // Return RMS for level meter
-        if (rms < 0.006) return { freq: -1, rms }; // Generous noise gate for quiet humming
+        if (rms < 0.006) return { freq: -1, rms };
 
-        const minTau = Math.floor(sampleRate / 900); // ~900Hz max
-        const maxTau = Math.floor(sampleRate / 65);  // ~65Hz min
+        const minTau = Math.floor(sampleRate / 900);
+        const maxTau = Math.floor(sampleRate / 65);
         const W = buf.length - maxTau;
 
         let sumSq0 = 0;
@@ -751,12 +1122,10 @@
 
         if (peaks.length === 0) return { freq: -1, rms };
 
-        // Fundamental peak (prevent octave drop)
         let maxVal = Math.max(...peaks.map(p => p.val));
         let bestPeak = peaks.find(p => p.val >= maxVal * 0.82) || peaks[0];
         let bestTau = bestPeak.tau;
 
-        // Parabolic interpolation
         let y1 = nsdf[bestTau - 1];
         let y2 = nsdf[bestTau];
         let y3 = nsdf[bestTau + 1];
@@ -791,7 +1160,6 @@
         const { freq, rms } = detectPitch(buf, audioCtx.sampleRate);
         const now = audioCtx.currentTime - recordStartTime;
 
-        // Update Level Meter
         const lvlPct = Math.min(100, Math.round(rms * 400));
         levelBar.style.width = lvlPct + '%';
         levelText.textContent = lvlPct + '%';
@@ -843,7 +1211,7 @@
         waveCtx.stroke();
       }
 
-      // Process frames to clean quantized notes
+      // 3. Process Frames & Quantize to BPM Grid
       function processFramesToNotes() {
         if (recordedFrames.length === 0) {
           notesPreview.textContent = '音声フレームが記録されませんでした。もう一度試してください。';
@@ -851,7 +1219,7 @@
         }
 
         const scaleMode = scaleSnap.value;
-        const notes = [];
+        const rawNotes = [];
         let curNote = null;
         const minDuration = 0.08;
 
@@ -864,7 +1232,7 @@
               curNote.duration = frame.time - curNote.start;
             } else {
               if (curNote && curNote.duration >= minDuration) {
-                notes.push(curNote);
+                rawNotes.push(curNote);
               }
               curNote = {
                 start: frame.time,
@@ -877,27 +1245,73 @@
           } else {
             if (curNote) {
               if (curNote.duration >= minDuration) {
-                notes.push(curNote);
+                rawNotes.push(curNote);
               }
               curNote = null;
             }
           }
         }
         if (curNote && curNote.duration >= minDuration) {
-          notes.push(curNote);
+          rawNotes.push(curNote);
+        }
+
+        if (rawNotes.length === 0) {
+          notesPreview.textContent = '有効なメロディが検出されませんでした。マイクに少し近づいて歌ってみてください。';
+          return;
+        }
+
+        // Normalize notes so first note starts at 0.0s
+        const firstStart = rawNotes[0].start;
+        let notes = rawNotes.map(n => ({
+          ...n,
+          start: Math.max(0, n.start - firstStart)
+        }));
+
+        // BPM Grid Quantization
+        const quantMode = gridQuantize.value;
+        if (quantMode !== 'none') {
+          const beatSec = 60.0 / state.bpm;
+          let gridSec = beatSec / 2.0; // 8th note default
+          if (quantMode === '16th') gridSec = beatSec / 4.0;
+          if (quantMode === '4th') gridSec = beatSec;
+
+          notes = notes.map(n => {
+            const snappedStart = Math.round(n.start / gridSec) * gridSec;
+            const snappedDur = Math.max(gridSec * 0.8, Math.round(n.duration / gridSec) * gridSec);
+            return {
+              ...n,
+              start: snappedStart,
+              duration: snappedDur
+            };
+          });
+        }
+
+        // Estimate BPM from intervals
+        if (rawNotes.length >= 3) {
+          const intervals = [];
+          for (let i = 1; i < rawNotes.length; i++) {
+            const dt = rawNotes[i].start - rawNotes[i - 1].start;
+            if (dt > 0.18) intervals.push(dt);
+          }
+          if (intervals.length >= 2) {
+            intervals.sort((a, b) => a - b);
+            const med = intervals[Math.floor(intervals.length / 2)];
+            let est = Math.round(60.0 / med);
+            while (est < 75) est *= 2;
+            while (est > 175) est /= 2;
+            state.estimatedBpm = Math.round(est);
+            autoBpmPill.textContent = `推定BPM: ${state.estimatedBpm} [適用]`;
+            autoBpmPill.style.display = 'inline-block';
+          }
         }
 
         detectedNotes = notes;
         renderPianoRoll();
 
         statsBadge.textContent = detectedNotes.length + ' ノート';
-        if (detectedNotes.length > 0) {
-          btnPlay.disabled = false;
-          btnExport.disabled = false;
-          notesPreview.textContent = detectedNotes.map(n => `${n.noteName} (${n.duration.toFixed(2)}s)`).join('  ');
-        } else {
-          notesPreview.textContent = '有効なメロディが検出されませんでした。マイクに少し近づいて歌ってみてください。';
-        }
+        btnPlay.disabled = false;
+        btnExport.disabled = false;
+        notesPreview.textContent = detectedNotes.map(n => `${n.noteName} (${n.duration.toFixed(2)}s)`).join('  ');
       }
 
       function snapToScale(pitch, mode) {
@@ -925,7 +1339,7 @@
         return bestSnap;
       }
 
-      // Render Piano Roll
+      // 4. Render Piano Roll
       function renderPianoRoll(currentPlayheadSec = null) {
         const wrap = document.getElementById('pianoroll-wrap');
         const totalDuration = detectedNotes.length > 0 ? (detectedNotes[detectedNotes.length - 1].start + detectedNotes[detectedNotes.length - 1].duration + 0.5) : 4.0;
@@ -959,6 +1373,7 @@
         const pitchRange = Math.max(12, maxPitch - minPitch + 1);
         const noteHeight = h / pitchRange;
 
+        // Draw pitch rows
         for (let p = minPitch; p <= maxPitch; p++) {
           const y = h - (p - minPitch + 1) * noteHeight;
           const isBlack = [1, 3, 6, 8, 10].includes(((p % 12) + 12) % 12);
@@ -972,7 +1387,20 @@
           }
         }
 
+        // Draw Beat Grid lines
         const pxPerSec = (w - 20) / Math.max(0.1, totalDuration);
+        const beatSec = 60.0 / state.bpm;
+        for (let t = 0; t <= totalDuration; t += beatSec) {
+          const x = 20 + t * pxPerSec;
+          ctx.strokeStyle = '#2d3039';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+        }
+
+        // Draw Note Blocks
         detectedNotes.forEach(note => {
           const x = 20 + note.start * pxPerSec;
           const noteW = Math.max(4, note.duration * pxPerSec);
@@ -993,6 +1421,7 @@
           }
         });
 
+        // Draw Playhead
         if (currentPlayheadSec !== null) {
           const playheadX = 20 + currentPlayheadSec * pxPerSec;
           ctx.strokeStyle = '#f77f00';
@@ -1006,32 +1435,107 @@
         ctx.restore();
       }
 
-      // Synthesizer Playback
+      // 5. High-compatibility Audio Synthesis via PCM WAV Blob
+      function generateWavBlob(notes, soundType, sampleRate = 44100) {
+        if (!notes || notes.length === 0) return null;
+        const totalDur = Math.max(...notes.map(n => n.start + n.duration)) + 0.3;
+        const totalSamples = Math.floor(totalDur * sampleRate);
+        const floatBuf = new Float32Array(totalSamples);
+
+        notes.forEach(note => {
+          const freq = midiToFreq(note.pitch);
+          const startSample = Math.floor(note.start * sampleRate);
+          const durSamples = Math.floor(note.duration * sampleRate);
+
+          for (let i = 0; i < durSamples; i++) {
+            const idx = startSample + i;
+            if (idx >= totalSamples) break;
+            const t = i / sampleRate;
+            const progress = i / durSamples;
+
+            let sample = 0;
+            if (soundType === 'analog') {
+              const env = Math.sin(Math.min(1.0, progress * 4.0) * Math.PI * 0.5) * Math.pow(1.0 - progress * 0.8, 1.2);
+              const saw = (2.0 * ((freq * t) % 1.0) - 1.0);
+              const sub = Math.sin(2.0 * Math.PI * (freq * 0.5) * t) * 0.4;
+              sample = (saw + sub) * env * 0.35;
+            } else if (soundType === 'rhodes') {
+              const env = Math.exp(-progress * 3.5);
+              const tineEnv = Math.exp(-progress * 8.0);
+              const sine = Math.sin(2.0 * Math.PI * freq * t);
+              const tine = Math.sin(2.0 * Math.PI * (freq * 4.0) * t) * 0.4 * tineEnv;
+              sample = (sine + tine) * env * 0.4;
+            } else if (soundType === 'brass') {
+              const env = Math.min(1.0, progress * 5.0) * Math.pow(1.0 - progress * 0.6, 1.5);
+              const saw = (2.0 * ((freq * t) % 1.0) - 1.0);
+              const saw2 = (2.0 * (((freq * 1.005) * t) % 1.0) - 1.0);
+              sample = (saw + saw2 * 0.5) * env * 0.32;
+            } else {
+              const env = Math.sin(Math.min(1.0, progress * 3.0) * Math.PI * 0.5) * (1.0 - progress * 0.4);
+              const sine = Math.sin(2.0 * Math.PI * freq * t);
+              sample = sine * env * 0.4;
+            }
+            floatBuf[idx] += sample;
+          }
+        });
+
+        const pcmBytes = new Int16Array(totalSamples);
+        for (let i = 0; i < totalSamples; i++) {
+          const s = Math.max(-1.0, Math.min(1.0, floatBuf[i]));
+          pcmBytes[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+
+        const byteLen = pcmBytes.byteLength;
+        const buffer = new ArrayBuffer(44 + byteLen);
+        const view = new DataView(buffer);
+
+        function writeString(offset, str) {
+          for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+        }
+
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + byteLen, true);
+        writeString(8, 'WAVE');
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, 1, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * 2, true);
+        view.setUint16(32, 2, true);
+        view.setUint16(34, 16, true);
+        writeString(36, 'data');
+        view.setUint32(40, byteLen, true);
+
+        const outBytes = new Uint8Array(buffer, 44);
+        outBytes.set(new Uint8Array(pcmBytes.buffer));
+
+        return new Blob([buffer], { type: 'audio/wav' });
+      }
+
       async function playSynthesizer() {
         if (detectedNotes.length === 0 || isPlaying) return;
-        await ensureAudioContext();
         isPlaying = true;
         btnPlay.classList.add('playing');
         playText.textContent = '停止 (STOP)';
 
-        const soundType = synthSound.value;
-        const now = audioCtx.currentTime;
-        let maxEndTime = 0;
+        startMetronome();
 
-        detectedNotes.forEach(n => {
-          const noteStart = now + n.start;
-          const noteEnd = noteStart + n.duration;
-          if (n.start + n.duration > maxEndTime) maxEndTime = n.start + n.duration;
+        const wavBlob = generateWavBlob(detectedNotes, synthSound.value);
+        if (wavBlob) {
+          const audioUrl = URL.createObjectURL(wavBlob);
+          activeAudioEl = new Audio(audioUrl);
+          activeAudioEl.play().catch(e => console.log('Audio element play err:', e));
+        }
 
-          triggerSynthNote(n.pitch, noteStart, n.duration, soundType);
-        });
-
+        const totalDuration = Math.max(...detectedNotes.map(n => n.start + n.duration)) + 0.2;
         const startTimestamp = performance.now();
+
         function playheadAnim() {
           if (!isPlaying) return;
           const elapsed = (performance.now() - startTimestamp) / 1000;
           renderPianoRoll(elapsed);
-          if (elapsed < maxEndTime) {
+          if (elapsed < totalDuration) {
             animId = requestAnimationFrame(playheadAnim);
           } else {
             stopSynthesizer();
@@ -1042,109 +1546,21 @@
 
       function stopSynthesizer() {
         isPlaying = false;
+        stopMetronome();
         cancelAnimationFrame(animId);
+        if (activeAudioEl) {
+          try {
+            activeAudioEl.pause();
+            activeAudioEl.currentTime = 0;
+          } catch (e) {}
+          activeAudioEl = null;
+        }
         btnPlay.classList.remove('playing');
         playText.textContent = 'シンセで再生';
         renderPianoRoll(null);
       }
 
-      function triggerSynthNote(pitch, time, duration, type) {
-        const freq = midiToFreq(pitch);
-        const ctx = audioCtx;
-
-        if (type === 'analog') {
-          const osc1 = ctx.createOscillator();
-          const osc2 = ctx.createOscillator();
-          osc1.type = 'sawtooth';
-          osc2.type = 'sawtooth';
-          osc1.frequency.setValueAtTime(freq, time);
-          osc2.frequency.setValueAtTime(freq * 1.004, time);
-
-          const filter = ctx.createBiquadFilter();
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(freq * 1.5, time);
-          filter.frequency.exponentialRampToValueAtTime(freq * 5.0, time + 0.05);
-          filter.frequency.exponentialRampToValueAtTime(freq * 2.0, time + duration);
-
-          const gain = ctx.createGain();
-          gain.gain.setValueAtTime(0, time);
-          gain.gain.linearRampToValueAtTime(0.25, time + 0.02);
-          gain.gain.setValueAtTime(0.2, time + Math.max(0.03, duration - 0.04));
-          gain.gain.exponentialRampToValueAtTime(0.001, time + duration + 0.08);
-
-          osc1.connect(filter);
-          osc2.connect(filter);
-          filter.connect(gain);
-          gain.connect(ctx.destination);
-
-          osc1.start(time);
-          osc2.start(time);
-          osc1.stop(time + duration + 0.1);
-          osc2.stop(time + duration + 0.1);
-
-        } else if (type === 'rhodes') {
-          const osc = ctx.createOscillator();
-          const tine = ctx.createOscillator();
-          osc.type = 'sine';
-          tine.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, time);
-          tine.frequency.setValueAtTime(freq * 4.0, time);
-
-          const gain = ctx.createGain();
-          gain.gain.setValueAtTime(0.3, time);
-          gain.gain.exponentialRampToValueAtTime(0.001, time + duration + 0.2);
-
-          osc.connect(gain);
-          tine.connect(gain);
-          gain.connect(ctx.destination);
-
-          osc.start(time);
-          tine.start(time);
-          osc.stop(time + duration + 0.25);
-          tine.stop(time + duration + 0.25);
-
-        } else if (type === 'brass') {
-          const osc = ctx.createOscillator();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(freq, time);
-
-          const filter = ctx.createBiquadFilter();
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(freq * 2.0, time);
-          filter.frequency.exponentialRampToValueAtTime(freq * 6.0, time + 0.06);
-
-          const gain = ctx.createGain();
-          gain.gain.setValueAtTime(0, time);
-          gain.gain.linearRampToValueAtTime(0.25, time + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.001, time + duration + 0.1);
-
-          osc.connect(filter);
-          filter.connect(gain);
-          gain.connect(ctx.destination);
-
-          osc.start(time);
-          osc.stop(time + duration + 0.15);
-
-        } else {
-          const osc = ctx.createOscillator();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, time);
-
-          const gain = ctx.createGain();
-          gain.gain.setValueAtTime(0, time);
-          gain.gain.linearRampToValueAtTime(0.28, time + 0.05);
-          gain.gain.setValueAtTime(0.25, time + Math.max(0.06, duration - 0.05));
-          gain.gain.exponentialRampToValueAtTime(0.001, time + duration + 0.1);
-
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-
-          osc.start(time);
-          osc.stop(time + duration + 0.15);
-        }
-      }
-
-      // Standard MIDI File (.mid) Generator
+      // 6. Standard MIDI File (.mid) Generator with Custom BPM
       function writeVLQ(val) {
         let res = [];
         res.push(val & 0x7F);
@@ -1164,7 +1580,7 @@
         notes.forEach(n => {
           const startTick = Math.round(n.start / secPerTick);
           const endTick = Math.round((n.start + n.duration) / secPerTick);
-          rawEvents.push({ tick: startTick, type: 0x90, pitch: n.pitch, vel: n.vel || 90 });
+          rawEvents.push({ tick: startTick, type: 0x90, pitch: n.pitch, vel: n.vel || 95 });
           rawEvents.push({ tick: endTick, type: 0x80, pitch: n.pitch, vel: 0 });
         });
 
@@ -1211,43 +1627,38 @@
 
       function downloadMidi() {
         if (detectedNotes.length === 0) return;
-        const midiBytes = buildMidiFile(detectedNotes, 120, 480);
+        const midiBytes = buildMidiFile(detectedNotes, state.bpm, 480);
         const blob = new Blob([midiBytes], { type: 'audio/midi' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'AOI-HUM60-Melody.mid';
+        a.download = `AOI-HUM60-Melody-BPM${state.bpm}.mid`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }
 
-      // Demo sample melody for instant testing
       function loadDemoMelody() {
-        // Pentatonic catchy riff: C4 -> D4 -> E4 -> G4 -> A4 -> G4
         detectedNotes = [
           { start: 0.0, duration: 0.4, pitch: 60, noteName: "C4", vel: 95 },
           { start: 0.5, duration: 0.4, pitch: 62, noteName: "D4", vel: 95 },
           { start: 1.0, duration: 0.4, pitch: 64, noteName: "E4", vel: 95 },
           { start: 1.5, duration: 0.5, pitch: 67, noteName: "G4", vel: 100 },
-          { start: 2.1, duration: 0.6, pitch: 69, noteName: "A4", vel: 100 },
-          { start: 2.8, duration: 0.9, pitch: 67, noteName: "G4", vel: 95 }
+          { start: 2.0, duration: 0.5, pitch: 69, noteName: "A4", vel: 100 },
+          { start: 2.5, duration: 0.9, pitch: 67, noteName: "G4", vel: 95 }
         ];
         renderPianoRoll();
         statsBadge.textContent = detectedNotes.length + ' ノート';
         btnPlay.disabled = false;
         btnExport.disabled = false;
-        notesPreview.textContent = '【デモメロディ読込済】C4 (0.40s)  D4 (0.40s)  E4 (0.40s)  G4 (0.50s)  A4 (0.60s)  G4 (0.90s)';
+        notesPreview.textContent = '【デモメロディ読込済】C4 (0.40s)  D4 (0.40s)  E4 (0.40s)  G4 (0.50s)  A4 (0.50s)  G4 (0.90s)';
         micStatus.textContent = 'MIC: デモ読込完了';
         micStatus.style.color = '#5af0ad';
       }
 
       // Event Listeners
-      btnRec.onclick = () => {
-        if (isRecording) stopRecording();
-        else startRecording();
-      };
+      btnRec.onclick = triggerRecordAction;
 
       btnPlay.onclick = () => {
         if (isPlaying) stopSynthesizer();
@@ -1258,6 +1669,10 @@
       btnDemo.onclick = () => loadDemoMelody();
 
       scaleSnap.onchange = () => {
+        if (recordedFrames.length > 0) processFramesToNotes();
+      };
+
+      gridQuantize.onchange = () => {
         if (recordedFrames.length > 0) processFramesToNotes();
       };
 
