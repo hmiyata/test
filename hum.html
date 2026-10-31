@@ -95,7 +95,7 @@
       color: var(--accent-blue);
       text-decoration: none;
       background: rgba(58, 134, 255, 0.12);
-      padding: 4px 10px;
+      padding: 5px 10px;
       border-radius: 6px;
       border: 1px solid rgba(58, 134, 255, 0.3);
       font-weight: 600;
@@ -124,15 +124,20 @@
       letter-spacing: 1px;
     }
 
+    #mic-status {
+      font-weight: bold;
+      color: var(--lcd-text);
+    }
+
     .tuner-display {
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 6px 0;
+      padding: 4px 0;
     }
 
     .pitch-note {
-      font-size: 46px;
+      font-size: 48px;
       font-weight: 900;
       font-family: "Courier New", monospace;
       color: var(--lcd-text);
@@ -144,7 +149,7 @@
     .pitch-info {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
 
     .freq-text {
@@ -158,6 +163,32 @@
       font-family: monospace;
       font-size: 12px;
       color: #7ef2bb;
+    }
+
+    /* Input Level Meter */
+    .level-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--lcd-dim);
+    }
+
+    .level-bar-wrap {
+      flex: 1;
+      height: 6px;
+      background: #081410;
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid #16382a;
+    }
+
+    .level-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #5af0ad, #ffb703, #d90429);
+      transition: width 0.05s ease-out;
     }
 
     /* Cents Meter Bar */
@@ -198,7 +229,7 @@
     /* Waveform Canvas */
     .wave-canvas {
       width: 100%;
-      height: 50px;
+      height: 44px;
       background: rgba(0,0,0,0.3);
       border-radius: 6px;
       display: block;
@@ -215,7 +246,7 @@
       height: 60px;
       border: none;
       border-radius: 12px;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: 0.5px;
       display: flex;
@@ -256,7 +287,7 @@
     }
 
     .btn-play-synth:disabled, .btn-action:disabled {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: not-allowed;
       filter: grayscale(0.8);
     }
@@ -283,6 +314,27 @@
       font-weight: 700;
       color: #cbd5e1;
       letter-spacing: 0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-demo {
+      font-size: 11px;
+      background: #2b2e38;
+      color: #94a3b8;
+      border: 1px solid #3e4250;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-demo:active {
+      background: #3e4250;
     }
 
     .stats-badge {
@@ -374,7 +426,7 @@
     }
 
     .btn-export-midi:disabled {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: not-allowed;
       box-shadow: none;
     }
@@ -394,6 +446,13 @@
       border-radius: 6px;
       white-space: pre-wrap;
       word-break: break-all;
+    }
+
+    .error-hint {
+      color: #ef4444;
+      font-size: 11px;
+      margin-top: 4px;
+      display: none;
     }
   </style>
 </head>
@@ -415,7 +474,7 @@
     <section class="lcd-screen">
       <div class="lcd-header">
         <span>TUNER & PITCH TRACKER</span>
-        <span id="mic-status">MIC: STANDBY</span>
+        <span id="mic-status">MIC: STANDBY (タップして開始)</span>
       </div>
 
       <div class="tuner-display">
@@ -426,6 +485,15 @@
         </div>
       </div>
 
+      <!-- Input Level Meter -->
+      <div class="level-row">
+        <span>INPUT LVL</span>
+        <div class="level-bar-wrap">
+          <div class="level-bar-fill" id="level-bar"></div>
+        </div>
+        <span id="level-text">0%</span>
+      </div>
+
       <!-- Cents deviation meter -->
       <div class="cents-bar-wrap">
         <div class="cents-center-line"></div>
@@ -434,6 +502,8 @@
 
       <!-- Live audio wave -->
       <canvas class="wave-canvas" id="wave-canvas"></canvas>
+
+      <div id="error-hint" class="error-hint"></div>
     </section>
 
     <!-- Control Buttons -->
@@ -442,7 +512,7 @@
         <span id="rec-dot">●</span> <span id="rec-text">鼻歌を録音</span>
       </button>
       <button class="btn-action btn-play-synth" id="btn-play" disabled>
-        <span>▶</span> <span id="play-text">シンセで再生</span>
+        <span>►</span> <span id="play-text">シンセで再生</span>
       </button>
     </section>
 
@@ -473,14 +543,17 @@
     <section class="pianoroll-card">
       <div class="card-header">
         <span class="card-title">PIANO ROLL & 検出ノート</span>
-        <span class="stats-badge" id="stats-badge">0 ノート検出</span>
+        <div class="header-actions">
+          <button class="btn-demo" id="btn-demo">♪ デモ鼻歌で試す</button>
+          <span class="stats-badge" id="stats-badge">0 ノート</span>
+        </div>
       </div>
 
       <div class="pianoroll-wrap" id="pianoroll-wrap">
         <canvas id="pianoroll-canvas" width="600" height="180"></canvas>
       </div>
 
-      <div class="notes-list-preview" id="notes-preview">録音ボタンを押して、マイクに向かって「フフーン♪」と鼻歌を歌ってください。</div>
+      <div class="notes-list-preview" id="notes-preview">録音ボタンを押してマイクを許可し、「フフーン♪」と鼻歌を歌ってください。</div>
     </section>
 
     <!-- Export Area -->
@@ -493,22 +566,21 @@
   </div>
 
   <script>
-    // Pure JS Voice to Pitch to MIDI Engine
     (function () {
       let audioCtx = null;
       let analyser = null;
       let micStream = null;
-      let micNode = null;
+      let micSource = null;
+      let silentSink = null;
+      let inputGain = null;
       let isRecording = false;
       let isPlaying = false;
       let animId = null;
 
-      // Note definitions
       const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
       
-      // Recorded raw frames: { time, pitch, freq, rms }
       let recordedFrames = [];
-      let detectedNotes = []; // { start, duration, pitch, noteName, vel }
+      let detectedNotes = [];
       let recordStartTime = 0;
 
       // DOM Elements
@@ -517,6 +589,9 @@
       const centsDisplay = document.getElementById('cents-display');
       const centsPointer = document.getElementById('cents-pointer');
       const micStatus = document.getElementById('mic-status');
+      const levelBar = document.getElementById('level-bar');
+      const levelText = document.getElementById('level-text');
+      const errorHint = document.getElementById('error-hint');
       const waveCanvas = document.getElementById('wave-canvas');
       const waveCtx = waveCanvas.getContext('2d');
       const btnRec = document.getElementById('btn-rec');
@@ -524,6 +599,7 @@
       const btnPlay = document.getElementById('btn-play');
       const playText = document.getElementById('play-text');
       const btnExport = document.getElementById('btn-export');
+      const btnDemo = document.getElementById('btn-demo');
       const synthSound = document.getElementById('synth-sound');
       const scaleSnap = document.getElementById('scale-snap');
       const statsBadge = document.getElementById('stats-badge');
@@ -531,36 +607,78 @@
       const pianoCanvas = document.getElementById('pianoroll-canvas');
       const pianoCtx = pianoCanvas.getContext('2d');
 
-      function initAudio() {
+      // Robust iOS AudioContext unlocking
+      async function ensureAudioContext() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!audioCtx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
           audioCtx = new AudioContext();
         }
         if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
+          await audioCtx.resume();
         }
+        return audioCtx;
       }
 
-      // 1. Microphone Start & Pitch Tracking Loop
-      async function startRecording() {
-        initAudio();
-        try {
-          micStream = await navigator.mediaDevices.getUserMedia({
-            audio: {
-              echoCancellation: false,
-              noiseSuppression: false,
-              autoGainControl: false
-            }
+      // Safe cross-browser getUserMedia
+      async function getMicrophoneStream() {
+        // Plain audio: true works on all iOS Safari without OverconstrainedError
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          return await navigator.mediaDevices.getUserMedia({ audio: true });
+        }
+        const legacyGetMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        if (legacyGetMedia) {
+          return new Promise((resolve, reject) => {
+            legacyGetMedia.call(navigator, { audio: true }, resolve, reject);
           });
+        }
+        throw new Error('お使いのブラウザはマイク入力に対応していません。');
+      }
+
+      async function startRecording() {
+        errorHint.style.display = 'none';
+        micStatus.textContent = 'MIC: 権限確認中...';
+        micStatus.style.color = '#ffb703';
+
+        try {
+          await ensureAudioContext();
+          micStream = await getMicrophoneStream();
         } catch (err) {
-          alert("マイクへのアクセスを許可してください: " + err.message);
+          micStatus.textContent = 'MIC: エラー';
+          micStatus.style.color = '#ef4444';
+          errorHint.style.display = 'block';
+          errorHint.textContent = 'マイク許可エラー: ' + (err.message || err.name) + ' (Safari設定でマイクを許可してください)';
+          alert('マイクへのアクセスがブロックされました。iPhoneの「設定 > Safari > マイク」が許可されているか確認してください。');
           return;
         }
 
-        micNode = audioCtx.createMediaStreamSource(micStream);
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 2048;
-        micNode.connect(analyser);
+        try {
+          micSource = audioCtx.createMediaStreamSource(micStream);
+          
+          // Boost gain to reliably catch subtle humming
+          inputGain = audioCtx.createGain();
+          inputGain.gain.value = 2.5;
+
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 2048;
+          analyser.smoothingTimeConstant = 0.05;
+
+          // CRITICAL FOR IOS SAFARI:
+          // Unconnected AudioNodes are NOT processed by Web Audio engine!
+          // Connect analyser to a zero-gain destination node to force pulling samples!
+          silentSink = audioCtx.createGain();
+          silentSink.gain.value = 0.0;
+
+          micSource.connect(inputGain);
+          inputGain.connect(analyser);
+          analyser.connect(silentSink);
+          silentSink.connect(audioCtx.destination);
+
+        } catch (err) {
+          micStatus.textContent = 'MIC: ノード接続エラー';
+          errorHint.style.display = 'block';
+          errorHint.textContent = 'AudioNodeエラー: ' + err.message;
+          return;
+        }
 
         recordedFrames = [];
         detectedNotes = [];
@@ -569,8 +687,8 @@
 
         btnRec.classList.add('recording');
         recText.textContent = '録音停止 (STOP)';
-        micStatus.textContent = 'MIC: RECORDING...';
-        micStatus.style.color = '#ffb703';
+        micStatus.textContent = 'MIC: 録音中（声を出してください）';
+        micStatus.style.color = '#f77f00';
         btnPlay.disabled = true;
         btnExport.disabled = true;
 
@@ -581,25 +699,32 @@
         isRecording = false;
         if (micStream) {
           micStream.getTracks().forEach(t => t.stop());
+          micStream = null;
+        }
+        if (silentSink) {
+          try { silentSink.disconnect(); } catch (e) {}
         }
         btnRec.classList.remove('recording');
         recText.textContent = '鼻歌を録音';
-        micStatus.textContent = 'MIC: DONE';
+        micStatus.textContent = 'MIC: 解析完了';
         micStatus.style.color = '#5af0ad';
+        levelBar.style.width = '0%';
+        levelText.textContent = '0%';
 
-        // Process recorded frames into clean quantized notes!
         processFramesToNotes();
       }
 
-      // McLeod Pitch Method (NSDF) Algorithm
-      function detectPitchNSDF(buf, sampleRate) {
+      // Fast Autocorrelation / NSDF Pitch Detector
+      function detectPitch(buf, sampleRate) {
         let sum = 0;
         for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
         let rms = Math.sqrt(sum / buf.length);
-        if (rms < 0.02) return { freq: -1, rms }; // Volume threshold (noise gate)
+        
+        // Return RMS for level meter
+        if (rms < 0.006) return { freq: -1, rms }; // Generous noise gate for quiet humming
 
         const minTau = Math.floor(sampleRate / 900); // ~900Hz max
-        const maxTau = Math.floor(sampleRate / 70);  // ~70Hz min
+        const maxTau = Math.floor(sampleRate / 65);  // ~65Hz min
         const W = buf.length - maxTau;
 
         let sumSq0 = 0;
@@ -619,16 +744,17 @@
 
         let peaks = [];
         for (let tau = minTau + 1; tau < maxTau - 1; tau++) {
-          if (nsdf[tau] > nsdf[tau - 1] && nsdf[tau] > nsdf[tau + 1] && nsdf[tau] >= 0.65) {
+          if (nsdf[tau] > nsdf[tau - 1] && nsdf[tau] > nsdf[tau + 1] && nsdf[tau] >= 0.55) {
             peaks.push({ tau, val: nsdf[tau] });
           }
         }
 
         if (peaks.length === 0) return { freq: -1, rms };
 
-        // Take the first major peak above 80% of maximum peak (prevents octave drops!)
+        // Fundamental peak (prevent octave drop)
         let maxVal = Math.max(...peaks.map(p => p.val));
-        let bestTau = peaks.find(p => p.val >= maxVal * 0.85).tau;
+        let bestPeak = peaks.find(p => p.val >= maxVal * 0.82) || peaks[0];
+        let bestTau = bestPeak.tau;
 
         // Parabolic interpolation
         let y1 = nsdf[bestTau - 1];
@@ -656,15 +782,19 @@
         return name + oct;
       }
 
-      // Realtime Pitch Tracking & Waveform Loop
       function trackPitchLoop() {
         if (!isRecording) return;
 
         const buf = new Float32Array(analyser.fftSize);
         analyser.getFloatTimeDomainData(buf);
 
-        const { freq, rms } = detectPitchNSDF(buf, audioCtx.sampleRate);
+        const { freq, rms } = detectPitch(buf, audioCtx.sampleRate);
         const now = audioCtx.currentTime - recordStartTime;
+
+        // Update Level Meter
+        const lvlPct = Math.min(100, Math.round(rms * 400));
+        levelBar.style.width = lvlPct + '%';
+        levelText.textContent = lvlPct + '%';
 
         drawWaveform(buf);
 
@@ -678,7 +808,6 @@
           freqDisplay.textContent = freq.toFixed(1) + ' Hz';
           centsDisplay.textContent = (cents >= 0 ? '+' : '') + cents + ' cents';
 
-          // Update pointer position: -50 cents = 0%, 0 = 50%, +50 cents = 100%
           const clampCents = Math.max(-50, Math.min(50, cents));
           centsPointer.style.left = (50 + clampCents) + '%';
 
@@ -714,17 +843,17 @@
         waveCtx.stroke();
       }
 
-      // 2. Note Segmentation & Quantization
+      // Process frames to clean quantized notes
       function processFramesToNotes() {
         if (recordedFrames.length === 0) {
-          notesPreview.textContent = '音声が検出されませんでした。もう一度試してください。';
+          notesPreview.textContent = '音声フレームが記録されませんでした。もう一度試してください。';
           return;
         }
 
         const scaleMode = scaleSnap.value;
         const notes = [];
         let curNote = null;
-        const minDuration = 0.08; // Min note length 80ms to avoid transients
+        const minDuration = 0.08;
 
         for (let i = 0; i < recordedFrames.length; i++) {
           const frame = recordedFrames[i];
@@ -761,23 +890,20 @@
         detectedNotes = notes;
         renderPianoRoll();
 
-        statsBadge.textContent = detectedNotes.length + ' ノート検出';
+        statsBadge.textContent = detectedNotes.length + ' ノート';
         if (detectedNotes.length > 0) {
           btnPlay.disabled = false;
           btnExport.disabled = false;
           notesPreview.textContent = detectedNotes.map(n => `${n.noteName} (${n.duration.toFixed(2)}s)`).join('  ');
         } else {
-          notesPreview.textContent = '有効なメロディが検出されませんでした。もう少しはっきりと歌ってみてください。';
+          notesPreview.textContent = '有効なメロディが検出されませんでした。マイクに少し近づいて歌ってみてください。';
         }
       }
 
       function snapToScale(pitch, mode) {
         const semitone = ((pitch % 12) + 12) % 12;
-        // Major: C(0), D(2), E(4), F(5), G(7), A(9), B(11)
         const majorScale = [0, 2, 4, 5, 7, 9, 11];
-        // Minor: A(9), B(11), C(0), D(2), E(4), F(5), G(7)
         const minorScale = [0, 2, 3, 5, 7, 8, 10];
-        // Minor Pentatonic: A(9), C(0), D(2), E(4), G(7)
         const pentaScale = [0, 3, 5, 7, 10];
 
         let allowed = null;
@@ -785,11 +911,8 @@
         else if (mode === 'minor') allowed = minorScale;
         else if (mode === 'pentatonic') allowed = pentaScale;
 
-        if (!allowed) return pitch;
+        if (!allowed || allowed.includes(semitone)) return pitch;
 
-        if (allowed.includes(semitone)) return pitch;
-
-        // Snap to nearest semitone in scale
         let bestDiff = 999;
         let bestSnap = pitch;
         for (let s of allowed) {
@@ -802,10 +925,10 @@
         return bestSnap;
       }
 
-      // 3. Render Piano Roll
+      // Render Piano Roll
       function renderPianoRoll(currentPlayheadSec = null) {
         const wrap = document.getElementById('pianoroll-wrap');
-        const totalDuration = recordedFrames.length > 0 ? recordedFrames[recordedFrames.length - 1].time : 4.0;
+        const totalDuration = detectedNotes.length > 0 ? (detectedNotes[detectedNotes.length - 1].start + detectedNotes[detectedNotes.length - 1].duration + 0.5) : 4.0;
         const width = Math.max(wrap.clientWidth, totalDuration * 80);
         pianoCanvas.width = width * window.devicePixelRatio;
         pianoCanvas.height = 180 * window.devicePixelRatio;
@@ -830,21 +953,18 @@
           return;
         }
 
-        // Determine pitch range
         const pitches = detectedNotes.map(n => n.pitch);
         const minPitch = Math.min(...pitches) - 2;
         const maxPitch = Math.max(...pitches) + 2;
         const pitchRange = Math.max(12, maxPitch - minPitch + 1);
         const noteHeight = h / pitchRange;
 
-        // Background horizontal pitch grid lines
         for (let p = minPitch; p <= maxPitch; p++) {
           const y = h - (p - minPitch + 1) * noteHeight;
           const isBlack = [1, 3, 6, 8, 10].includes(((p % 12) + 12) % 12);
           ctx.fillStyle = isBlack ? '#1a1c22' : '#22252e';
           ctx.fillRect(0, y, w, noteHeight - 1);
 
-          // Note label on left
           if (p % 12 === 0 || p === minPitch || p === maxPitch) {
             ctx.fillStyle = '#64748b';
             ctx.font = '9px monospace';
@@ -852,14 +972,12 @@
           }
         }
 
-        // Draw note blocks
         const pxPerSec = (w - 20) / Math.max(0.1, totalDuration);
         detectedNotes.forEach(note => {
           const x = 20 + note.start * pxPerSec;
           const noteW = Math.max(4, note.duration * pxPerSec);
           const y = h - (note.pitch - minPitch + 1) * noteHeight;
 
-          // Note gradient block
           const grad = ctx.createLinearGradient(x, y, x + noteW, y);
           grad.addColorStop(0, '#3a86ff');
           grad.addColorStop(1, '#60a5fa');
@@ -868,15 +986,13 @@
           ctx.roundRect(x, y + 1, noteW - 2, noteHeight - 3, 3);
           ctx.fill();
 
-          // Note Name inside block
-          if (noteW > 25) {
+          if (noteW > 24) {
             ctx.fillStyle = '#fff';
             ctx.font = 'bold 10px monospace';
             ctx.fillText(note.noteName, x + 4, y + noteHeight - 5);
           }
         });
 
-        // Draw Playhead line if playing
         if (currentPlayheadSec !== null) {
           const playheadX = 20 + currentPlayheadSec * pxPerSec;
           ctx.strokeStyle = '#f77f00';
@@ -890,10 +1006,10 @@
         ctx.restore();
       }
 
-      // 4. Synthesizer Playback
-      function playSynthesizer() {
+      // Synthesizer Playback
+      async function playSynthesizer() {
         if (detectedNotes.length === 0 || isPlaying) return;
-        initAudio();
+        await ensureAudioContext();
         isPlaying = true;
         btnPlay.classList.add('playing');
         playText.textContent = '停止 (STOP)';
@@ -910,7 +1026,6 @@
           triggerSynthNote(n.pitch, noteStart, n.duration, soundType);
         });
 
-        // Playhead animation
         const startTimestamp = performance.now();
         function playheadAnim() {
           if (!isPlaying) return;
@@ -938,13 +1053,12 @@
         const ctx = audioCtx;
 
         if (type === 'analog') {
-          // Warm Moog-style Sawtooth with 24dB LPF envelope
           const osc1 = ctx.createOscillator();
           const osc2 = ctx.createOscillator();
           osc1.type = 'sawtooth';
           osc2.type = 'sawtooth';
           osc1.frequency.setValueAtTime(freq, time);
-          osc2.frequency.setValueAtTime(freq * 1.004, time); // slight chorus detune
+          osc2.frequency.setValueAtTime(freq * 1.004, time);
 
           const filter = ctx.createBiquadFilter();
           filter.type = 'lowpass';
@@ -969,7 +1083,6 @@
           osc2.stop(time + duration + 0.1);
 
         } else if (type === 'rhodes') {
-          // Electric Piano: Sine fundamental + bright tines
           const osc = ctx.createOscillator();
           const tine = ctx.createOscillator();
           osc.type = 'sine';
@@ -991,7 +1104,6 @@
           tine.stop(time + duration + 0.25);
 
         } else if (type === 'brass') {
-          // 80s Synth Brass (Pulse + Saw)
           const osc = ctx.createOscillator();
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(freq, time);
@@ -1014,7 +1126,6 @@
           osc.stop(time + duration + 0.15);
 
         } else {
-          // Pure Flute / Whistle Sine with soft vibrato
           const osc = ctx.createOscillator();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, time);
@@ -1033,7 +1144,7 @@
         }
       }
 
-      // 5. Standard MIDI File (.mid) Generator
+      // Standard MIDI File (.mid) Generator
       function writeVLQ(val) {
         let res = [];
         res.push(val & 0x7F);
@@ -1057,17 +1168,14 @@
           rawEvents.push({ tick: endTick, type: 0x80, pitch: n.pitch, vel: 0 });
         });
 
-        // Sort events: Note-off before Note-on at the same tick
         rawEvents.sort((a, b) => a.tick === b.tick ? (a.type === 0x80 ? -1 : 1) : a.tick - b.tick);
 
         let trackBytes = [];
 
-        // Meta Event: Track Name "AOI HUM-60 Melody"
         const trackName = "AOI HUM-60 Melody";
         trackBytes.push(0x00, 0xFF, 0x03, trackName.length);
         for (let i = 0; i < trackName.length; i++) trackBytes.push(trackName.charCodeAt(i));
 
-        // Meta Event: Set Tempo (120 BPM = 500,000 µs/qn)
         const mpqn = Math.round(60000000 / bpm);
         trackBytes.push(0x00, 0xFF, 0x51, 0x03, (mpqn >> 16) & 0xFF, (mpqn >> 8) & 0xFF, mpqn & 0xFF);
 
@@ -1079,30 +1187,26 @@
           trackBytes.push(ev.type, ev.pitch, ev.vel);
         });
 
-        // End of Track
         trackBytes.push(0x00, 0xFF, 0x2F, 0x00);
 
-        // Header Chunk (Format 0, 1 Track, 480 division)
         const header = [
-          0x4D, 0x54, 0x68, 0x64, // 'MThd'
-          0x00, 0x00, 0x00, 0x06, // len 6
-          0x00, 0x00,             // format 0
-          0x00, 0x01,             // 1 track
+          0x4D, 0x54, 0x68, 0x64,
+          0x00, 0x00, 0x00, 0x06,
+          0x00, 0x00,
+          0x00, 0x01,
           (division >> 8) & 0xFF, division & 0xFF
         ];
 
-        // Track Chunk
         const trackLen = trackBytes.length;
         const trackHeader = [
-          0x4D, 0x54, 0x72, 0x6B, // 'MTrk'
+          0x4D, 0x54, 0x72, 0x6B,
           (trackLen >> 24) & 0xFF,
           (trackLen >> 16) & 0xFF,
           (trackLen >> 8) & 0xFF,
           trackLen & 0xFF
         ];
 
-        const fullMidi = new Uint8Array([...header, ...trackHeader, ...trackBytes]);
-        return fullMidi;
+        return new Uint8Array([...header, ...trackHeader, ...trackBytes]);
       }
 
       function downloadMidi() {
@@ -1119,6 +1223,26 @@
         URL.revokeObjectURL(url);
       }
 
+      // Demo sample melody for instant testing
+      function loadDemoMelody() {
+        // Pentatonic catchy riff: C4 -> D4 -> E4 -> G4 -> A4 -> G4
+        detectedNotes = [
+          { start: 0.0, duration: 0.4, pitch: 60, noteName: "C4", vel: 95 },
+          { start: 0.5, duration: 0.4, pitch: 62, noteName: "D4", vel: 95 },
+          { start: 1.0, duration: 0.4, pitch: 64, noteName: "E4", vel: 95 },
+          { start: 1.5, duration: 0.5, pitch: 67, noteName: "G4", vel: 100 },
+          { start: 2.1, duration: 0.6, pitch: 69, noteName: "A4", vel: 100 },
+          { start: 2.8, duration: 0.9, pitch: 67, noteName: "G4", vel: 95 }
+        ];
+        renderPianoRoll();
+        statsBadge.textContent = detectedNotes.length + ' ノート';
+        btnPlay.disabled = false;
+        btnExport.disabled = false;
+        notesPreview.textContent = '【デモメロディ読込済】C4 (0.40s)  D4 (0.40s)  E4 (0.40s)  G4 (0.50s)  A4 (0.60s)  G4 (0.90s)';
+        micStatus.textContent = 'MIC: デモ読込完了';
+        micStatus.style.color = '#5af0ad';
+      }
+
       // Event Listeners
       btnRec.onclick = () => {
         if (isRecording) stopRecording();
@@ -1131,6 +1255,7 @@
       };
 
       btnExport.onclick = () => downloadMidi();
+      btnDemo.onclick = () => loadDemoMelody();
 
       scaleSnap.onchange = () => {
         if (recordedFrames.length > 0) processFramesToNotes();
