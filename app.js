@@ -1,5 +1,5 @@
 // AOI LOB60 Sampler Workstation App Logic
-// 1-Bar Drum Overdub, Orange ERASE Mode, 16 Pads, Single Horizontal Arranger
+// Pro Sound Synthesis Mapping, 16 Pads, Orange ERASE Mode, 8 Tracks
 
 (function () {
   const synth = new MPCSynth();
@@ -7,9 +7,8 @@
   let state = {
     bpm: 92,
     isPlaying: false,
-    isRecording: false, // when true, REC button becomes orange ERASE button
+    isRecording: false,
     armedTrack: 1,
-    // Single horizontal measure timeline
     bars: [
       { id: 'b1', name: 'Bar 1', colorIdx: 0 },
       { id: 'b2', name: 'Bar 2', colorIdx: 1 },
@@ -18,7 +17,7 @@
       { id: 'b5', name: 'Bar 5', colorIdx: 4 },
       { id: 'b6', name: 'Bar 6', colorIdx: 5 },
     ],
-    // Track 1: 1-bar drum loop overdub grid (16 pads x 8 steps)
+    // 16 Pads x 8 Steps in Track 1 Drum Loop
     drumHits: Array(16).fill(null).map(() => Array(8).fill(false)),
     metrics: {
       bpm: 92,
@@ -27,7 +26,7 @@
     }
   };
 
-  // Preset initial drum groove in Track 1
+  // Default groove in Track 1
   state.drumHits[0][0] = true; // Kick on 0
   state.drumHits[0][4] = true; // Kick on 4
   state.drumHits[1][2] = true; // Snare on 2
@@ -40,27 +39,48 @@
   let nextStepTime = 0;
   let timer = null;
 
-  // 16 Pads Definition
+  // 16 Pads with exact instrument mapping
   const PADS = [
-    { id: 0, label: 'KICK', synthTrack: 0 },
-    { id: 1, label: 'SNARE', synthTrack: 1 },
-    { id: 2, label: 'HH CLS', synthTrack: 2 },
-    { id: 3, label: 'HH OPN', synthTrack: 3 },
-    { id: 4, label: 'CLAP', synthTrack: 4 },
-    { id: 5, label: 'PERC 1', synthTrack: 5 },
-    { id: 6, label: 'PERC 2', synthTrack: 5 },
-    { id: 7, label: 'CRASH', synthTrack: 3 },
-    { id: 8, label: 'RIDE', synthTrack: 2 },
-    { id: 9, label: 'TOM 1', synthTrack: 5 },
-    { id: 10, label: 'TOM 2', synthTrack: 5 },
-    { id: 11, label: 'TOM 3', synthTrack: 5 },
-    { id: 12, label: 'BASS', synthTrack: 6 },
-    { id: 13, label: 'CHORD 1', synthTrack: 7 },
-    { id: 14, label: 'CHORD 2', synthTrack: 7 },
-    { id: 15, label: 'FX', synthTrack: 5 },
+    { id: 0, label: 'KICK', type: 'kick' },
+    { id: 1, label: 'SNARE', type: 'snare' },
+    { id: 2, label: 'HH CLS', type: 'ch' },
+    { id: 3, label: 'HH OPN', type: 'oh' },
+    { id: 4, label: 'CLAP', type: 'clap' },
+    { id: 5, label: 'CONGA H', type: 'conga_h' }, // Perc 1 = High Conga
+    { id: 6, label: 'CONGA L', type: 'conga_l' }, // Perc 2 = Low Conga
+    { id: 7, label: 'CRASH', type: 'crash' },     // Real Crash Cymbal
+    { id: 8, label: 'RIDE', type: 'ride' },       // Real Ride Cymbal Ping
+    { id: 9, label: 'TOM 1', type: 'tom1' },      // High Tom
+    { id: 10, label: 'TOM 2', type: 'tom2' },     // Mid Tom (lower than Tom 1)
+    { id: 11, label: 'TOM 3', type: 'tom3' },     // Low Tom (lower than Tom 2)
+    { id: 12, label: 'BASS', type: 'bass' },
+    { id: 13, label: 'CHORD 1', type: 'chord1' }, // Fm7
+    { id: 14, label: 'CHORD 2', type: 'chord2' }, // Bbm7
+    { id: 15, label: 'FX', type: 'fx' },
   ];
 
-  // 8 Audio Tracks Definition
+  function playInstrument(padType, time = null, vel = 1.0) {
+    switch (padType) {
+      case 'kick': synth.playKick(time, vel); break;
+      case 'snare': synth.playSnare(time, vel); break;
+      case 'ch': synth.playClosedHat(time, vel); break;
+      case 'oh': synth.playOpenHat(time, vel); break;
+      case 'clap': synth.playClap(time, vel); break;
+      case 'conga_h': synth.playConga(time, vel, true); break;  // High Conga
+      case 'conga_l': synth.playConga(time, vel, false); break; // Low Conga
+      case 'crash': synth.playCrash(time, vel); break;          // Crash
+      case 'ride': synth.playRide(time, vel); break;            // Ride
+      case 'tom1': synth.playTom(time, vel, 1); break;          // Tom 1 High
+      case 'tom2': synth.playTom(time, vel, 2); break;          // Tom 2 Mid
+      case 'tom3': synth.playTom(time, vel, 3); break;          // Tom 3 Low
+      case 'bass': synth.playBass(time, vel, 0); break;
+      case 'chord1': synth.playChop(time, vel, 0); break;       // Fm7
+      case 'chord2': synth.playChop(time, vel, 1); break;       // Bbm7
+      case 'fx': synth.playConga(time, vel * 0.8, true); break;
+    }
+  }
+
+  // 8 Audio Tracks
   const TRACKS = [
     { num: 1, name: 'Drum Loop', tag: 'OVERDUB (1 BAR)', isDrum: true, color: '#3a86ff' },
     { num: 2, name: 'Mic/Line 2', tag: 'AUDIO INPUT', isDrum: false, color: '#7cb518' },
@@ -144,7 +164,7 @@
 
   function advance() {
     const secPerBeat = 60.0 / state.bpm;
-    const stepDuration = secPerBeat / 2.0; // 8th note resolution
+    const stepDuration = secPerBeat / 2.0; // 8th note steps
 
     nextStepTime += stepDuration;
 
@@ -165,7 +185,7 @@
     // Trigger Track 1 Drum Loop hits
     PADS.forEach((pad) => {
       if (state.drumHits[pad.id][step]) {
-        synth.triggerTrack(pad.synthTrack, time, 0.9);
+        playInstrument(pad.type, time, 0.9);
         flashPad(pad.id);
       }
     });
@@ -324,14 +344,13 @@
           state.drumHits[pad.id].fill(false);
           padEl.classList.add('erased');
           setTimeout(() => padEl.classList.remove('erased'), 200);
-          console.log(`Erased pad: ${pad.label}`);
         } else {
           // NORMAL PLAY / OVERDUB
-          synth.triggerTrack(pad.synthTrack, null, 1.0);
+          playInstrument(pad.type, null, 1.0);
           padEl.classList.add('pressed');
           setTimeout(() => padEl.classList.remove('pressed'), 100);
 
-          // If playback is running and armed, overdub onto current step!
+          // If playback is running, overdub onto current step!
           if (state.isPlaying) {
             state.drumHits[pad.id][currentStep] = true;
           }
@@ -360,12 +379,12 @@
 
       if (state.isRecording) {
         recLabel.textContent = 'ERASE';
-        eraseHint.textContent = 'ERASEモード中: パッドを叩くとその音色をループから消去';
+        eraseHint.textContent = 'ERASEモード中: パッドを叩くとその音色を消去';
         eraseHint.style.color = '#f77f00';
         if (!state.isPlaying) play(); // start loop to overdub/erase live
       } else {
         recLabel.textContent = 'REC';
-        eraseHint.textContent = '録音中: ERASEボタンでパッド消去可能';
+        eraseHint.textContent = '録音中: ERASEボタンで消去';
         eraseHint.style.color = '#777';
       }
     };
