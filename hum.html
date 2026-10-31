@@ -13,8 +13,9 @@
   <style>
     :root {
       --bg-dark: #121316;
-      --panel-bg: #1c1d22;
-      --panel-border: #2a2c33;
+      --panel-bg: #1a1b20;
+      --panel-border: #282a32;
+      --panel-inner: #141518;
       --lcd-bg: #0d1e18;
       --lcd-text: #5af0ad;
       --lcd-dim: #1e523c;
@@ -24,7 +25,6 @@
       --accent-yellow: #ffb703;
       --text-main: #f0f2f5;
       --text-muted: #8b92a0;
-      --pad-base: #282a30;
     }
 
     * {
@@ -41,10 +41,10 @@
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       min-height: 100vh;
-      padding-top: max(52px, env(safe-area-inset-top, 52px));
+      padding-top: max(50px, env(safe-area-inset-top, 50px));
       padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
-      padding-left: max(16px, env(safe-area-inset-left, 16px));
-      padding-right: max(16px, env(safe-area-inset-right, 16px));
+      padding-left: max(12px, env(safe-area-inset-left, 12px));
+      padding-right: max(12px, env(safe-area-inset-right, 12px));
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -52,10 +52,10 @@
 
     .container {
       width: 100%;
-      max-width: 600px;
+      max-width: 520px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     /* Header Bar */
@@ -65,146 +65,129 @@
       align-items: center;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 12px;
-      padding: 10px 14px;
+      border-radius: 10px;
+      padding: 8px 12px;
     }
 
     .brand-group {
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 6px;
+      white-space: nowrap;
     }
 
     .brand-logo {
       font-weight: 900;
-      font-size: 20px;
+      font-size: 19px;
       letter-spacing: 1.5px;
       color: var(--accent-blue);
       text-shadow: 0 0 10px rgba(58, 134, 255, 0.4);
     }
 
     .brand-model {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: 1px;
       color: #cbd5e1;
     }
 
     .sub-tag {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--text-muted);
       letter-spacing: 0.5px;
     }
 
     .nav-link {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--accent-blue);
       text-decoration: none;
       background: rgba(58, 134, 255, 0.12);
-      padding: 5px 10px;
+      padding: 4px 8px;
       border-radius: 6px;
       border: 1px solid rgba(58, 134, 255, 0.3);
       font-weight: 600;
+      white-space: nowrap;
     }
 
     /* BPM & Metronome Bar */
-    .bpm-metronome-bar {
-      background: #18191e;
+    .bpm-bar {
+      background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 12px;
-      padding: 8px 12px;
+      border-radius: 10px;
+      padding: 6px 10px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+      justify-content: space-between;
       gap: 8px;
     }
 
-    .bpm-control-box {
+    .bpm-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      white-space: nowrap;
     }
 
     .bpm-label {
       font-family: monospace;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       color: var(--accent-yellow);
     }
 
     .bpm-input {
-      width: 58px;
-      background: #0f1013;
+      width: 50px;
+      background: var(--panel-inner);
       border: 1px solid #333640;
       color: #fff;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       font-family: monospace;
       text-align: center;
-      padding: 4px;
-      border-radius: 6px;
+      padding: 3px 0;
+      border-radius: 5px;
       outline: none;
     }
 
-    .btn-tap {
-      background: #2b2e38;
-      border: 1px solid #444754;
+    .btn-micro {
+      background: #282a32;
+      border: 1px solid #3d404d;
       color: #cbd5e1;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 4px 7px;
+      border-radius: 5px;
       cursor: pointer;
+      white-space: nowrap;
     }
 
-    .btn-tap:active {
+    .btn-micro:active {
       background: var(--accent-orange);
       color: #fff;
     }
 
-    .auto-bpm-pill {
-      font-family: monospace;
-      font-size: 11px;
+    .pill-auto {
       color: #5af0ad;
       background: rgba(90, 240, 173, 0.12);
-      padding: 3px 8px;
-      border-radius: 4px;
-      border: 1px dashed rgba(90, 240, 173, 0.4);
-      display: none;
-      cursor: pointer;
+      border-color: rgba(90, 240, 173, 0.3);
     }
 
-    .click-toggle-label {
-      font-size: 11px;
-      color: #94a3b8;
+    .metro-group {
       display: flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-    }
-
-    .click-toggle-label input {
-      accent-color: var(--accent-orange);
-    }
-
-    /* 4-beat LED Metronome */
-    .metronome-leds {
-      display: flex;
-      gap: 6px;
+      gap: 5px;
       align-items: center;
     }
 
     .metro-dot {
-      width: 15px;
-      height: 15px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      background: #1b2621;
+      background: #17241f;
       border: 1px solid #143525;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 9px;
+      font-size: 8px;
       font-family: monospace;
       font-weight: 700;
       color: #2e4f3f;
@@ -214,9 +197,9 @@
     .metro-dot.flash-down {
       background: var(--accent-yellow);
       border-color: #ffd166;
-      box-shadow: 0 0 12px var(--accent-yellow);
+      box-shadow: 0 0 10px var(--accent-yellow);
       color: #000;
-      transform: scale(1.18);
+      transform: scale(1.15);
     }
 
     .metro-dot.flash-sub {
@@ -227,16 +210,31 @@
       transform: scale(1.1);
     }
 
+    .click-toggle {
+      font-size: 10px;
+      font-family: monospace;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .click-toggle input {
+      accent-color: var(--accent-orange);
+    }
+
     /* Live Tuner & Waveform Screen */
     .lcd-screen {
       background: var(--lcd-bg);
       border: 2px solid #16382a;
-      border-radius: 12px;
-      padding: 12px 14px;
+      border-radius: 10px;
+      padding: 10px 12px;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.7), 0 0 15px rgba(90, 240, 173, 0.1);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       position: relative;
     }
 
@@ -247,19 +245,19 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(13, 30, 24, 0.94);
-      border-radius: 10px;
+      background: rgba(13, 30, 24, 0.95);
+      border-radius: 8px;
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 10;
-      gap: 4px;
+      gap: 2px;
     }
 
     .count-in-label {
       font-family: monospace;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
       color: var(--accent-yellow);
       letter-spacing: 2px;
@@ -267,10 +265,10 @@
 
     .count-in-number {
       font-family: "Courier New", monospace;
-      font-size: 72px;
+      font-size: 64px;
       font-weight: 900;
       color: #5af0ad;
-      text-shadow: 0 0 20px rgba(90, 240, 173, 0.8);
+      text-shadow: 0 0 18px rgba(90, 240, 173, 0.8);
       line-height: 1;
     }
 
@@ -279,59 +277,66 @@
       justify-content: space-between;
       align-items: center;
       font-family: monospace;
-      font-size: 11px;
+      font-size: 10px;
       color: var(--lcd-dim);
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
     }
 
     #mic-status {
       font-weight: bold;
       color: var(--lcd-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+      text-align: right;
     }
 
     .bar-beat-tag {
       font-family: monospace;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       color: var(--accent-orange);
       background: rgba(247, 127, 0, 0.15);
-      padding: 1px 6px;
-      border-radius: 4px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      white-space: nowrap;
     }
 
     .tuner-display {
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 2px 0;
+      padding: 0;
     }
 
     .pitch-note {
-      font-size: 46px;
+      font-size: 42px;
       font-weight: 900;
       font-family: "Courier New", monospace;
       color: var(--lcd-text);
-      text-shadow: 0 0 12px rgba(90, 240, 173, 0.6);
-      min-width: 90px;
+      text-shadow: 0 0 10px rgba(90, 240, 173, 0.6);
+      min-width: 70px;
       text-align: center;
     }
 
     .pitch-info {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
     }
 
     .freq-text {
       font-family: monospace;
-      font-size: 15px;
+      font-size: 14px;
       color: var(--lcd-text);
       font-weight: 700;
     }
 
     .cents-text {
       font-family: monospace;
-      font-size: 12px;
+      font-size: 11px;
       color: #7ef2bb;
     }
 
@@ -339,15 +344,15 @@
     .level-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-family: monospace;
-      font-size: 10px;
+      font-size: 9px;
       color: var(--lcd-dim);
     }
 
     .level-bar-wrap {
       flex: 1;
-      height: 6px;
+      height: 5px;
       background: #081410;
       border-radius: 3px;
       overflow: hidden;
@@ -364,9 +369,9 @@
     /* Cents Meter Bar */
     .cents-bar-wrap {
       width: 100%;
-      height: 8px;
+      height: 6px;
       background: #081410;
-      border-radius: 4px;
+      border-radius: 3px;
       position: relative;
       overflow: hidden;
       border: 1px solid #16382a;
@@ -387,21 +392,21 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 8px;
+      width: 6px;
       background: var(--accent-orange);
-      border-radius: 4px;
+      border-radius: 3px;
       left: 50%;
       transform: translateX(-50%);
       transition: left 0.05s ease-out;
-      box-shadow: 0 0 6px var(--accent-orange);
+      box-shadow: 0 0 5px var(--accent-orange);
     }
 
     /* Waveform Canvas */
     .wave-canvas {
       width: 100%;
-      height: 38px;
+      height: 32px;
       background: rgba(0,0,0,0.3);
-      border-radius: 6px;
+      border-radius: 4px;
       display: block;
     }
 
@@ -409,23 +414,24 @@
     .control-deck {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .btn-action {
-      height: 60px;
+      height: 52px;
       border: none;
-      border-radius: 12px;
-      font-size: 16px;
+      border-radius: 10px;
+      font-size: 15px;
       font-weight: 800;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
       transition: transform 0.08s ease, filter 0.08s ease;
+      white-space: nowrap;
     }
 
     .btn-action:active {
@@ -444,7 +450,7 @@
 
     @keyframes pulse-rec {
       from { filter: brightness(1); }
-      to { filter: brightness(1.25); box-shadow: 0 0 16px rgba(247, 127, 0, 0.7); }
+      to { filter: brightness(1.25); box-shadow: 0 0 14px rgba(247, 127, 0, 0.7); }
     }
 
     .btn-play-synth {
@@ -462,114 +468,102 @@
       filter: grayscale(0.8);
     }
 
-    /* Speaker Tip */
-    .speaker-tip {
-      font-size: 11px;
-      color: #94a3b8;
-      background: #18191f;
-      border: 1px solid #2d3039;
-      border-radius: 8px;
-      padding: 6px 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Settings & Quantize */
-    .settings-grid {
+    /* Settings Deck: SLEEK HARDWARE DESIGN (No line breaks!) */
+    .settings-deck {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 10px 10px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .setting-box {
-      background: #22242b;
-      border: 1px solid #2d3039;
-      border-radius: 8px;
-      padding: 8px 10px;
+    .param-box {
+      background: var(--panel-inner);
+      border: 1px solid #282a32;
+      border-radius: 6px;
+      padding: 6px 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 3px;
     }
 
-    .setting-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
+    .param-label {
+      font-size: 10px;
+      font-weight: 700;
+      font-family: monospace;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
     }
 
-    .setting-select {
-      background: #16171b;
-      border: 1px solid #333640;
-      color: #fff;
-      font-size: 13px;
+    .param-select {
+      background: #1c1d24;
+      border: 1px solid #363945;
+      color: #f1f5f9;
+      font-size: 12px;
       font-weight: 600;
-      padding: 6px;
-      border-radius: 6px;
+      padding: 5px 6px;
+      border-radius: 4px;
       outline: none;
+      width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      cursor: pointer;
     }
 
     /* Piano Roll Canvas & Timeline */
     .pianoroll-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 12px;
-      padding: 14px;
+      border-radius: 10px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      white-space: nowrap;
     }
 
     .card-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: #cbd5e1;
       letter-spacing: 0.5px;
+      white-space: nowrap;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-
-    .btn-demo {
-      font-size: 11px;
-      background: #2b2e38;
-      color: #94a3b8;
-      border: 1px solid #3e4250;
-      padding: 3px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .btn-demo:active {
-      background: #3e4250;
+      gap: 6px;
+      white-space: nowrap;
     }
 
     .stats-badge {
       font-family: monospace;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--accent-yellow);
       background: rgba(255, 183, 3, 0.12);
-      padding: 2px 8px;
+      padding: 2px 6px;
       border-radius: 4px;
+      white-space: nowrap;
     }
 
     .pianoroll-wrap {
       position: relative;
       width: 100%;
-      height: 180px;
-      background: #15161a;
+      height: 160px;
+      background: #141518;
       border: 1px solid #23252c;
-      border-radius: 8px;
+      border-radius: 6px;
       overflow-x: auto;
       overflow-y: hidden;
     }
@@ -581,44 +575,45 @@
 
     .notes-list-preview {
       font-family: monospace;
-      font-size: 11px;
+      font-size: 10px;
       color: #94a3b8;
-      max-height: 50px;
+      max-height: 40px;
       overflow-y: auto;
-      background: #141518;
-      padding: 6px 8px;
-      border-radius: 6px;
+      background: #111215;
+      padding: 4px 6px;
+      border-radius: 4px;
       white-space: pre-wrap;
       word-break: break-all;
     }
 
-    /* Export Bar */
+    /* Export Area */
     .export-box {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 12px;
-      padding: 12px 14px;
+      border-radius: 10px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .btn-export-midi {
       background: linear-gradient(145deg, #ffb703, #fb8500);
       color: #000;
       border: none;
-      border-radius: 10px;
-      height: 48px;
-      font-size: 15px;
+      border-radius: 8px;
+      height: 44px;
+      font-size: 14px;
       font-weight: 800;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(251, 133, 0, 0.35);
+      gap: 6px;
+      box-shadow: 0 3px 8px rgba(251, 133, 0, 0.3);
       transition: transform 0.08s ease;
+      white-space: nowrap;
     }
 
     .btn-export-midi:disabled {
@@ -629,6 +624,15 @@
 
     .btn-export-midi:active:not(:disabled) {
       transform: scale(0.97);
+    }
+
+    /* Quiet Footnote for Speaker */
+    .speaker-footnote {
+      font-size: 10px;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.4;
+      padding: 0 4px;
     }
   </style>
 </head>
@@ -646,26 +650,26 @@
       <a href="index.html" class="nav-link">← LOB60 サンプラー</a>
     </header>
 
-    <!-- BPM & Metronome Bar -->
-    <section class="bpm-metronome-bar">
-      <div class="bpm-control-box">
-        <span class="bpm-label">BPM:</span>
+    <!-- BPM & Metronome Bar (Single Row, Never Wraps) -->
+    <section class="bpm-bar">
+      <div class="bpm-group">
+        <span class="bpm-label">BPM</span>
         <input type="number" id="bpm-input" value="120" min="50" max="220" class="bpm-input">
-        <button id="btn-tap" class="btn-tap" title="タップしてテンポ指定">TAP</button>
-        <span id="auto-bpm-pill" class="auto-bpm-pill" title="クリックして適用">推定: 120 適用</span>
+        <button id="btn-tap" class="btn-micro" title="タップしてテンポ指定">TAP</button>
+        <button id="auto-bpm-pill" class="btn-micro pill-auto" style="display:none;">推定: 120</button>
       </div>
 
-      <label class="click-toggle-label">
-        <input type="checkbox" id="click-audio-chk">
-        <span>クリック音 (イヤホン)</span>
-      </label>
-
-      <div class="metronome-leds">
+      <div class="metro-group">
         <div class="metro-dot" id="dot-1">1</div>
         <div class="metro-dot" id="dot-2">2</div>
         <div class="metro-dot" id="dot-3">3</div>
         <div class="metro-dot" id="dot-4">4</div>
       </div>
+
+      <label class="click-toggle">
+        <input type="checkbox" id="click-audio-chk">
+        <span>CLICK</span>
+      </label>
     </section>
 
     <!-- Tuner & Waveform Screen -->
@@ -677,10 +681,10 @@
       </div>
 
       <div class="lcd-header">
-        <span>TUNER & PITCH TRACKER</span>
-        <div style="display:flex; align-items:center; gap:8px;">
+        <span>TUNER & TRACKER</span>
+        <div style="display:flex; align-items:center; gap:6px;">
           <span class="bar-beat-tag" id="bar-beat-display" style="display:none;">BAR 1 : 1</span>
-          <span id="mic-status">MIC: STANDBY (タップして開始)</span>
+          <span id="mic-status">STANDBY</span>
         </div>
       </div>
 
@@ -694,7 +698,7 @@
 
       <!-- Input Level Meter -->
       <div class="level-row">
-        <span>INPUT LVL</span>
+        <span>IN</span>
         <div class="level-bar-wrap">
           <div class="level-bar-fill" id="level-bar"></div>
         </div>
@@ -711,59 +715,53 @@
       <canvas class="wave-canvas" id="wave-canvas"></canvas>
     </section>
 
-    <!-- Control Buttons -->
+    <!-- Control Buttons (Fixed 1-line text) -->
     <section class="control-deck">
       <button class="btn-action btn-rec" id="btn-rec">
-        <span id="rec-dot">●</span> <span id="rec-text">鼻歌を録音 (4カウント)</span>
+        <span id="rec-dot">●</span> <span id="rec-text">録音 (4カウント)</span>
       </button>
       <button class="btn-action btn-play-synth" id="btn-play" disabled>
         <span>►</span> <span id="play-text">シンセで再生</span>
       </button>
     </section>
 
-    <!-- Speaker Tip -->
-    <div class="speaker-tip">
-      <span>📢</span>
-      <span>iPhoneで音が鳴らない時は、本体横の<strong>消音スイッチ（マナーモード）をOFF</strong>にして音量を上げてください。</span>
-    </div>
-
-    <!-- Settings: Synth Sound, Scale, Quantize -->
-    <section class="settings-grid">
-      <div class="setting-box">
-        <label class="setting-label">シンセ音色</label>
-        <select class="setting-select" id="synth-sound">
-          <option value="analog">アナログ・リード (Moog風)</option>
-          <option value="rhodes">エレピ / Rhodes風</option>
-          <option value="brass">80s シンセ・ブラス</option>
-          <option value="flute">ピュア・フルート / 口笛</option>
+    <!-- Settings Deck: CLEAN 2x2 HARDWARE PANEL -->
+    <section class="settings-deck">
+      <div class="param-box">
+        <label class="param-label">SYNTH SOUND</label>
+        <select class="param-select" id="synth-sound">
+          <option value="analog">Analog Lead (Moog)</option>
+          <option value="rhodes">Rhodes EP (Keys)</option>
+          <option value="brass">80s Synth Brass</option>
+          <option value="flute">Pure Flute (Whistle)</option>
         </select>
       </div>
 
-      <div class="setting-box">
-        <label class="setting-label">音階スケール固定</label>
-        <select class="setting-select" id="scale-snap">
-          <option value="chromatic">全半音 (クロマチック)</option>
-          <option value="major">C Major (ドレミファソラシ)</option>
-          <option value="minor">A Minor (自然短音階)</option>
-          <option value="pentatonic">マイナー・ペンタトニック</option>
+      <div class="param-box">
+        <label class="param-label">SCALE SNAP</label>
+        <select class="param-select" id="scale-snap">
+          <option value="chromatic">Chromatic (全半音)</option>
+          <option value="major">C Major (メジャー)</option>
+          <option value="minor">A Minor (マイナー)</option>
+          <option value="pentatonic">Pentatonic (ペンタ)</option>
         </select>
       </div>
 
-      <div class="setting-box">
-        <label class="setting-label">BPMグリッド揃え (クオンタイズ)</label>
-        <select class="setting-select" id="grid-quantize">
-          <option value="8th" selected>8分音符グリッド (推奨)</option>
-          <option value="16th">16分音符グリッド (細かめ)</option>
-          <option value="4th">4分音符グリッド (ゆったり)</option>
-          <option value="none">オフ (自然な鼻歌タイミング)</option>
+      <div class="param-box">
+        <label class="param-label">BPM QUANTIZE</label>
+        <select class="param-select" id="grid-quantize">
+          <option value="8th" selected>1/8 Beat (8分音符)</option>
+          <option value="16th">1/16 Beat (16分音符)</option>
+          <option value="4th">1/4 Beat (4分音符)</option>
+          <option value="none">Off (リアル鼻歌)</option>
         </select>
       </div>
 
-      <div class="setting-box">
-        <label class="setting-label">予備拍カウントイン</label>
-        <select class="setting-select" id="count-in-select">
-          <option value="4" selected>4カウント (1小節)</option>
-          <option value="0">カウントなし (すぐ録音)</option>
+      <div class="param-box">
+        <label class="param-label">COUNT-IN</label>
+        <select class="param-select" id="count-in-select">
+          <option value="4" selected>4 Counts (1小節)</option>
+          <option value="0">Off (即録音)</option>
         </select>
       </div>
     </section>
@@ -771,25 +769,26 @@
     <!-- Piano Roll Display -->
     <section class="pianoroll-card">
       <div class="card-header">
-        <span class="card-title">PIANO ROLL & 検出ノート</span>
+        <span class="card-title">PIANO ROLL</span>
         <div class="header-actions">
-          <button class="btn-demo" id="btn-demo">♪ デモ鼻歌で試す</button>
-          <span class="stats-badge" id="stats-badge">0 ノート</span>
+          <button class="btn-micro" id="btn-demo">♪ デモ読込</button>
+          <span class="stats-badge" id="stats-badge">0 notes</span>
         </div>
       </div>
 
       <div class="pianoroll-wrap" id="pianoroll-wrap">
-        <canvas id="pianoroll-canvas" width="600" height="180"></canvas>
+        <canvas id="pianoroll-canvas" width="600" height="160"></canvas>
       </div>
 
-      <div class="notes-list-preview" id="notes-preview">録音ボタンを押すとマイクが即座に起動し、4カウント後にゼロラグで録音開始します！</div>
+      <div class="notes-list-preview" id="notes-preview">録音ボタンを押すと4カウント後にゼロラグで録音開始します。</div>
     </section>
 
     <!-- Export Area -->
     <section class="export-box">
       <button class="btn-export-midi" id="btn-export" disabled>
-        <span>⬇</span> <span>MIDIファイルを書き出し (.mid)</span>
+        <span>⬇</span> <span>MIDI書き出し (.mid)</span>
       </button>
+      <div class="speaker-footnote">※音が鳴らない時は、iPhone本体の消音スイッチをOFFにして音量を上げてください</div>
     </section>
 
   </div>
@@ -861,7 +860,6 @@
       const pianoCanvas = document.getElementById('pianoroll-canvas');
       const pianoCtx = pianoCanvas.getContext('2d');
 
-      // 1. High Precision Web Audio Click Synthesizer
       function scheduleClickSound(time, isDownbeat) {
         if (!clickAudioChk.checked || !audioCtx) return;
         try {
@@ -889,7 +887,6 @@
         });
       }
 
-      // Metronome Loop for Recording & Playback
       function startMetronome() {
         stopMetronome();
         currentMetroBeat = 0;
@@ -923,7 +920,7 @@
         metroTimer = setTimeout(tickMetronome, beatInterval);
       }
 
-      // Tap Tempo Logic
+      // Tap Tempo
       let tapTimes = [];
       btnTap.onclick = () => {
         const now = performance.now();
@@ -960,7 +957,6 @@
         if (recordedFrames.length > 0) processFramesToNotes();
       };
 
-      // 2. Microphone & ZERO-LAG Count-in Engine
       async function ensureAudioContext() {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!audioCtx) {
@@ -978,22 +974,19 @@
           return;
         }
 
-        micStatus.textContent = 'MIC: マイク接続中...';
-        micStatus.style.color = '#ffb703';
+        micStatus.textContent = 'CONNECTING';
 
-        // 1. OPEN MIC STREAM IMMEDIATELY UPON TAP!
         try {
           await ensureAudioContext();
           if (!micStream) {
             micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
           }
         } catch (err) {
-          micStatus.textContent = 'MIC: 権限エラー';
+          micStatus.textContent = 'MIC ERROR';
           alert('マイクへのアクセスが許可されませんでした。Safariの設定を確認してください。');
           return;
         }
 
-        // Setup audio graph
         try {
           if (!micSource) {
             micSource = audioCtx.createMediaStreamSource(micStream);
@@ -1013,11 +1006,9 @@
             silentSink.connect(audioCtx.destination);
           }
         } catch (err) {
-          console.error('Audio node setup err:', err);
+          console.error('Audio setup err:', err);
         }
 
-        // 2. Mic is now active and warm!
-        // Start waveform and level meter monitoring immediately
         trackPitchLoop();
 
         const countInBeats = parseInt(countInSelect.value, 10);
@@ -1027,17 +1018,15 @@
           isCountingIn = true;
           countInBanner.style.display = 'flex';
           btnRec.classList.add('recording');
-          recText.textContent = 'カウントイン中... (STOP)';
-          micStatus.textContent = `MIC: ${countInBeats}カウント後に録音開始`;
-          micStatus.style.color = '#ffb703';
+          recText.textContent = 'カウント中...';
+          micStatus.textContent = 'COUNT-IN';
 
           const startAudioTime = audioCtx.currentTime;
           const recStartTime = startAudioTime + countInBeats * beatSec;
 
-          // Schedule exact audio clicks and visual numbers
           for (let b = 0; b < countInBeats; b++) {
             const beatTime = startAudioTime + b * beatSec;
-            const countNum = b + 1; // 1, 2, 3, 4
+            const countNum = b + 1;
             
             scheduleClickSound(beatTime, b === 0);
 
@@ -1049,22 +1038,19 @@
             }, delayMs);
           }
 
-          // Exact downbeat trigger: ZERO HARDWARE DELAY!
           const recStartDelayMs = Math.max(0, (recStartTime - audioCtx.currentTime) * 1000);
           setTimeout(() => {
             if (!isCountingIn) return;
             isCountingIn = false;
             countInBanner.style.display = 'none';
 
-            // ZERO-LAG RECORDING COMMENCES!
             recordedFrames = [];
             detectedNotes = [];
             recordStartTime = recStartTime;
             isRecording = true;
 
             recText.textContent = '録音停止 (STOP)';
-            micStatus.textContent = 'MIC: 録音中（テンポに合わせて歌ってください）';
-            micStatus.style.color = '#f77f00';
+            micStatus.textContent = 'RECORDING';
             btnPlay.disabled = true;
             btnExport.disabled = true;
 
@@ -1072,7 +1058,6 @@
           }, recStartDelayMs);
 
         } else {
-          // Zero count-in, immediate recording
           recordedFrames = [];
           detectedNotes = [];
           recordStartTime = audioCtx.currentTime;
@@ -1080,8 +1065,7 @@
 
           btnRec.classList.add('recording');
           recText.textContent = '録音停止 (STOP)';
-          micStatus.textContent = 'MIC: 録音中（声を出してください）';
-          micStatus.style.color = '#f77f00';
+          micStatus.textContent = 'RECORDING';
           btnPlay.disabled = true;
           btnExport.disabled = true;
 
@@ -1106,9 +1090,8 @@
         }
 
         btnRec.classList.remove('recording');
-        recText.textContent = '鼻歌を録音 (4カウント)';
-        micStatus.textContent = 'MIC: 解析完了';
-        micStatus.style.color = '#5af0ad';
+        recText.textContent = '録音 (4カウント)';
+        micStatus.textContent = 'DONE';
         levelBar.style.width = '0%';
         levelText.textContent = '0%';
 
@@ -1242,7 +1225,6 @@
         waveCtx.stroke();
       }
 
-      // 3. Process Frames & Quantize to BPM Grid
       function processFramesToNotes() {
         if (recordedFrames.length === 0) {
           notesPreview.textContent = '音声フレームが記録されませんでした。もう一度試してください。';
@@ -1291,17 +1273,15 @@
           return;
         }
 
-        // Normalize notes relative to recording start
         let notes = rawNotes.map(n => ({
           ...n,
           start: Math.max(0, n.start)
         }));
 
-        // BPM Grid Quantization
         const quantMode = gridQuantize.value;
         if (quantMode !== 'none') {
           const beatSec = 60.0 / state.bpm;
-          let gridSec = beatSec / 2.0; // 8th note default
+          let gridSec = beatSec / 2.0;
           if (quantMode === '16th') gridSec = beatSec / 4.0;
           if (quantMode === '4th') gridSec = beatSec;
 
@@ -1316,7 +1296,6 @@
           });
         }
 
-        // Estimate BPM from intervals
         if (rawNotes.length >= 3) {
           const intervals = [];
           for (let i = 1; i < rawNotes.length; i++) {
@@ -1330,7 +1309,7 @@
             while (est < 75) est *= 2;
             while (est > 175) est /= 2;
             state.estimatedBpm = Math.round(est);
-            autoBpmPill.textContent = `推定BPM: ${state.estimatedBpm} [適用]`;
+            autoBpmPill.textContent = `推定:${state.estimatedBpm}`;
             autoBpmPill.style.display = 'inline-block';
           }
         }
@@ -1338,10 +1317,10 @@
         detectedNotes = notes;
         renderPianoRoll();
 
-        statsBadge.textContent = detectedNotes.length + ' ノート';
+        statsBadge.textContent = detectedNotes.length + ' notes';
         btnPlay.disabled = false;
         btnExport.disabled = false;
-        notesPreview.textContent = detectedNotes.map(n => `${n.noteName} (${n.duration.toFixed(2)}s)`).join('  ');
+        notesPreview.textContent = detectedNotes.map(n => `${n.noteName}(${n.duration.toFixed(2)}s)`).join(' ');
       }
 
       function snapToScale(pitch, mode) {
@@ -1369,30 +1348,29 @@
         return bestSnap;
       }
 
-      // 4. Render Piano Roll
       function renderPianoRoll(currentPlayheadSec = null) {
         const wrap = document.getElementById('pianoroll-wrap');
         const totalDuration = detectedNotes.length > 0 ? (detectedNotes[detectedNotes.length - 1].start + detectedNotes[detectedNotes.length - 1].duration + 0.5) : 4.0;
         const width = Math.max(wrap.clientWidth, totalDuration * 80);
         pianoCanvas.width = width * window.devicePixelRatio;
-        pianoCanvas.height = 180 * window.devicePixelRatio;
+        pianoCanvas.height = 160 * window.devicePixelRatio;
         pianoCanvas.style.width = width + 'px';
-        pianoCanvas.style.height = '180px';
+        pianoCanvas.style.height = '160px';
 
         const ctx = pianoCtx;
         ctx.save();
         ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
         const w = width;
-        const h = 180;
-        ctx.fillStyle = '#15161a';
+        const h = 160;
+        ctx.fillStyle = '#141518';
         ctx.fillRect(0, 0, w, h);
 
         if (detectedNotes.length === 0) {
           ctx.fillStyle = '#475569';
-          ctx.font = '13px sans-serif';
+          ctx.font = '12px sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText('録音完了後にここにピアノロールが表示されます', w / 2, h / 2);
+          ctx.fillText('録音完了後にピアノロールが表示されます', w / 2, h / 2);
           ctx.restore();
           return;
         }
@@ -1403,11 +1381,10 @@
         const pitchRange = Math.max(12, maxPitch - minPitch + 1);
         const noteHeight = h / pitchRange;
 
-        // Draw pitch rows
         for (let p = minPitch; p <= maxPitch; p++) {
           const y = h - (p - minPitch + 1) * noteHeight;
           const isBlack = [1, 3, 6, 8, 10].includes(((p % 12) + 12) % 12);
-          ctx.fillStyle = isBlack ? '#1a1c22' : '#22252e';
+          ctx.fillStyle = isBlack ? '#181920' : '#20222a';
           ctx.fillRect(0, y, w, noteHeight - 1);
 
           if (p % 12 === 0 || p === minPitch || p === maxPitch) {
@@ -1417,7 +1394,6 @@
           }
         }
 
-        // Draw Beat Grid lines
         const pxPerSec = (w - 20) / Math.max(0.1, totalDuration);
         const beatSec = 60.0 / state.bpm;
         for (let t = 0; t <= totalDuration; t += beatSec) {
@@ -1430,7 +1406,6 @@
           ctx.stroke();
         }
 
-        // Draw Note Blocks
         detectedNotes.forEach(note => {
           const x = 20 + note.start * pxPerSec;
           const noteW = Math.max(4, note.duration * pxPerSec);
@@ -1446,12 +1421,11 @@
 
           if (noteW > 24) {
             ctx.fillStyle = '#fff';
-            ctx.font = 'bold 10px monospace';
-            ctx.fillText(note.noteName, x + 4, y + noteHeight - 5);
+            ctx.font = 'bold 9px monospace';
+            ctx.fillText(note.noteName, x + 3, y + noteHeight - 4);
           }
         });
 
-        // Draw Playhead
         if (currentPlayheadSec !== null) {
           const playheadX = 20 + currentPlayheadSec * pxPerSec;
           ctx.strokeStyle = '#f77f00';
@@ -1465,7 +1439,6 @@
         ctx.restore();
       }
 
-      // 5. Sound Playback via PCM WAV Blob
       function generateWavBlob(notes, soundType, sampleRate = 44100) {
         if (!notes || notes.length === 0) return null;
         const totalDur = Math.max(...notes.map(n => n.start + n.duration)) + 0.3;
@@ -1547,7 +1520,7 @@
         if (detectedNotes.length === 0 || isPlaying) return;
         isPlaying = true;
         btnPlay.classList.add('playing');
-        playText.textContent = '停止 (STOP)';
+        playText.textContent = 'STOP';
 
         startMetronome();
 
@@ -1590,7 +1563,6 @@
         renderPianoRoll(null);
       }
 
-      // 6. Standard MIDI File (.mid) Generator with Custom BPM
       function writeVLQ(val) {
         let res = [];
         res.push(val & 0x7F);
@@ -1679,12 +1651,11 @@
           { start: 2.5, duration: 0.9, pitch: 67, noteName: "G4", vel: 95 }
         ];
         renderPianoRoll();
-        statsBadge.textContent = detectedNotes.length + ' ノート';
+        statsBadge.textContent = detectedNotes.length + ' notes';
         btnPlay.disabled = false;
         btnExport.disabled = false;
-        notesPreview.textContent = '【デモメロディ読込済】C4 (0.40s)  D4 (0.40s)  E4 (0.40s)  G4 (0.50s)  A4 (0.50s)  G4 (0.90s)';
-        micStatus.textContent = 'MIC: デモ読込完了';
-        micStatus.style.color = '#5af0ad';
+        notesPreview.textContent = '【デモ】C4(0.4s) D4(0.4s) E4(0.4s) G4(0.5s) A4(0.5s) G4(0.9s)';
+        micStatus.textContent = 'DEMO LOADED';
       }
 
       // Event Listeners
