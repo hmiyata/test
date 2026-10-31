@@ -1,41 +1,44 @@
-const CACHE_NAME = 'lob60-v2';
+const CACHE_NAME = 'lob60-v3';
 const ASSETS = [
   './',
   './index.html',
-  './style.css',
-  './synth.js',
-  './app.js',
+  './style.css?v=3',
+  './synth.js?v=3',
+  './app.js?v=3',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
   self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
 });
 
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+        keys.map((k) => caches.delete(k))
       );
     })
   );
-  self.clients.claim();
+  return self.clients.claim();
 });
 
+// Network-First strategy: Always fetch latest version from network, fallback to cache offline
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    caches.match(e.request).then((res) => {
-      return res || fetch(e.request).then((networkRes) => {
-        if (networkRes && networkRes.status === 200) {
-          const clone = networkRes.clone();
+    fetch(e.request)
+      .then((res) => {
+        if (res && res.status === 200) {
+          const clone = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
         }
-        return networkRes;
-      });
-    })
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
