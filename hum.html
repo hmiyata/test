@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AOI HUM-60 | Voice to MIDI Workstation</title>
+  <style>
+    :root {
+      --bg-dark: #121316;
+      --panel-bg: #1c1d22;
+      --panel-border: #2a2c33;
+      --lcd-bg: #0d1e18;
+      --lcd-text: #5af0ad;
+      --lcd-dim: #1e523c;
+      --accent-blue: #3a86ff;
+      --accent-orange: #f77f00;
+      --accent-red: #d90429;
+      --accent-yellow: #ffb703;
+      --text-main: #f0f2f5;
+      --text-muted: #8b92a0;
+      --pad-base: #282a30;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      padding-top: max(52px, env(safe-area-inset-top, 52px));
+      padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
+      padding-left: max(16px, env(safe-area-inset-left, 16px));
+      padding-right: max(16px, env(safe-area-inset-right, 16px));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Header */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 10px 14px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .brand-logo {
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 1.5px;
+      color: var(--accent-blue);
+      text-shadow: 0 0 10px rgba(58, 134, 255, 0.4);
+    }
+
+    .brand-model {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #cbd5e1;
+    }
+
+    .sub-tag {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .nav-link {
+      font-size: 12px;
+      color: var(--accent-blue);
+      text-decoration: none;
+      background: rgba(58, 134, 255, 0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(58, 134, 255, 0.3);
+      font-weight: 600;
+    }
+
+    /* Live Tuner & Waveform Screen */
+    .lcd-screen {
+      background: var(--lcd-bg);
+      border: 2px solid #16382a;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.7), 0 0 15px rgba(90, 240, 173, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    .lcd-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--lcd-dim);
+      letter-spacing: 1px;
+    }
+
+    .tuner-display {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 6px 0;
+    }
+
+    .pitch-note {
+      font-size: 46px;
+      font-weight: 900;
+      font-family: "Courier New", monospace;
+      color: var(--lcd-text);
+      text-shadow: 0 0 12px rgba(90, 240, 173, 0.6);
+      min-width: 90px;
+      text-align: center;
+    }
+
+    .pitch-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .freq-text {
+      font-family: monospace;
+      font-size: 16px;
+      color: var(--lcd-text);
+      font-weight: 700;
+    }
+
+    .cents-text {
+      font-family: monospace;
+      font-size: 12px;
+      color: #7ef2bb;
+    }
+
+    /* Cents Meter Bar */
+    .cents-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: #081410;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #16382a;
+    }
+
+    .cents-center-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #5af0ad;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .cents-pointer {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      background: var(--accent-orange);
+      border-radius: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: left 0.05s ease-out;
+      box-shadow: 0 0 6px var(--accent-orange);
+    }
+
+    /* Waveform Canvas */
+    .wave-canvas {
+      width: 100%;
+      height: 50px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      display: block;
+    }
+
+    /* Main Record Action Area */
+    .control-deck {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-action {
+      height: 60px;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.08s ease, filter 0.08s ease;
+    }
+
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+
+    .btn-rec {
+      background: linear-gradient(145deg, #d90429, #ef233c);
+      color: #fff;
+    }
+
+    .btn-rec.recording {
+      background: linear-gradient(145deg, #f77f00, #ffb703);
+      animation: pulse-rec 1s infinite alternate;
+    }
+
+    @keyframes pulse-rec {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.25); box-shadow: 0 0 16px rgba(247, 127, 0, 0.7); }
+    }
+
+    .btn-play-synth {
+      background: linear-gradient(145deg, #3a86ff, #2563eb);
+      color: #fff;
+    }
+
+    .btn-play-synth.playing {
+      background: linear-gradient(145deg, #06d6a0, #059669);
+    }
+
+    .btn-play-synth:disabled, .btn-action:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: grayscale(0.8);
+    }
+
+    /* Piano Roll Canvas & Timeline */
+    .pianoroll-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #cbd5e1;
+      letter-spacing: 0.5px;
+    }
+
+    .stats-badge {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--accent-yellow);
+      background: rgba(255, 183, 3, 0.12);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .pianoroll-wrap {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background: #15161a;
+      border: 1px solid #23252c;
+      border-radius: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    #pianoroll-canvas {
+      display: block;
+      height: 100%;
+    }
+
+    /* Settings & Quantize */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .setting-box {
+      background: #22242b;
+      border: 1px solid #2d3039;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .setting-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .setting-select {
+      background: #16171b;
+      border: 1px solid #333640;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    /* Export Bar */
+    .export-box {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-export-midi {
+      background: linear-gradient(145deg, #ffb703, #fb8500);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      height: 48px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(251, 133, 0, 0.35);
+      transition: transform 0.08s ease;
+    }
+
+    .btn-export-midi:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-export-midi:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .notes-list-preview {
+      font-family: monospace;
+      font-size: 11px;
+      color: #94a3b8;
+      max-height: 60px;
+      overflow-y: auto;
+      background: #141518;
+      padding: 6px 8px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header-bar">
+      <div class="brand-group">
+        <span class="brand-logo">AOI</span>
+        <span class="brand-model">HUM-60</span>
+        <span class="sub-tag">VOICE TO MIDI</span>
+      </div>
+      <a href="index.html" class="nav-link">← LOB60 サンプラー</a>
+    </header>
+
+    <!-- Tuner & Waveform Screen -->
+    <section class="lcd-screen">
+      <div class="lcd-header">
+        <span>TUNER & PITCH TRACKER</span>
+        <span id="mic-status">MIC: STANDBY</span>
+      </div>
+
+      <div class="tuner-display">
+        <div class="pitch-note" id="note-display">--</div>
+        <div class="pitch-info">
+          <div class="freq-text" id="freq-display">0.0 Hz</div>
+          <div class="cents-text" id="cents-display">±0 cents</div>
+        </div>
+      </div>
+
+      <!-- Cents deviation meter -->
+      <div class="cents-bar-wrap">
+        <div class="cents-center-line"></div>
+        <div class="cents-pointer" id="cents-pointer"></div>
+      </div>
+
+      <!-- Live audio wave -->
+      <canvas class="wave-canvas" id="wave-canvas"></canvas>
+    </section>
+
+    <!-- Control Buttons -->
+    <section class="control-deck">
+      <button class="btn-action btn-rec" id="btn-rec">
+        <span id="rec-dot">●</span> <span id="rec-text">鼻歌を録音</span>
+      </button>
+      <button class="btn-action btn-play-synth" id="btn-play" disabled>
+        <span>▶</span> <span id="play-text">シンセで再生</span>
+      </button>
+    </section>
+
+    <!-- Settings: Synth Sound & Scale Quantize -->
+    <section class="settings-grid">
+      <div class="setting-box">
+        <label class="setting-label">シンセ音色</label>
+        <select class="setting-select" id="synth-sound">
+          <option value="analog">アナログ・リード (Moog風)</option>
+          <option value="rhodes">エレピ / Rhodes風</option>
+          <option value="brass">80s シンセ・ブラス</option>
+          <option value="flute">ピュア・フルート / 口笛</option>
+        </select>
+      </div>
+
+      <div class="setting-box">
+        <label class="setting-label">音階スケール固定</label>
+        <select class="setting-select" id="scale-snap">
+          <option value="chromatic">全半音 (クロマチック)</option>
+          <option value="major">C Major (ドレミファソラシ)</option>
+          <option value="minor">A Minor (自然短音階)</option>
+          <option value="pentatonic">マイナー・ペンタトニック</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Piano Roll Display -->
+    <section class="pianoroll-card">
+      <div class="card-header">
+        <span class="card-title">PIANO ROLL & 検出ノート</span>
+        <span class="stats-badge" id="stats-badge">0 ノート検出</span>
+      </div>
+
+      <div class="pianoroll-wrap" id="pianoroll-wrap">
+        <canvas id="pianoroll-canvas" width="600" height="180"></canvas>
+      </div>
+
+      <div class="notes-list-preview" id="notes-preview">録音ボタンを押して、マイクに向かって「フフーン♪」と鼻歌を歌ってください。</div>
+    </section>
+
+    <!-- Export Area -->
+    <section class="export-box">
+      <button class="btn-export-midi" id="btn-export" disabled>
+        <span>⬇</span> <span>MIDIファイルを書き出し (.mid)</span>
+      </button>
+    </section>
+
+  </div>
+
+  <script>
+    // Pure JS Voice to Pitch to MIDI Engine
+    (function () {
+      let audioCtx = null;
+      let analyser = null;
+      let micStream = null;
+      let micNode = null;
+      let isRecording = false;
+      let isPlaying = false;
+      let animId = null;
+
+      // Note definitions
+      const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      
+      // Recorded raw frames: { time, pitch, freq, rms }
+      let recordedFrames = [];
+      let detectedNotes = []; // { start, duration, pitch, noteName, vel }
+      let recordStartTime = 0;
+
+      // DOM Elements
+      const noteDisplay = document.getElementById('note-display');
+      const freqDisplay = document.getElementById('freq-display');
+      const centsDisplay = document.getElementById('cents-display');
+      const centsPointer = document.getElementById('cents-pointer');
+      const micStatus = document.getElementById('mic-status');
+      const waveCanvas = document.getElementById('wave-canvas');
+      const waveCtx = waveCanvas.getContext('2d');
+      const btnRec = document.getElementById('btn-rec');
+      const recText = document.getElementById('rec-text');
+      const btnPlay = document.getElementById('btn-play');
+      const playText = document.getElementById('play-text');
+      const btnExport = document.getElementById('btn-export');
+      const synthSound = document.getElementById('synth-sound');
+      const scaleSnap = document.getElementById('scale-snap');
+      const statsBadge = document.getElementById('stats-badge');
+      const notesPreview = document.getElementById('notes-preview');
+      const pianoCanvas = document.getElementById('pianoroll-canvas');
+      const pianoCtx = pianoCanvas.getContext('2d');
+
+      function initAudio() {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      }
+
+      // 1. Microphone Start & Pitch Tracking Loop
+      async function startRecording() {
+        initAudio();
+        try {
+          micStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: false,
+              noiseSuppression: false,
+              autoGainControl: false
+            }
+          });
+        } catch (err) {
+          alert("マイクへのアクセスを許可してください: " + err.message);
+          return;
+        }
+
+        micNode = audioCtx.createMediaStreamSource(micStream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 2048;
+        micNode.connect(analyser);
+
+        recordedFrames = [];
+        detectedNotes = [];
+        recordStartTime = audioCtx.currentTime;
+        isRecording = true;
+
+        btnRec.classList.add('recording');
+        recText.textContent = '録音停止 (STOP)';
+        micStatus.textContent = 'MIC: RECORDING...';
+        micStatus.style.color = '#ffb703';
+        btnPlay.disabled = true;
+        btnExport.disabled = true;
+
+        trackPitchLoop();
+      }
+
+      function stopRecording() {
+        isRecording = false;
+        if (micStream) {
+          micStream.getTracks().forEach(t => t.stop());
+        }
+        btnRec.classList.remove('recording');
+        recText.textContent = '鼻歌を録音';
+        micStatus.textContent = 'MIC: DONE';
+        micStatus.style.color = '#5af0ad';
+
+        // Process recorded frames into clean quantized notes!
+        processFramesToNotes();
+      }
+
+      // McLeod Pitch Method (NSDF) Algorithm
+      function detectPitchNSDF(buf, sampleRate) {
+        let sum = 0;
+        for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+        let rms = Math.sqrt(sum / buf.length);
+        if (rms < 0.02) return { freq: -1, rms }; // Volume threshold (noise gate)
+
+        const minTau = Math.floor(sampleRate / 900); // ~900Hz max
+        const maxTau = Math.floor(sampleRate / 70);  // ~70Hz min
+        const W = buf.length - maxTau;
+
+        let sumSq0 = 0;
+        for (let j = 0; j < W; j++) sumSq0 += buf[j] * buf[j];
+
+        let nsdf = [];
+        for (let tau = minTau; tau < maxTau; tau++) {
+          let num = 0;
+          let sumSqTau = 0;
+          for (let j = 0; j < W; j++) {
+            num += buf[j] * buf[j + tau];
+            sumSqTau += buf[j + tau] * buf[j + tau];
+          }
+          let den = sumSq0 + sumSqTau;
+          nsdf[tau] = den > 0 ? (2.0 * num / den) : 0;
+        }
+
+        let peaks = [];
+        for (let tau = minTau + 1; tau < maxTau - 1; tau++) {
+          if (nsdf[tau] > nsdf[tau - 1] && nsdf[tau] > nsdf[tau + 1] && nsdf[tau] >= 0.65) {
+            peaks.push({ tau, val: nsdf[tau] });
+          }
+        }
+
+        if (peaks.length === 0) return { freq: -1, rms };
+
+        // Take the first major peak above 80% of maximum peak (prevents octave drops!)
+        let maxVal = Math.max(...peaks.map(p => p.val));
+        let bestTau = peaks.find(p => p.val >= maxVal * 0.85).tau;
+
+        // Parabolic interpolation
+        let y1 = nsdf[bestTau - 1];
+        let y2 = nsdf[bestTau];
+        let y3 = nsdf[bestTau + 1];
+        let denom = 2 * (2 * y2 - y1 - y3);
+        let refinedTau = denom !== 0 ? (bestTau + (y3 - y1) / denom) : bestTau;
+
+        let freq = sampleRate / refinedTau;
+        return { freq, rms };
+      }
+
+      function freqToMidi(f) {
+        return 69 + 12 * Math.log2(f / 440);
+      }
+
+      function midiToFreq(m) {
+        return 440 * Math.pow(2, (m - 69) / 12);
+      }
+
+      function midiToNoteName(m) {
+        const note = Math.round(m);
+        const name = NOTE_NAMES[((note % 12) + 12) % 12];
+        const oct = Math.floor(note / 12) - 1;
+        return name + oct;
+      }
+
+      // Realtime Pitch Tracking & Waveform Loop
+      function trackPitchLoop() {
+        if (!isRecording) return;
+
+        const buf = new Float32Array(analyser.fftSize);
+        analyser.getFloatTimeDomainData(buf);
+
+        const { freq, rms } = detectPitchNSDF(buf, audioCtx.sampleRate);
+        const now = audioCtx.currentTime - recordStartTime;
+
+        drawWaveform(buf);
+
+        if (freq > 0) {
+          const exactMidi = freqToMidi(freq);
+          const roundedMidi = Math.round(exactMidi);
+          const cents = Math.round((exactMidi - roundedMidi) * 100);
+          const noteName = midiToNoteName(roundedMidi);
+
+          noteDisplay.textContent = noteName;
+          freqDisplay.textContent = freq.toFixed(1) + ' Hz';
+          centsDisplay.textContent = (cents >= 0 ? '+' : '') + cents + ' cents';
+
+          // Update pointer position: -50 cents = 0%, 0 = 50%, +50 cents = 100%
+          const clampCents = Math.max(-50, Math.min(50, cents));
+          centsPointer.style.left = (50 + clampCents) + '%';
+
+          recordedFrames.push({ time: now, midi: roundedMidi, exactMidi, freq, rms });
+        } else {
+          centsPointer.style.left = '50%';
+          recordedFrames.push({ time: now, midi: null, exactMidi: null, freq: 0, rms });
+        }
+
+        requestAnimationFrame(trackPitchLoop);
+      }
+
+      function drawWaveform(buf) {
+        waveCanvas.width = waveCanvas.clientWidth * window.devicePixelRatio;
+        waveCanvas.height = waveCanvas.clientHeight * window.devicePixelRatio;
+        const w = waveCanvas.width;
+        const h = waveCanvas.height;
+        waveCtx.clearRect(0, 0, w, h);
+
+        waveCtx.lineWidth = 2 * window.devicePixelRatio;
+        waveCtx.strokeStyle = '#5af0ad';
+        waveCtx.beginPath();
+
+        const sliceW = w / buf.length;
+        let x = 0;
+        for (let i = 0; i < buf.length; i++) {
+          const v = buf[i];
+          const y = (v + 1) / 2 * h;
+          if (i === 0) waveCtx.moveTo(x, y);
+          else waveCtx.lineTo(x, y);
+          x += sliceW;
+        }
+        waveCtx.stroke();
+      }
+
+      // 2. Note Segmentation & Quantization
+      function processFramesToNotes() {
+        if (recordedFrames.length === 0) {
+          notesPreview.textContent = '音声が検出されませんでした。もう一度試してください。';
+          return;
+        }
+
+        const scaleMode = scaleSnap.value;
+        const notes = [];
+        let curNote = null;
+        const minDuration = 0.08; // Min note length 80ms to avoid transients
+
+        for (let i = 0; i < recordedFrames.length; i++) {
+          const frame = recordedFrames[i];
+          if (frame.midi !== null) {
+            let snappedMidi = snapToScale(frame.midi, scaleMode);
+
+            if (curNote && curNote.pitch === snappedMidi) {
+              curNote.duration = frame.time - curNote.start;
+            } else {
+              if (curNote && curNote.duration >= minDuration) {
+                notes.push(curNote);
+              }
+              curNote = {
+                start: frame.time,
+                duration: 0.05,
+                pitch: snappedMidi,
+                noteName: midiToNoteName(snappedMidi),
+                vel: 95
+              };
+            }
+          } else {
+            if (curNote) {
+              if (curNote.duration >= minDuration) {
+                notes.push(curNote);
+              }
+              curNote = null;
+            }
+          }
+        }
+        if (curNote && curNote.duration >= minDuration) {
+          notes.push(curNote);
+        }
+
+        detectedNotes = notes;
+        renderPianoRoll();
+
+        statsBadge.textContent = detectedNotes.length + ' ノート検出';
+        if (detectedNotes.length > 0) {
+          btnPlay.disabled = false;
+          btnExport.disabled = false;
+          notesPreview.textContent = detectedNotes.map(n => `${n.noteName} (${n.duration.toFixed(2)}s)`).join('  ');
+        } else {
+          notesPreview.textContent = '有効なメロディが検出されませんでした。もう少しはっきりと歌ってみてください。';
+        }
+      }
+
+      function snapToScale(pitch, mode) {
+        const semitone = ((pitch % 12) + 12) % 12;
+        // Major: C(0), D(2), E(4), F(5), G(7), A(9), B(11)
+        const majorScale = [0, 2, 4, 5, 7, 9, 11];
+        // Minor: A(9), B(11), C(0), D(2), E(4), F(5), G(7)
+        const minorScale = [0, 2, 3, 5, 7, 8, 10];
+        // Minor Pentatonic: A(9), C(0), D(2), E(4), G(7)
+        const pentaScale = [0, 3, 5, 7, 10];
+
+        let allowed = null;
+        if (mode === 'major') allowed = majorScale;
+        else if (mode === 'minor') allowed = minorScale;
+        else if (mode === 'pentatonic') allowed = pentaScale;
+
+        if (!allowed) return pitch;
+
+        if (allowed.includes(semitone)) return pitch;
+
+        // Snap to nearest semitone in scale
+        let bestDiff = 999;
+        let bestSnap = pitch;
+        for (let s of allowed) {
+          let diff = Math.abs(semitone - s);
+          if (diff < bestDiff) {
+            bestDiff = diff;
+            bestSnap = pitch - semitone + s;
+          }
+        }
+        return bestSnap;
+      }
+
+      // 3. Render Piano Roll
+      function renderPianoRoll(currentPlayheadSec = null) {
+        const wrap = document.getElementById('pianoroll-wrap');
+        const totalDuration = recordedFrames.length > 0 ? recordedFrames[recordedFrames.length - 1].time : 4.0;
+        const width = Math.max(wrap.clientWidth, totalDuration * 80);
+        pianoCanvas.width = width * window.devicePixelRatio;
+        pianoCanvas.height = 180 * window.devicePixelRatio;
+        pianoCanvas.style.width = width + 'px';
+        pianoCanvas.style.height = '180px';
+
+        const ctx = pianoCtx;
+        ctx.save();
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+        const w = width;
+        const h = 180;
+        ctx.fillStyle = '#15161a';
+        ctx.fillRect(0, 0, w, h);
+
+        if (detectedNotes.length === 0) {
+          ctx.fillStyle = '#475569';
+          ctx.font = '13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('録音完了後にここにピアノロールが表示されます', w / 2, h / 2);
+          ctx.restore();
+          return;
+        }
+
+        // Determine pitch range
+        const pitches = detectedNotes.map(n => n.pitch);
+        const minPitch = Math.min(...pitches) - 2;
+        const maxPitch = Math.max(...pitches) + 2;
+        const pitchRange = Math.max(12, maxPitch - minPitch + 1);
+        const noteHeight = h / pitchRange;
+
+        // Background horizontal pitch grid lines
+        for (let p = minPitch; p <= maxPitch; p++) {
+          const y = h - (p - minPitch + 1) * noteHeight;
+          const isBlack = [1, 3, 6, 8, 10].includes(((p % 12) + 12) % 12);
+          ctx.fillStyle = isBlack ? '#1a1c22' : '#22252e';
+          ctx.fillRect(0, y, w, noteHeight - 1);
+
+          // Note label on left
+          if (p % 12 === 0 || p === minPitch || p === maxPitch) {
+            ctx.fillStyle = '#64748b';
+            ctx.font = '9px monospace';
+            ctx.fillText(midiToNoteName(p), 4, y + noteHeight - 3);
+          }
+        }
+
+        // Draw note blocks
+        const pxPerSec = (w - 20) / Math.max(0.1, totalDuration);
+        detectedNotes.forEach(note => {
+          const x = 20 + note.start * pxPerSec;
+          const noteW = Math.max(4, note.duration * pxPerSec);
+          const y = h - (note.pitch - minPitch + 1) * noteHeight;
+
+          // Note gradient block
+          const grad = ctx.createLinearGradient(x, y, x + noteW, y);
+          grad.addColorStop(0, '#3a86ff');
+          grad.addColorStop(1, '#60a5fa');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.roundRect(x, y + 1, noteW - 2, noteHeight - 3, 3);
+          ctx.fill();
+
+          // Note Name inside block
+          if (noteW > 25) {
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 10px monospace';
+            ctx.fillText(note.noteName, x + 4, y + noteHeight - 5);
+          }
+        });
+
+        // Draw Playhead line if playing
+        if (currentPlayheadSec !== null) {
+          const playheadX = 20 + currentPlayheadSec * pxPerSec;
+          ctx.strokeStyle = '#f77f00';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(playheadX, 0);
+          ctx.lineTo(playheadX, h);
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      // 4. Synthesizer Playback
+      function playSynthesizer() {
+        if (detectedNotes.length === 0 || isPlaying) return;
+        initAudio();
+        isPlaying = true;
+        btnPlay.classList.add('playing');
+        playText.textContent = '停止 (STOP)';
+
+        const soundType = synthSound.value;
+        const now = audioCtx.currentTime;
+        let maxEndTime = 0;
+
+        detectedNotes.forEach(n => {
+          const noteStart = now + n.start;
+          const noteEnd = noteStart + n.duration;
+          if (n.start + n.duration > maxEndTime) maxEndTime = n.start + n.duration;
+
+          triggerSynthNote(n.pitch, noteStart, n.duration, soundType);
+        });
+
+        // Playhead animation
+        const startTimestamp = performance.now();
+        function playheadAnim() {
+          if (!isPlaying) return;
+          const elapsed = (performance.now() - startTimestamp) / 1000;
+          renderPianoRoll(elapsed);
+          if (elapsed < maxEndTime) {
+            animId = requestAnimationFrame(playheadAnim);
+          } else {
+            stopSynthesizer();
+          }
+        }
+        animId = requestAnimationFrame(playheadAnim);
+      }
+
+      function stopSynthesizer() {
+        isPlaying = false;
+        cancelAnimationFrame(animId);
+        btnPlay.classList.remove('playing');
+        playText.textContent = 'シンセで再生';
+        renderPianoRoll(null);
+      }
+
+      function triggerSynthNote(pitch, time, duration, type) {
+        const freq = midiToFreq(pitch);
+        const ctx = audioCtx;
+
+        if (type === 'analog') {
+          // Warm Moog-style Sawtooth with 24dB LPF envelope
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          osc1.type = 'sawtooth';
+          osc2.type = 'sawtooth';
+          osc1.frequency.setValueAtTime(freq, time);
+          osc2.frequency.setValueAtTime(freq * 1.004, time); // slight chorus detune
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(freq * 1.5, time);
+          filter.frequency.exponentialRampToValueAtTime(freq * 5.0, time + 0.05);
+          filter.frequency.exponentialRampToValueAtTime(freq * 2.0, time + duration);
+
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(0, time);
+          gain.gain.linearRampToValueAtTime(0.25, time + 0.02);
+          gain.gain.setValueAtTime(0.2, time + Math.max(0.03, duration - 0.04));
+          gain.gain.exponentialRampToValueAtTime(0.001, time + duration + 0.08);
+
+          osc1.connect(filter);
+          osc2.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc1.start(time);
+          osc2.start(time);
+          osc1.stop(time + duration + 0.1);
+          osc2.stop(time + duration + 0.1);
+
+        } else if (type === 'rhodes') {
+          // Electric Piano: Sine fundamental + bright tines
+          const osc = ctx.createOscillator();
+          const tine = ctx.createOscillator();
+          osc.type = 'sine';
+          tine.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, time);
+          tine.frequency.setValueAtTime(freq * 4.0, time);
+
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(0.3, time);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + duration + 0.2);
+
+          osc.connect(gain);
+          tine.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(time);
+          tine.start(time);
+          osc.stop(time + duration + 0.25);
+          tine.stop(time + duration + 0.25);
+
+        } else if (type === 'brass') {
+          // 80s Synth Brass (Pulse + Saw)
+          const osc = ctx.createOscillator();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, time);
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(freq * 2.0, time);
+          filter.frequency.exponentialRampToValueAtTime(freq * 6.0, time + 0.06);
+
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(0, time);
+          gain.gain.linearRampToValueAtTime(0.25, time + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + duration + 0.1);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(time);
+          osc.stop(time + duration + 0.15);
+
+        } else {
+          // Pure Flute / Whistle Sine with soft vibrato
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, time);
+
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(0, time);
+          gain.gain.linearRampToValueAtTime(0.28, time + 0.05);
+          gain.gain.setValueAtTime(0.25, time + Math.max(0.06, duration - 0.05));
+          gain.gain.exponentialRampToValueAtTime(0.001, time + duration + 0.1);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(time);
+          osc.stop(time + duration + 0.15);
+        }
+      }
+
+      // 5. Standard MIDI File (.mid) Generator
+      function writeVLQ(val) {
+        let res = [];
+        res.push(val & 0x7F);
+        val >>= 7;
+        while (val > 0) {
+          res.push((val & 0x7F) | 0x80);
+          val >>= 7;
+        }
+        res.reverse();
+        return res;
+      }
+
+      function buildMidiFile(notes, bpm = 120, division = 480) {
+        const secPerTick = 60.0 / (bpm * division);
+        const rawEvents = [];
+
+        notes.forEach(n => {
+          const startTick = Math.round(n.start / secPerTick);
+          const endTick = Math.round((n.start + n.duration) / secPerTick);
+          rawEvents.push({ tick: startTick, type: 0x90, pitch: n.pitch, vel: n.vel || 90 });
+          rawEvents.push({ tick: endTick, type: 0x80, pitch: n.pitch, vel: 0 });
+        });
+
+        // Sort events: Note-off before Note-on at the same tick
+        rawEvents.sort((a, b) => a.tick === b.tick ? (a.type === 0x80 ? -1 : 1) : a.tick - b.tick);
+
+        let trackBytes = [];
+
+        // Meta Event: Track Name "AOI HUM-60 Melody"
+        const trackName = "AOI HUM-60 Melody";
+        trackBytes.push(0x00, 0xFF, 0x03, trackName.length);
+        for (let i = 0; i < trackName.length; i++) trackBytes.push(trackName.charCodeAt(i));
+
+        // Meta Event: Set Tempo (120 BPM = 500,000 µs/qn)
+        const mpqn = Math.round(60000000 / bpm);
+        trackBytes.push(0x00, 0xFF, 0x51, 0x03, (mpqn >> 16) & 0xFF, (mpqn >> 8) & 0xFF, mpqn & 0xFF);
+
+        let lastTick = 0;
+        rawEvents.forEach(ev => {
+          const delta = ev.tick - lastTick;
+          lastTick = ev.tick;
+          trackBytes.push(...writeVLQ(delta));
+          trackBytes.push(ev.type, ev.pitch, ev.vel);
+        });
+
+        // End of Track
+        trackBytes.push(0x00, 0xFF, 0x2F, 0x00);
+
+        // Header Chunk (Format 0, 1 Track, 480 division)
+        const header = [
+          0x4D, 0x54, 0x68, 0x64, // 'MThd'
+          0x00, 0x00, 0x00, 0x06, // len 6
+          0x00, 0x00,             // format 0
+          0x00, 0x01,             // 1 track
+          (division >> 8) & 0xFF, division & 0xFF
+        ];
+
+        // Track Chunk
+        const trackLen = trackBytes.length;
+        const trackHeader = [
+          0x4D, 0x54, 0x72, 0x6B, // 'MTrk'
+          (trackLen >> 24) & 0xFF,
+          (trackLen >> 16) & 0xFF,
+          (trackLen >> 8) & 0xFF,
+          trackLen & 0xFF
+        ];
+
+        const fullMidi = new Uint8Array([...header, ...trackHeader, ...trackBytes]);
+        return fullMidi;
+      }
+
+      function downloadMidi() {
+        if (detectedNotes.length === 0) return;
+        const midiBytes = buildMidiFile(detectedNotes, 120, 480);
+        const blob = new Blob([midiBytes], { type: 'audio/midi' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'AOI-HUM60-Melody.mid';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Event Listeners
+      btnRec.onclick = () => {
+        if (isRecording) stopRecording();
+        else startRecording();
+      };
+
+      btnPlay.onclick = () => {
+        if (isPlaying) stopSynthesizer();
+        else playSynthesizer();
+      };
+
+      btnExport.onclick = () => downloadMidi();
+
+      scaleSnap.onchange = () => {
+        if (recordedFrames.length > 0) processFramesToNotes();
+      };
+
+      window.addEventListener('resize', () => {
+        renderPianoRoll(null);
+      });
+
+      renderPianoRoll(null);
+    })();
+  </script>
+</body>
+</html>
