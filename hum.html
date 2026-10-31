@@ -746,10 +746,10 @@
       <div class="setting-box">
         <label class="setting-label">BPMグリッド揃え (クオンタイズ)</label>
         <select class="setting-select" id="grid-quantize">
-          <option value="none">オフ (自然な鼻歌タイミング)</option>
           <option value="8th" selected>8分音符グリッド (推奨)</option>
           <option value="16th">16分音符グリッド (細かめ)</option>
           <option value="4th">4分音符グリッド (ゆったり)</option>
+          <option value="none">オフ (自然な鼻歌タイミング)</option>
         </select>
       </div>
 
@@ -776,7 +776,7 @@
         <canvas id="pianoroll-canvas" width="600" height="180"></canvas>
       </div>
 
-      <div class="notes-list-preview" id="notes-preview">録音ボタンを押すと4カウント後に録音が始まります。テンポに合わせて歌ってみてください！</div>
+      <div class="notes-list-preview" id="notes-preview">録音ボタンを押すとマイクが即座に起動し、4カウント後にゼロラグで録音開始します！</div>
     </section>
 
     <!-- Export Area -->
@@ -855,23 +855,35 @@
       const pianoCanvas = document.getElementById('pianoroll-canvas');
       const pianoCtx = pianoCanvas.getContext('2d');
 
-      // 1. Metronome & Click Audio
-      function playClickSound(isDownbeat) {
+      // 1. High Precision Web Audio Click Synthesizer
+      function scheduleClickSound(time, isDownbeat) {
         if (!clickAudioChk.checked || !audioCtx) return;
         try {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(isDownbeat ? 1200 : 800, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+          osc.frequency.setValueAtTime(isDownbeat ? 1200 : 800, time);
+          gain.gain.setValueAtTime(0.3, time);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          osc.start();
-          osc.stop(audioCtx.currentTime + 0.06);
+          osc.start(time);
+          osc.stop(time + 0.05);
         } catch (e) {}
       }
 
+      function flashDot(dotIdx, isDownbeat) {
+        metroDots.forEach((d, idx) => {
+          if (idx === dotIdx) {
+            d.classList.add(isDownbeat ? 'flash-down' : 'flash-sub');
+            setTimeout(() => d.classList.remove('flash-down', 'flash-sub'), 120);
+          } else {
+            d.classList.remove('flash-down', 'flash-sub');
+          }
+        });
+      }
+
+      // Metronome Loop for Recording & Playback
       function startMetronome() {
         stopMetronome();
         currentMetroBeat = 0;
@@ -892,17 +904,9 @@
         const beatInterval = (60.0 / state.bpm) * 1000;
         const isDown = (currentMetroBeat === 0);
 
-        metroDots.forEach((dot, idx) => {
-          if (idx === currentMetroBeat) {
-            dot.classList.add(isDown ? 'flash-down' : 'flash-sub');
-            setTimeout(() => dot.classList.remove('flash-down', 'flash-sub'), 120);
-          } else {
-            dot.classList.remove('flash-down', 'flash-sub');
-          }
-        });
-
+        flashDot(currentMetroBeat, isDown);
         barBeatDisplay.textContent = `BAR ${currentBar} : ${currentMetroBeat + 1}`;
-        playClickSound(isDown);
+        scheduleClickSound(audioCtx ? audioCtx.currentTime : 0, isDown);
 
         currentMetroBeat++;
         if (currentMetroBeat >= 4) {
@@ -950,7 +954,7 @@
         if (recordedFrames.length > 0) processFramesToNotes();
       };
 
-      // 2. Microphone & Pitch Tracker
+      // 2. Microphone & ZERO-LAG Count-in Engine
       async function ensureAudioContext() {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!audioCtx) {
@@ -968,100 +972,115 @@
           return;
         }
 
-        await ensureAudioContext();
-
-        // Check if 4-beat Count-in is enabled
-        const countInBeats = parseInt(countInSelect.value, 10);
-        if (countInBeats > 0) {
-          runCountIn(countInBeats, () => startRecording());
-        } else {
-          startRecording();
-        }
-      }
-
-      function runCountIn(beats, onComplete) {
-        isCountingIn = true;
-        countInBanner.style.display = 'flex';
-        let count = beats;
-        const beatInterval = (60.0 / state.bpm) * 1000;
-
-        function step() {
-          if (!isCountingIn) return;
-          countInNum.textContent = count;
-          playClickSound(count === beats);
-
-          // Flash LED
-          const dotIdx = (beats - count) % 4;
-          metroDots.forEach((dot, idx) => {
-            if (idx === dotIdx) {
-              dot.classList.add(dotIdx === 0 ? 'flash-down' : 'flash-sub');
-              setTimeout(() => dot.classList.remove('flash-down', 'flash-sub'), 140);
-            }
-          });
-
-          count--;
-          if (count > 0) {
-            setTimeout(step, beatInterval);
-          } else {
-            setTimeout(() => {
-              countInBanner.style.display = 'none';
-              isCountingIn = false;
-              onComplete();
-            }, beatInterval);
-          }
-        }
-        step();
-      }
-
-      async function startRecording() {
-        micStatus.textContent = 'MIC: 接続中...';
+        micStatus.textContent = 'MIC: マイク接続中...';
         micStatus.style.color = '#ffb703';
 
+        // 1. OPEN MIC STREAM IMMEDIATELY UPON TAP!
         try {
           await ensureAudioContext();
-          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          if (!micStream) {
+            micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          }
         } catch (err) {
-          micStatus.textContent = 'MIC: エラー';
-          micStatus.style.color = '#ef4444';
-          alert('マイクへのアクセスが許可されませんでした。Safariの「マイクの許可」を確認してください。');
+          micStatus.textContent = 'MIC: 権限エラー';
+          alert('マイクへのアクセスが許可されませんでした。Safariの設定を確認してください。');
           return;
         }
 
+        // Setup audio graph
         try {
-          micSource = audioCtx.createMediaStreamSource(micStream);
-          inputGain = audioCtx.createGain();
-          inputGain.gain.value = 2.5;
+          if (!micSource) {
+            micSource = audioCtx.createMediaStreamSource(micStream);
+            inputGain = audioCtx.createGain();
+            inputGain.gain.value = 2.5;
 
-          analyser = audioCtx.createAnalyser();
-          analyser.fftSize = 2048;
-          analyser.smoothingTimeConstant = 0.05;
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 2048;
+            analyser.smoothingTimeConstant = 0.05;
 
-          silentSink = audioCtx.createGain();
-          silentSink.gain.value = 0.0;
+            silentSink = audioCtx.createGain();
+            silentSink.gain.value = 0.0;
 
-          micSource.connect(inputGain);
-          inputGain.connect(analyser);
-          analyser.connect(silentSink);
-          silentSink.connect(audioCtx.destination);
+            micSource.connect(inputGain);
+            inputGain.connect(analyser);
+            analyser.connect(silentSink);
+            silentSink.connect(audioCtx.destination);
+          }
         } catch (err) {
-          micStatus.textContent = 'MIC: 接続エラー';
-          return;
+          console.error('Audio node setup err:', err);
         }
 
-        recordedFrames = [];
-        detectedNotes = [];
-        recordStartTime = audioCtx.currentTime;
-        isRecording = true;
-
-        btnRec.classList.add('recording');
-        recText.textContent = '録音停止 (STOP)';
-        micStatus.textContent = 'MIC: 録音中（テンポに合わせて歌ってください）';
-        micStatus.style.color = '#f77f00';
-        btnPlay.disabled = true;
-        btnExport.disabled = true;
-
-        startMetronome();
+        // 2. Mic is now active and warm!
+        // Start waveform and level meter monitoring immediately
         trackPitchLoop();
+
+        const countInBeats = parseInt(countInSelect.value, 10);
+        const beatSec = 60.0 / state.bpm;
+
+        if (countInBeats > 0) {
+          isCountingIn = true;
+          countInBanner.style.display = 'flex';
+          btnRec.classList.add('recording');
+          recText.textContent = 'カウントイン中... (STOP)';
+          micStatus.textContent = `MIC: ${countInBeats}カウント後に録音開始`;
+          micStatus.style.color = '#ffb703';
+
+          const startAudioTime = audioCtx.currentTime;
+          const recStartTime = startAudioTime + countInBeats * beatSec;
+
+          // Schedule exact audio clicks and visual numbers
+          for (let b = 0; b < countInBeats; b++) {
+            const beatTime = startAudioTime + b * beatSec;
+            const countNum = b + 1; // 1, 2, 3, 4
+            
+            scheduleClickSound(beatTime, b === 0);
+
+            const delayMs = Math.max(0, (beatTime - audioCtx.currentTime) * 1000);
+            setTimeout(() => {
+              if (!isCountingIn) return;
+              countInNum.textContent = countNum;
+              flashDot(b % 4, b === 0);
+            }, delayMs);
+          }
+
+          // Exact downbeat trigger: ZERO HARDWARE DELAY!
+          const recStartDelayMs = Math.max(0, (recStartTime - audioCtx.currentTime) * 1000);
+          setTimeout(() => {
+            if (!isCountingIn) return;
+            isCountingIn = false;
+            countInBanner.style.display = 'none';
+
+            // ZERO-LAG RECORDING COMMENCES!
+            recordedFrames = [];
+            detectedNotes = [];
+            recordStartTime = recStartTime;
+            isRecording = true;
+
+            recText.textContent = '録音停止 (STOP)';
+            micStatus.textContent = 'MIC: 録音中（テンポに合わせて歌ってください）';
+            micStatus.style.color = '#f77f00';
+            btnPlay.disabled = true;
+            btnExport.disabled = true;
+
+            startMetronome();
+          }, recStartDelayMs);
+
+        } else {
+          // Zero count-in, immediate recording
+          recordedFrames = [];
+          detectedNotes = [];
+          recordStartTime = audioCtx.currentTime;
+          isRecording = true;
+
+          btnRec.classList.add('recording');
+          recText.textContent = '録音停止 (STOP)';
+          micStatus.textContent = 'MIC: 録音中（声を出してください）';
+          micStatus.style.color = '#f77f00';
+          btnPlay.disabled = true;
+          btnExport.disabled = true;
+
+          startMetronome();
+        }
       }
 
       function stopRecording() {
@@ -1073,9 +1092,11 @@
         if (micStream) {
           micStream.getTracks().forEach(t => t.stop());
           micStream = null;
+          micSource = null;
         }
         if (silentSink) {
           try { silentSink.disconnect(); } catch (e) {}
+          silentSink = null;
         }
 
         btnRec.classList.remove('recording');
@@ -1152,19 +1173,17 @@
       }
 
       function trackPitchLoop() {
-        if (!isRecording) return;
+        if (!isRecording && !isCountingIn) return;
 
         const buf = new Float32Array(analyser.fftSize);
         analyser.getFloatTimeDomainData(buf);
 
         const { freq, rms } = detectPitch(buf, audioCtx.sampleRate);
-        const now = audioCtx.currentTime - recordStartTime;
+        drawWaveform(buf);
 
         const lvlPct = Math.min(100, Math.round(rms * 400));
         levelBar.style.width = lvlPct + '%';
         levelText.textContent = lvlPct + '%';
-
-        drawWaveform(buf);
 
         if (freq > 0) {
           const exactMidi = freqToMidi(freq);
@@ -1179,10 +1198,16 @@
           const clampCents = Math.max(-50, Math.min(50, cents));
           centsPointer.style.left = (50 + clampCents) + '%';
 
-          recordedFrames.push({ time: now, midi: roundedMidi, exactMidi, freq, rms });
+          if (isRecording) {
+            const now = audioCtx.currentTime - recordStartTime;
+            recordedFrames.push({ time: Math.max(0, now), midi: roundedMidi, exactMidi, freq, rms });
+          }
         } else {
           centsPointer.style.left = '50%';
-          recordedFrames.push({ time: now, midi: null, exactMidi: null, freq: 0, rms });
+          if (isRecording) {
+            const now = audioCtx.currentTime - recordStartTime;
+            recordedFrames.push({ time: Math.max(0, now), midi: null, exactMidi: null, freq: 0, rms });
+          }
         }
 
         requestAnimationFrame(trackPitchLoop);
@@ -1260,11 +1285,10 @@
           return;
         }
 
-        // Normalize notes so first note starts at 0.0s
-        const firstStart = rawNotes[0].start;
+        // Normalize notes relative to recording start
         let notes = rawNotes.map(n => ({
           ...n,
-          start: Math.max(0, n.start - firstStart)
+          start: Math.max(0, n.start)
         }));
 
         // BPM Grid Quantization
@@ -1435,7 +1459,7 @@
         ctx.restore();
       }
 
-      // 5. High-compatibility Audio Synthesis via PCM WAV Blob
+      // 5. Sound Playback via PCM WAV Blob
       function generateWavBlob(notes, soundType, sampleRate = 44100) {
         if (!notes || notes.length === 0) return null;
         const totalDur = Math.max(...notes.map(n => n.start + n.duration)) + 0.3;
