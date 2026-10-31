@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>AOI LOB60 - Sampler Workstation</title>
-    <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,28 +16,30 @@
   <div class="lob-chassis">
     <!-- Header: Branding, LCD Metronome, Transport -->
     <header class="lob-header">
-      <div class="brand-group">
-        <div class="brand-aoi">AOI</div>
-        <div class="model-lob60">LOB60</div>
-        <div class="brand-sub">SAMPLER WORKSTATION</div>
+      <!-- Top Row: Brand & LCD Metronome -->
+      <div class="header-top">
+        <div class="brand-group">
+          <div class="brand-aoi">AOI</div>
+          <div class="model-lob60">LOB60</div>
+          <div class="brand-sub">SAMPLER WORKSTATION</div>
+        </div>
+
+        <div class="lcd-box">
+          <div class="lcd-top-row">
+            <span class="lcd-bpm-label">BPM:</span>
+            <input type="number" id="bpm-input" value="92" min="50" max="220" class="lcd-bpm-input">
+            <span class="lcd-time">4/4</span>
+          </div>
+          <div class="led-metronome">
+            <div class="metro-led" id="led-1">1</div>
+            <div class="metro-led" id="led-2">2</div>
+            <div class="metro-led" id="led-3">3</div>
+            <div class="metro-led" id="led-4">4</div>
+          </div>
+        </div>
       </div>
 
-      <!-- LCD with BPM & Visual LED Metronome -->
-      <div class="lcd-box">
-        <div class="lcd-top-row">
-          <span class="lcd-bpm-label">BPM:</span>
-          <input type="number" id="bpm-input" value="92" min="50" max="220" class="lcd-bpm-input">
-          <span class="lcd-time">4/4</span>
-        </div>
-        <div class="led-metronome">
-          <div class="metro-led" id="led-1">1</div>
-          <div class="metro-led" id="led-2">2</div>
-          <div class="metro-led" id="led-3">3</div>
-          <div class="metro-led" id="led-4">4</div>
-        </div>
-      </div>
-
-      <!-- Transport: REC / ERASE, PLAY, STOP -->
+      <!-- Transport Row: REC/ERASE, PLAY, STOP (Full width, responsive) -->
       <div class="transport-group">
         <button id="btn-rec-erase" class="btn-transport btn-rec" title="録音 / 消去">
           <span id="rec-dot" class="rec-dot">●</span>
@@ -85,7 +87,7 @@
     <section class="pads-section">
       <div class="pads-header">
         <span class="pads-title">16 DRUM PADS</span>
-        <span id="erase-mode-hint" class="erase-hint">録音中: ERASEボタンでパッド消去可能</span>
+        <span id="erase-mode-hint" class="erase-hint">録音中: ERASEボタンで消去</span>
       </div>
       <div id="pads-grid" class="pads-grid">
         <!-- 4x4 Matrix of 16 MPC Pads rendered by app.js -->

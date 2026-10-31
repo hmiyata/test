@@ -1,4 +1,4 @@
-/* AOI LOB60 Sampler Workstation with Erase & 16 Pads */
+/* AOI LOB60 Sampler Workstation Stylesheet - Fully Mobile Responsive */
 
 :root {
   --chassis-bg: #ece7db;
@@ -19,6 +19,7 @@
   padding: 0;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -29,7 +30,9 @@ body {
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  padding: 8px;
+  padding: 6px;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* Chassis */
@@ -37,23 +40,31 @@ body {
   background: linear-gradient(180deg, #f4efe4 0%, #e8e2d4 100%);
   border: 3px solid var(--chassis-border);
   border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 2px 2px #fff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4), inset 0 2px 2px #fff;
   width: 100%;
-  max-width: 540px;
-  padding: 12px;
+  max-width: 500px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: hidden;
 }
 
 /* Header */
 .lob-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
   padding-bottom: 6px;
   border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .brand-group {
@@ -63,7 +74,7 @@ body {
 
 .brand-aoi {
   font-family: 'Arial Black', Impact, sans-serif;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1;
   color: var(--accent-blue);
   letter-spacing: 2px;
@@ -115,10 +126,10 @@ body {
   background: transparent;
   border: none;
   font-family: monospace;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 900;
   color: var(--lcd-text);
-  width: 40px;
+  width: 42px;
   text-align: center;
 }
 
@@ -152,24 +163,28 @@ body {
   box-shadow: 0 0 8px #00ff66;
 }
 
-/* Transport */
+/* Transport Row (Full width, 3 equal buttons) */
 .transport-group {
   display: flex;
-  gap: 5px;
+  width: 100%;
+  gap: 6px;
 }
 
 .btn-transport {
+  flex: 1;
+  min-width: 0;
   background: #fdfdfd;
   border: 2px solid #b8b2a2;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 11px;
+  border-radius: 8px;
+  padding: 10px 4px;
+  font-size: 13px;
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0,0,0,0.15);
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   color: #333;
   transition: all 0.08s;
 }
@@ -178,7 +193,6 @@ body {
   transform: translateY(2px);
 }
 
-/* Rec Button / Erase Mode */
 .btn-rec {
   color: var(--accent-red);
 }
@@ -187,7 +201,6 @@ body {
   color: var(--accent-red);
 }
 
-/* When Recording is active, button turns ORANGE ERASE */
 .btn-rec.erase-mode {
   background: var(--accent-orange) !important;
   color: #fff !important;
@@ -226,6 +239,7 @@ body {
   border: 2px solid var(--panel-border);
   border-radius: 8px;
   padding: 6px 8px;
+  width: 100%;
 }
 
 .section-header {
@@ -233,6 +247,8 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4px;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .section-title {
@@ -261,7 +277,7 @@ body {
   border-radius: 12px;
   font-size: 9px;
   font-weight: bold;
-  padding: 2px 6px;
+  padding: 2px 8px;
   cursor: pointer;
   color: #333;
 }
@@ -269,7 +285,7 @@ body {
 /* 1. Song Arranger (Single Horizontal Bar) */
 .bars-timeline {
   display: flex;
-  gap: 4px;
+  gap: 5px;
   background: #e2ddd0;
   border: 1px solid #bbb5a4;
   border-radius: 6px;
@@ -277,6 +293,7 @@ body {
   overflow-x: auto;
   min-height: 38px;
   align-items: center;
+  width: 100%;
 }
 
 .bar-pill {
@@ -302,15 +319,6 @@ body {
   transform: scale(1.05);
 }
 
-.bar-pill.dragging {
-  opacity: 0.4;
-}
-
-.bar-pill.drag-over {
-  border-color: #1e88e5;
-  transform: translateY(-2px);
-}
-
 .bar-p-0 { background: #3a86ff; }
 .bar-p-1 { background: #7cb518; }
 .bar-p-2 { background: #f4a261; color: #111; }
@@ -334,6 +342,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  width: 100%;
 }
 
 .track-row {
@@ -420,6 +429,7 @@ body {
   border: 2px solid var(--panel-border);
   border-radius: 8px;
   padding: 6px 8px;
+  width: 100%;
 }
 
 .pads-header {
@@ -446,6 +456,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 5px;
+  width: 100%;
 }
 
 .mpc-pad {
