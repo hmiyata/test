@@ -1,0 +1,496 @@
+/* AOI LOB60 Sampler Workstation with Erase & 16 Pads */
+
+:root {
+  --chassis-bg: #ece7db;
+  --chassis-border: #c8c2b0;
+  --panel-bg: #f9f6ef;
+  --panel-border: #dcd6c5;
+  --lcd-bg: #c6d68b;
+  --lcd-text: #1d2b0e;
+  --accent-blue: #1e88e5;
+  --accent-red: #d90429;
+  --accent-orange: #f77f00;
+  --accent-green: #2b9348;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  background: var(--pickle-surface-page, #16171a);
+  color: #2b2b2b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 8px;
+}
+
+/* Chassis */
+.lob-chassis {
+  background: linear-gradient(180deg, #f4efe4 0%, #e8e2d4 100%);
+  border: 3px solid var(--chassis-border);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 2px 2px #fff;
+  width: 100%;
+  max-width: 540px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Header */
+.lob-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+}
+
+.brand-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-aoi {
+  font-family: 'Arial Black', Impact, sans-serif;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent-blue);
+  letter-spacing: 2px;
+}
+
+.model-lob60 {
+  font-family: 'Arial Black', sans-serif;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.1;
+  letter-spacing: 1px;
+}
+
+.brand-sub {
+  font-size: 8px;
+  font-weight: 800;
+  color: #777;
+  letter-spacing: 0.8px;
+  margin-top: 1px;
+}
+
+/* LCD Display & Visual Metronome */
+.lcd-box {
+  background: var(--lcd-bg);
+  border: 2px solid #8e9e62;
+  border-radius: 6px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
+  padding: 4px 8px;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--lcd-text);
+  font-weight: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.lcd-top-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lcd-bpm-label {
+  font-size: 11px;
+}
+
+.lcd-bpm-input {
+  background: transparent;
+  border: none;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--lcd-text);
+  width: 40px;
+  text-align: center;
+}
+
+.lcd-time {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* 4-Beat LED Metronome */
+.led-metronome {
+  display: flex;
+  gap: 5px;
+}
+
+.metro-led {
+  width: 16px;
+  height: 7px;
+  background: #6a7748;
+  border-radius: 4px;
+  font-size: 6px;
+  color: #4a5433;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.05s, box-shadow 0.05s;
+}
+
+.metro-led.flash {
+  background: #00ff66 !important;
+  color: #000;
+  box-shadow: 0 0 8px #00ff66;
+}
+
+/* Transport */
+.transport-group {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-transport {
+  background: #fdfdfd;
+  border: 2px solid #b8b2a2;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #333;
+  transition: all 0.08s;
+}
+
+.btn-transport:active {
+  transform: translateY(2px);
+}
+
+/* Rec Button / Erase Mode */
+.btn-rec {
+  color: var(--accent-red);
+}
+
+.rec-dot {
+  color: var(--accent-red);
+}
+
+/* When Recording is active, button turns ORANGE ERASE */
+.btn-rec.erase-mode {
+  background: var(--accent-orange) !important;
+  color: #fff !important;
+  border-color: #d66800 !important;
+  box-shadow: 0 0 10px rgba(247, 127, 0, 0.8) !important;
+}
+
+.btn-rec.erase-mode .rec-dot {
+  color: #fff;
+  animation: blink-dot 0.6s infinite alternate;
+}
+
+@keyframes blink-dot {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+.btn-play {
+  color: var(--accent-green);
+}
+
+.btn-play.active {
+  background: var(--accent-green);
+  color: #fff;
+  border-color: #1b6330;
+  box-shadow: 0 0 8px rgba(43, 147, 72, 0.6);
+}
+
+.btn-stop {
+  color: #333;
+}
+
+/* Section Box */
+.section-box {
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.section-title {
+  font-size: 10px;
+  font-weight: 900;
+  color: #444;
+  letter-spacing: 0.8px;
+}
+
+.arranger-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drag-hint {
+  font-size: 8px;
+  font-weight: 800;
+  color: #888;
+  letter-spacing: 0.5px;
+}
+
+.btn-pill {
+  background: #e2dcd0;
+  border: 1px solid #aaa;
+  border-radius: 12px;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 2px 6px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* 1. Song Arranger (Single Horizontal Bar) */
+.bars-timeline {
+  display: flex;
+  gap: 4px;
+  background: #e2ddd0;
+  border: 1px solid #bbb5a4;
+  border-radius: 6px;
+  padding: 4px;
+  overflow-x: auto;
+  min-height: 38px;
+  align-items: center;
+}
+
+.bar-pill {
+  flex: 0 0 68px;
+  height: 28px;
+  background: #333;
+  color: #fff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: grab;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  transition: transform 0.1s, border-color 0.1s;
+}
+
+.bar-pill.active-playing {
+  border-color: #1dfc88;
+  box-shadow: 0 0 8px #1dfc88;
+  transform: scale(1.05);
+}
+
+.bar-pill.dragging {
+  opacity: 0.4;
+}
+
+.bar-pill.drag-over {
+  border-color: #1e88e5;
+  transform: translateY(-2px);
+}
+
+.bar-p-0 { background: #3a86ff; }
+.bar-p-1 { background: #7cb518; }
+.bar-p-2 { background: #f4a261; color: #111; }
+.bar-p-3 { background: #9d4edd; }
+.bar-p-4 { background: #e76f51; }
+.bar-p-5 { background: #2a9d8f; }
+
+/* 2. Tracks List */
+.tracks-header-row {
+  display: grid;
+  grid-template-columns: 44px 100px 1fr 34px;
+  font-size: 8px;
+  font-weight: 900;
+  color: #666;
+  padding: 2px 4px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 3px;
+}
+
+.tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.track-row {
+  display: grid;
+  grid-template-columns: 44px 100px 1fr 34px;
+  align-items: center;
+  background: #f2eee2;
+  border: 1px solid #dcd5c0;
+  border-radius: 4px;
+  padding: 2px 4px;
+  gap: 4px;
+}
+
+.track-id-badge {
+  background: #2b2b2b;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  border-radius: 3px;
+  padding: 1px 4px;
+  text-align: center;
+}
+
+.track-name-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.track-name-text {
+  font-size: 10px;
+  font-weight: 800;
+  color: #222;
+}
+
+.track-tag-text {
+  font-size: 7px;
+  font-weight: 700;
+  color: #1e88e5;
+}
+
+.track-waveform-box {
+  background: #18191c;
+  border-radius: 3px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  overflow: hidden;
+}
+
+.waveform-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.btn-arm {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+.arm-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+.btn-arm.armed .arm-dot {
+  background: var(--accent-red);
+  box-shadow: 0 0 5px var(--accent-red);
+}
+
+/* 3. 16 Drum Pads (4x4 Matrix) */
+.pads-section {
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.pads-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.pads-title {
+  font-size: 10px;
+  font-weight: 900;
+  color: #444;
+  letter-spacing: 0.8px;
+}
+
+.erase-hint {
+  font-size: 8px;
+  font-weight: 700;
+  color: #777;
+}
+
+.pads-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+.mpc-pad {
+  aspect-ratio: 1.35;
+  background: radial-gradient(circle at 35% 35%, #42444b 0%, #303135 70%);
+  border: 2px solid #1c1d1f;
+  border-radius: 6px;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  color: #eee;
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.mpc-pad:active, .mpc-pad.pressed {
+  transform: translateY(1px) scale(0.97);
+  background: #25262a;
+}
+
+.pad-led {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #555;
+}
+
+.mpc-pad.lit .pad-led {
+  background: #00ff66;
+  box-shadow: 0 0 5px #00ff66;
+}
+
+.mpc-pad.erased {
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 8px var(--accent-orange);
+}
+
+.pad-label {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}

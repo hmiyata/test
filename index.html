@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AOI LOB60 - Sampler Workstation</title>
+    <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LOB60">
+  <meta name="theme-color" content="#ece7db">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="lob-chassis">
+    <!-- Header: Branding, LCD Metronome, Transport -->
+    <header class="lob-header">
+      <div class="brand-group">
+        <div class="brand-aoi">AOI</div>
+        <div class="model-lob60">LOB60</div>
+        <div class="brand-sub">SAMPLER WORKSTATION</div>
+      </div>
+
+      <!-- LCD with BPM & Visual LED Metronome -->
+      <div class="lcd-box">
+        <div class="lcd-top-row">
+          <span class="lcd-bpm-label">BPM:</span>
+          <input type="number" id="bpm-input" value="92" min="50" max="220" class="lcd-bpm-input">
+          <span class="lcd-time">4/4</span>
+        </div>
+        <div class="led-metronome">
+          <div class="metro-led" id="led-1">1</div>
+          <div class="metro-led" id="led-2">2</div>
+          <div class="metro-led" id="led-3">3</div>
+          <div class="metro-led" id="led-4">4</div>
+        </div>
+      </div>
+
+      <!-- Transport: REC / ERASE, PLAY, STOP -->
+      <div class="transport-group">
+        <button id="btn-rec-erase" class="btn-transport btn-rec" title="録音 / 消去">
+          <span id="rec-dot" class="rec-dot">●</span>
+          <span id="rec-label">REC</span>
+        </button>
+        <button id="btn-play" class="btn-transport btn-play">
+          <span class="icon">►</span> PLAY
+        </button>
+        <button id="btn-stop" class="btn-transport btn-stop">
+          <span class="icon">■</span> STOP
+        </button>
+      </div>
+    </header>
+
+    <!-- 1. Song Arranger (SINGLE Horizontal Measure Bar) -->
+    <section class="section-box arranger-box">
+      <div class="section-header">
+        <span class="section-title">SONG ARRANGER</span>
+        <div class="arranger-tools">
+          <span class="drag-hint">DRAG TO REARRANGE</span>
+          <button id="btn-add-bar" class="btn-pill">+ 小節追加</button>
+        </div>
+      </div>
+      <!-- Single Horizontal Row of Measure Blocks -->
+      <div id="bars-timeline" class="bars-timeline">
+        <!-- Rendered by app.js: [Bar 1] [Bar 2] [Bar 3]... -->
+      </div>
+    </section>
+
+    <!-- 2. 8 Tracks List -->
+    <section class="section-box tracks-box">
+      <div class="tracks-header-row">
+        <span>TRACK</span>
+        <span>NAME / INPUT</span>
+        <span>WAVEFORM</span>
+        <span>ARM</span>
+      </div>
+      <div id="tracks-list" class="tracks-list">
+        <!-- Track 1: Drum Loop (1 Bar Overdub) -->
+        <!-- Tracks 2-8: Mic/Line Input Tracks with Waveforms -->
+      </div>
+    </section>
+
+    <!-- 3. 16 Drum Pads (Restored 4x4 Matrix) -->
+    <section class="pads-section">
+      <div class="pads-header">
+        <span class="pads-title">16 DRUM PADS</span>
+        <span id="erase-mode-hint" class="erase-hint">録音中: ERASEボタンでパッド消去可能</span>
+      </div>
+      <div id="pads-grid" class="pads-grid">
+        <!-- 4x4 Matrix of 16 MPC Pads rendered by app.js -->
+      </div>
+    </section>
+  </div>
+
+  <script src="synth.js"></script>
+  <script src="app.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
