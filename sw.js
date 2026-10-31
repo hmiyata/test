@@ -1,10 +1,10 @@
-const CACHE_NAME = 'lob60-v3';
+const CACHE_NAME = 'lob60-v4';
 const ASSETS = [
   './',
   './index.html',
-  './style.css?v=3',
-  './synth.js?v=3',
-  './app.js?v=3',
+  './style.css?v=4',
+  './synth.js?v=4',
+  './app.js?v=4',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'

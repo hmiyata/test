@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="LOB60">
   <meta name="theme-color" content="#ece7db">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <div class="lob-chassis">
@@ -95,12 +95,12 @@
     </section>
   </div>
 
-  <script src="synth.js?v=3"></script>
-  <script src="app.js?v=3"></script>
+  <script src="synth.js?v=4"></script>
+  <script src="app.js?v=4"></script>
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=3').then((reg) => {
+      navigator.serviceWorker.register('./sw.js?v=4').then((reg) => {
         reg.update();
       }).catch(() => {});
     }

@@ -30,7 +30,11 @@ body {
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  padding: 6px;
+  /* iPhone Notch / Dynamic Island Safe Area Support */
+  padding-top: max(52px, env(safe-area-inset-top, 52px));
+  padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  padding-left: max(8px, env(safe-area-inset-left, 8px));
+  padding-right: max(8px, env(safe-area-inset-right, 8px));
   overflow-x: hidden;
   width: 100%;
 }
