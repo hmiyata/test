@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AOI GB-1200 | Ground Beat Sampling Workstation</title>
+  <link rel="icon" type="image/png" href="icon-gb-192.png">
+  <link rel="apple-touch-icon" href="icon-gb-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GB-1200">
+  <meta name="theme-color" content="#3a3d40">
+
+  <!-- Soundfont-player (Free GM Instruments: Piano, Strings, Bass) -->
+  <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+
+  <!-- WebAudioFont (Free GM Drum Kit & Percussion) -->
+  <script defer src="https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js"></script>
+  <!-- GM Drum notes: 36 kick, 38 snare, 42 closed hat, 46 open hat, 39 clap, 37 rim, 54 tamb, 70 shaker, 62 conga -->
+  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12836_0_FluidR3_GM_sf2_file.js"></script>
+  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12838_27_FluidR3_GM_sf2_file.js"></script>
+  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12842_0_JCLive_sf2_file.js"></script>
+  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12846_0_JCLive_sf2_file.js"></script>
+  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12839_0_FluidR3_GM_sf2_file.js"></script>
+  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js"></script>
+  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12862_0_FluidR3_GM_sf2_file.js"></script>
+  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12870_0_FluidR3_GM_sf2_file.js"></script>
+
+  <style>
+    :root {
+      --case-bg: #404448;
+      --case-metal: #4a4f54;
+      --panel-dark: #2c3034;
+      --stripe-blue: #0088cc;
+      --stripe-orange: #f26522;
+      --led-red: #ff2222;
+      --led-glow: rgba(255, 34, 34, 0.65);
+      --led-bg: #1a0505;
+      --text-cream: #e6e8ea;
+      --text-muted: #9aa0a6;
+      --fader-slot: #1c1e20;
+      --fader-cap: #18191a;
+      --pad-dark: #202224;
+      --pad-active: #f26522;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1e2022;
+      color: var(--text-cream);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      user-select: none;
+      -webkit-user-select: none;
+      padding-top: max(12px, env(safe-area-inset-top, 12px));
+      padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+    }
+
+    .sp-chassis {
+      width: 100%;
+      max-width: 680px;
+      background: linear-gradient(180deg, #4d5257 0%, #3a3e42 100%);
+      border: 3px solid #282a2d;
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.15);
+      padding: 18px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+    }
+
+    /* Top Navigation bar */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .top-nav a {
+      color: #7dd3fc;
+      text-decoration: none;
+      font-weight: 600;
+      background: rgba(0,0,0,0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(125,211,252,0.3);
+    }
+
+    /* Header Section */
+    .sp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      color: #ffffff;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .brand-title .aoi { color: #38bdf8; }
+    .brand-subtitle {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: #cbd5e1;
+      margin-top: 5px;
+    }
+
+    /* Red LED Matrix Display */
+    .sp-display-box {
+      flex: 1;
+      max-width: 380px;
+      background: var(--led-bg);
+      border: 2px solid #111;
+      border-radius: 6px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.1);
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: "Courier New", Courier, monospace;
+      color: var(--led-red);
+      text-shadow: 0 0 6px var(--led-glow);
+    }
+    .display-row-1 {
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+    .display-row-2 {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #ff6666;
+    }
+
+    /* Vintage Stripes */
+    .accent-stripes {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin: 2px 0 6px;
+    }
+    .stripe-blue { height: 4px; background: var(--stripe-blue); border-radius: 2px; }
+    .stripe-orange { height: 4px; background: var(--stripe-orange); border-radius: 2px; }
+
+    /* Faders Container (8 Sliders) */
+    .faders-section {
+      background: #32363a;
+      border: 2px solid #222426;
+      border-radius: 8px;
+      padding: 14px 10px 16px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .faders-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 6px;
+      align-items: center;
+    }
+    .fader-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .fader-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #e2e8f0;
+      letter-spacing: 0.04em;
+      text-align: center;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
+      white-space: pre-line;
+    }
+    .fader-val {
+      font-size: 10px;
+      font-family: monospace;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    /* Vertical Slider */
+    .slider-wrap {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .slider-track-bg {
+      position: absolute;
+      width: 6px;
+      height: 120px;
+      background: var(--fader-slot);
+      border-radius: 3px;
+      border: 1px solid #111;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .slider-ticks {
+      position: absolute;
+      width: 24px;
+      height: 120px;
+      background: repeating-linear-gradient(to bottom,
+        rgba(255,255,255,0.2) 0px,
+        rgba(255,255,255,0.2) 1px,
+        transparent 1px,
+        transparent 12px
+      );
+      pointer-events: none;
+    }
+    input[type=range].v-slider {
+      -webkit-appearance: none;
+      writing-mode: vertical-lr;
+      direction: rtl;
+      width: 28px;
+      height: 120px;
+      background: transparent;
+      outline: none;
+      z-index: 2;
+      cursor: pointer;
+      margin: 0;
+    }
+    input[type=range].v-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 14px;
+      background: linear-gradient(180deg, #333 0%, #151515 50%, #333 100%);
+      border: 1px solid #555;
+      border-radius: 2px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3);
+      cursor: pointer;
+      position: relative;
+    }
+    input[type=range].v-slider::-webkit-slider-thumb:after {
+      content: "";
+      position: absolute;
+      top: 6px;
+      left: 2px;
+      right: 2px;
+      height: 2px;
+      background: #fff;
+    }
+
+    /* Control Panel (Drum engine & Transport) */
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 0 4px;
+      flex-wrap: wrap;
+    }
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sp-btn {
+      background: linear-gradient(180deg, #3f4448 0%, #282b2e 100%);
+      color: #fff;
+      border: 1px solid #1a1b1d;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .sp-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    }
+    .sp-btn.btn-run {
+      background: linear-gradient(180deg, #10b981 0%, #047857 100%);
+      border-color: #065f46;
+      color: #fff;
+    }
+    .sp-btn.btn-stop {
+      background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+      border-color: #991b1b;
+      color: #fff;
+    }
+    .sp-btn.btn-drum-switch {
+      background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%);
+      border-color: #3730a3;
+      font-size: 11px;
+    }
+
+    /* 8 Performance Pads Section */
+    .pads-section {
+      background: #2b2f33;
+      border: 2px solid #202224;
+      border-radius: 8px;
+      padding: 14px 12px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .pads-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: #cbd5e1;
+    }
+    .pads-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 540px) {
+      .pads-grid {
+        grid-template-columns: repeat(8, 1fr);
+      }
+    }
+
+    .sp-pad {
+      background: linear-gradient(180deg, #2b2e31 0%, #1c1e20 100%);
+      border: 2px solid #141517;
+      border-radius: 8px;
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: all 0.08s ease;
+      position: relative;
+    }
+    .sp-pad:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    }
+    .sp-pad.active {
+      border-color: var(--pad-active);
+      box-shadow: 0 0 12px rgba(242, 101, 34, 0.7), inset 0 0 8px rgba(242, 101, 34, 0.4);
+      background: linear-gradient(180deg, #3d2a22 0%, #291a13 100%);
+    }
+    .pad-led {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #331515;
+      border: 1px solid #111;
+      align-self: flex-start;
+    }
+    .sp-pad.active .pad-led {
+      background: #ff3333;
+      box-shadow: 0 0 6px #ff3333;
+    }
+    .pad-num {
+      font-size: 14px;
+      font-weight: 900;
+      color: #f1f5f9;
+      text-align: center;
+    }
+    .pad-name {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-align: center;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sp-pad.active .pad-name {
+      color: #fdba74;
+    }
+
+    /* Footer info */
+    .sp-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: #94a3b8;
+      padding-top: 4px;
+    }
+    .sound-status {
+      font-family: monospace;
+      font-size: 10px;
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sp-chassis">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <span>AOI SERIES</span>
+      <div>
+        <a href="index.html">🎹 LOB60 サンプラー</a>
+        <a href="hum.html">🎤 HUM-60 鼻歌MIDI</a>
+      </div>
+    </div>
+
+    <!-- Header & LED Matrix Display -->
+    <header class="sp-header">
+      <div class="brand-block">
+        <div class="brand-title"><span class="aoi">AOI</span> GB-1200</div>
+        <div class="brand-subtitle">GROUND BEAT SAMPLING COMPOSER</div>
+      </div>
+
+      <div class="sp-display-box">
+        <div class="display-row-1">
+          <span id="lcd-bpm">BPM 98</span>
+          <span id="lcd-key">KEY Dm</span>
+          <span id="lcd-chord">Dm7</span>
+        </div>
+        <div class="display-row-2">
+          <span id="lcd-tame">TAME 64%</span>
+          <span id="lcd-step">BAR 1:1</span>
+          <span id="lcd-kit">TR-909</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Classic 80s Stripes -->
+    <div class="accent-stripes">
+      <div class="stripe-blue"></div>
+      <div class="stripe-orange"></div>
+    </div>
+
+    <!-- Controls Row (Run/Stop, Drum Kit, Load status) -->
+    <div class="controls-row">
+      <div class="btn-group">
+        <button id="btn-run" class="sp-btn btn-run" onclick="togglePlay()">▶ RUN</button>
+        <button id="btn-kit" class="sp-btn btn-drum-switch" onclick="toggleDrumKit()">🥁 KIT: TR-909 SYNTH</button>
+      </div>
+      <div class="sound-status" id="load-status">GM音源: ロード中 (909シンセ即時発音可)</div>
+    </div>
+
+    <!-- 8 Vertical Faders Section -->
+    <section class="faders-section">
+      <div class="faders-grid">
+        <!-- 1. BPM -->
+        <div class="fader-col">
+          <div class="fader-label">BPM</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-bpm" min="80" max="115" value="98" oninput="onFaderChange('bpm', this.value)">
+          </div>
+          <div class="fader-val" id="val-bpm">98</div>
+        </div>
+
+        <!-- 2. KEY -->
+        <div class="fader-col">
+          <div class="fader-label">KEY</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-key" min="0" max="11" value="2" oninput="onFaderChange('key', this.value)">
+          </div>
+          <div class="fader-val" id="val-key">D</div>
+        </div>
+
+        <!-- 3. TAME / SWING -->
+        <div class="fader-col">
+          <div class="fader-label">TAME&#10;タメ</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-tame" min="50" max="74" value="64" oninput="onFaderChange('tame', this.value)">
+          </div>
+          <div class="fader-val" id="val-tame">64%</div>
+        </div>
+
+        <!-- 4. BEAT LEVEL -->
+        <div class="fader-col">
+          <div class="fader-label">BEAT&#10;909</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-vol-beat" min="0" max="100" value="85" oninput="onFaderChange('volBeat', this.value)">
+          </div>
+          <div class="fader-val" id="val-vol-beat">85</div>
+        </div>
+
+        <!-- 5. BASS LEVEL -->
+        <div class="fader-col">
+          <div class="fader-label">BASS</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-vol-bass" min="0" max="100" value="85" oninput="onFaderChange('volBass', this.value)">
+          </div>
+          <div class="fader-val" id="val-vol-bass">85</div>
+        </div>
+
+        <!-- 6. PIANO / CHORD LEVEL -->
+        <div class="fader-col">
+          <div class="fader-label">PIANO</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-vol-piano" min="0" max="100" value="80" oninput="onFaderChange('volPiano', this.value)">
+          </div>
+          <div class="fader-val" id="val-vol-piano">80</div>
+        </div>
+
+        <!-- 7. STRINGS LEVEL -->
+        <div class="fader-col">
+          <div class="fader-label">STRINGS</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-vol-strings" min="0" max="100" value="70" oninput="onFaderChange('volStrings', this.value)">
+          </div>
+          <div class="fader-val" id="val-vol-strings">70</div>
+        </div>
+
+        <!-- 8. PERC LEVEL -->
+        <div class="fader-col">
+          <div class="fader-label">PERC</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-vol-perc" min="0" max="100" value="65" oninput="onFaderChange('volPerc', this.value)">
+          </div>
+          <div class="fader-val" id="val-vol-perc">65</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 Progression Pads Section -->
+    <section class="pads-section">
+      <div class="pads-header">
+        <span>CHORD PROGRESSIONS (CHOOSE PATTERN)</span>
+        <span id="active-prog-desc" style="color: #f26522;">1: Back To Life (Dm7 - Am7)</span>
+      </div>
+      <div class="pads-grid">
+        <div class="sp-pad active" id="pad-0" onclick="selectProgression(0)">
+          <div class="pad-led"></div>
+          <div class="pad-num">1</div>
+          <div class="pad-name">Back To Life</div>
+        </div>
+        <div class="sp-pad" id="pad-1" onclick="selectProgression(1)">
+          <div class="pad-led"></div>
+          <div class="pad-num">2</div>
+          <div class="pad-name">Keep On Movin</div>
+        </div>
+        <div class="sp-pad" id="pad-2" onclick="selectProgression(2)">
+          <div class="pad-led"></div>
+          <div class="pad-num">3</div>
+          <div class="pad-name">哀愁下降ループ</div>
+        </div>
+        <div class="sp-pad" id="pad-3" onclick="selectProgression(3)">
+          <div class="pad-led"></div>
+          <div class="pad-num">4</div>
+          <div class="pad-name">UK Dorian 13</div>
+        </div>
+        <div class="sp-pad" id="pad-4" onclick="selectProgression(4)">
+          <div class="pad-led"></div>
+          <div class="pad-num">5</div>
+          <div class="pad-name">Mellow Soul</div>
+        </div>
+        <div class="sp-pad" id="pad-5" onclick="selectProgression(5)">
+          <div class="pad-led"></div>
+          <div class="pad-num">6</div>
+          <div class="pad-name">Reggae Dub</div>
+        </div>
+        <div class="sp-pad" id="pad-6" onclick="selectProgression(6)">
+          <div class="pad-led"></div>
+          <div class="pad-num">7</div>
+          <div class="pad-name">Bristol Trip</div>
+        </div>
+        <div class="sp-pad" id="pad-7" onclick="selectProgression(7)">
+          <div class="pad-led"></div>
+          <div class="pad-num">8</div>
+          <div class="pad-name">Interlude BTL</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="sp-footer">
+      <span>AOI GB-1200 GROUND BEAT ENGINE</span>
+      <span>LAID-BACK 16-SHUFFLE GROOVE</span>
+    </footer>
+  </div>
+
+  <script>
+    /* ==========================================================
+       AOI GB-1200 Audio & Sequencer Engine
+       ========================================================== */
+
+    const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+    // 8 Ground Beat Chord Progression Presets
+    const PROGRESSIONS = [
+      {
+        name: "Back To Life",
+        desc: "1: Back To Life (Dm7 - Am7) 気怠い王道ループ",
+        keyRoot: 2, // D
+        scale: "dorian",
+        chords: [
+          { rootRel: 0, quality: "min7", name: "Dm7", bars: 1 },
+          { rootRel: 7, quality: "min7", name: "Am7", bars: 1 }
+        ]
+      },
+      {
+        name: "Keep On Movin",
+        desc: "2: Keep On Movin (Fm9 - Bbm7 - Eb9 - Abmaj7)",
+        keyRoot: 5, // F
+        scale: "aeolian",
+        chords: [
+          { rootRel: 0, quality: "min9", name: "Fm9", bars: 1 },
+          { rootRel: 5, quality: "min7", name: "Bbm7", bars: 1 },
+          { rootRel: 10, quality: "dom9", name: "Eb9", bars: 1 },
+          { rootRel: 3, quality: "maj7", name: "Abmaj7", bars: 1 }
+        ]
+      },
+      {
+        name: "哀愁下降ループ",
+        desc: "3: 哀愁下降 (Dm7 - C - Bbmaj7 - Am7)",
+        keyRoot: 2, // D
+        scale: "aeolian",
+        chords: [
+          { rootRel: 0, quality: "min7", name: "Dm7", bars: 1 },
+          { rootRel: 10, quality: "maj", name: "C", bars: 1 },
+          { rootRel: 8, quality: "maj7", name: "Bbmaj7", bars: 1 },
+          { rootRel: 7, quality: "min7", name: "Am7", bars: 1 }
+        ]
+      },
+      {
+        name: "UK Dorian 13",
+        desc: "4: UK Acid Dorian (Em9 - A13 浮遊感ループ)",
+        keyRoot: 4, // E
+        scale: "dorian",
+        chords: [
+          { rootRel: 0, quality: "min9", name: "Em9", bars: 1 },
+          { rootRel: 5, quality: "dom13", name: "A13", bars: 1 }
+        ]
+      },
+      {
+        name: "Mellow Soul",
+        desc: "5: Mellow Neo-Soul (Abmaj7 - Gm7 - Fm7 - Bbm7)",
+        keyRoot: 8, // Ab
+        scale: "ionian",
+        chords: [
+          { rootRel: 0, quality: "maj7", name: "Abmaj7", bars: 1 },
+          { rootRel: 11, quality: "min7", name: "Gm7", bars: 1 },
+          { rootRel: 9, quality: "min7", name: "Fm7", bars: 1 },
+          { rootRel: 2, quality: "min7", name: "Bbm7", bars: 1 }
+        ]
+      },
+      {
+        name: "Reggae Dub",
+        desc: "6: Reggae Dub Stepper (Gm7 - Cm7 ルーツ進行)",
+        keyRoot: 7, // G
+        scale: "dorian",
+        chords: [
+          { rootRel: 0, quality: "min7", name: "Gm7", bars: 1 },
+          { rootRel: 5, quality: "min7", name: "Cm7", bars: 1 }
+        ]
+      },
+      {
+        name: "Bristol Trip",
+        desc: "7: Bristol Trip-Hop (Cm7 - Abmaj7 - Fm7 - G7)",
+        keyRoot: 0, // C
+        scale: "aeolian",
+        chords: [
+          { rootRel: 0, quality: "min7", name: "Cm7", bars: 1 },
+          { rootRel: 8, quality: "maj7", name: "Abmaj7", bars: 1 },
+          { rootRel: 5, quality: "min7", name: "Fm7", bars: 1 },
+          { rootRel: 7, quality: "dom7", name: "G7", bars: 1 }
+        ]
+      },
+      {
+        name: "Interlude BTL",
+        desc: "8: Back To Life Interlude (Dm7 - A7alt - Dm7 - A7)",
+        keyRoot: 2, // D
+        scale: "dorian",
+        chords: [
+          { rootRel: 0, quality: "min7", name: "Dm7", bars: 1 },
+          { rootRel: 7, quality: "dom7", name: "A7", bars: 1 },
+          { rootRel: 0, quality: "min7", name: "Dm7", bars: 1 },
+          { rootRel: 7, quality: "dom7", name: "A7", bars: 1 }
+        ]
+      }
+    ];
+
+    // State Variables
+    let isPlaying = false;
+    let audioCtx = null;
+    let currentProgIdx = 0;
+    let bpm = 98;
+    let keyTranspose = 0; // semitones from preset default
+    let tameRatio = 0.64; // swing ratio (0.50 ~ 0.74)
+    let drumKitMode = "909"; // "909" or "gm"
+
+    let volBeat = 0.85;
+    let volBass = 0.85;
+    let volPiano = 0.80;
+    let volStrings = 0.70;
+    let volPerc = 0.65;
+
+    let soundfontPiano = null;
+    let soundfontStrings = null;
+    let soundfontBass = null;
+    let wafPlayer = null;
+
+    let timerId = null;
+    let currentStep = 0; // 0..15 per bar
+    let currentBar = 0;
+
+    // Master Gains
+    let masterGain = null;
+    let beatGain = null;
+    let bassGain = null;
+    let pianoGain = null;
+    let stringsGain = null;
+    let percGain = null;
+
+    /* ---- Web Audio Initialization ---- */
+    function initAudio() {
+      if (audioCtx) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return;
+      }
+
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+
+      // Master output bus
+      masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(0.9, audioCtx.currentTime);
+      masterGain.connect(audioCtx.destination);
+
+      beatGain = audioCtx.createGain(); beatGain.gain.setValueAtTime(volBeat, audioCtx.currentTime); beatGain.connect(masterGain);
+      bassGain = audioCtx.createGain(); bassGain.gain.setValueAtTime(volBass, audioCtx.currentTime); bassGain.connect(masterGain);
+      pianoGain = audioCtx.createGain(); pianoGain.gain.setValueAtTime(volPiano, audioCtx.currentTime); pianoGain.connect(masterGain);
+      stringsGain = audioCtx.createGain(); stringsGain.gain.setValueAtTime(volStrings, audioCtx.currentTime); stringsGain.connect(masterGain);
+      percGain = audioCtx.createGain(); percGain.gain.setValueAtTime(volPerc, audioCtx.currentTime); percGain.connect(masterGain);
+
+      // WebAudioFont
+      if (window.WebAudioFontPlayer) {
+        wafPlayer = new WebAudioFontPlayer();
+      }
+
+      // Load Soundfonts asynchronously
+      loadSoundfonts();
+    }
+
+    async function loadSoundfonts() {
+      const statusEl = document.getElementById('load-status');
+      try {
+        if (!window.Soundfont) return;
+        statusEl.textContent = "Free GM音源: ピアノ/ベース/弦をロード中...";
+
+        // 1. Piano (acoustic_grand_piano or electric_piano_1)
+        Soundfont.instrument(audioCtx, 'acoustic_grand_piano', { destination: pianoGain }).then(inst => {
+          soundfontPiano = inst;
+          checkLoadComplete();
+        }).catch(err => console.warn("Piano load err", err));
+
+        // 2. Strings (string_ensemble_1)
+        Soundfont.instrument(audioCtx, 'string_ensemble_1', { destination: stringsGain }).then(inst => {
+          soundfontStrings = inst;
+          checkLoadComplete();
+        }).catch(err => console.warn("Strings load err", err));
+
+        // 3. Electric Bass (electric_bass_finger)
+        Soundfont.instrument(audioCtx, 'electric_bass_finger', { destination: bassGain }).then(inst => {
+          soundfontBass = inst;
+          checkLoadComplete();
+        }).catch(err => console.warn("Bass load err", err));
+
+      } catch (e) {
+        console.warn("Soundfont loading failed, using synth fallbacks", e);
+      }
+    }
+
+    function checkLoadComplete() {
+      const statusEl = document.getElementById('load-status');
+      if (soundfontPiano && soundfontStrings && soundfontBass) {
+        statusEl.textContent = "GM音源: ロード完了 (高品位実音サンプル)";
+        statusEl.style.color = "#4ade80";
+      }
+    }
+
+    /* ---- Native TR-909 Analog Synthesis Engines ---- */
+    // 909 Kick: Punchy sine with fast pitch envelope + click
+    function play909Kick(time, vel = 1.0) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      // Pitch drop: 150Hz -> 50Hz in 80ms
+      osc.frequency.setValueAtTime(145, time);
+      osc.frequency.exponentialRampToValueAtTime(48, time + 0.08);
+
+      // Amp envelope: sharp attack, punchy decay
+      gain.gain.setValueAtTime(1.1 * vel, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.32);
+
+      osc.connect(gain);
+      gain.connect(beatGain);
+
+      osc.start(time);
+      osc.stop(time + 0.35);
+
+      // Click transient
+      const click = audioCtx.createOscillator();
+      const clickGain = audioCtx.createGain();
+      click.type = 'triangle';
+      click.frequency.setValueAtTime(350, time);
+      click.frequency.exponentialRampToValueAtTime(40, time + 0.02);
+      clickGain.gain.setValueAtTime(0.7 * vel, time);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, time + 0.02);
+      click.connect(clickGain);
+      clickGain.connect(beatGain);
+      click.start(time);
+      click.stop(time + 0.025);
+    }
+
+    // 909 Snare: Dual tuned tone oscillators + filtered snappy noise
+    function play909Snare(time, vel = 1.0) {
+      // Body tones
+      [185, 335].forEach(freq => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.7, time + 0.08);
+
+        gain.gain.setValueAtTime(0.5 * vel, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
+
+        osc.connect(gain);
+        gain.connect(beatGain);
+        osc.start(time);
+        osc.stop(time + 0.18);
+      });
+
+      // Snappy White Noise with Bandpass
+      const bufferSize = audioCtx.sampleRate * 0.25;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+
+      const whiteNoise = audioCtx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(1200, time);
+
+      const noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.75 * vel, time);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+
+      whiteNoise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(beatGain);
+
+      whiteNoise.start(time);
+      whiteNoise.stop(time + 0.24);
+    }
+
+    // 909 Closed / Open Hi-Hat: Metallic noise with bandpass
+    function play909HiHat(time, isOpen = false, vel = 0.8) {
+      const dur = isOpen ? 0.35 : 0.055;
+      const bufferSize = audioCtx.sampleRate * dur;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(8200, time);
+      filter.Q.setValueAtTime(4.5, time);
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(vel * (isOpen ? 0.8 : 0.65), time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(beatGain);
+
+      noise.start(time);
+      noise.stop(time + dur + 0.01);
+    }
+
+    // 909 Hand Clap: Multi-pulse noise burst
+    function play909Clap(time, vel = 0.9) {
+      [0, 0.012, 0.024].forEach((delay, idx) => {
+        const bufferSize = audioCtx.sampleRate * 0.015;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass'; filter.frequency.setValueAtTime(1100, time + delay); filter.Q.setValueAtTime(2.0, time + delay);
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.6 * vel, time + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + delay + 0.015);
+        noise.connect(filter); filter.connect(gain); gain.connect(beatGain);
+        noise.start(time + delay); noise.stop(time + delay + 0.02);
+      });
+
+      // Tail
+      const tailSize = audioCtx.sampleRate * 0.22;
+      const tailBuf = audioCtx.createBuffer(1, tailSize, audioCtx.sampleRate);
+      const tailData = tailBuf.getChannelData(0);
+      for (let i = 0; i < tailSize; i++) tailData[i] = Math.random() * 2 - 1;
+      const tail = audioCtx.createBufferSource(); tail.buffer = tailBuf;
+      const tailFilt = audioCtx.createBiquadFilter(); tailFilt.type = 'bandpass'; tailFilt.frequency.setValueAtTime(1000, time + 0.035);
+      const tailGain = audioCtx.createGain();
+      tailGain.gain.setValueAtTime(0.7 * vel, time + 0.035);
+      tailGain.gain.exponentialRampToValueAtTime(0.001, time + 0.24);
+      tail.connect(tailFilt); tailFilt.connect(tailGain); tailGain.connect(beatGain);
+      tail.start(time + 0.035); tail.stop(time + 0.25);
+    }
+
+    /* ---- GM Drum Kit (WebAudioFont) ---- */
+    function playGMDrum(noteNum, time, vel = 0.8) {
+      if (!wafPlayer) return;
+      let fontVar = window['_drum_' + noteNum + '_0_FluidR3_GM_sf2_file'];
+      if (noteNum === 38 && window['_drum_38_27_FluidR3_GM_sf2_file']) {
+        fontVar = window['_drum_38_27_FluidR3_GM_sf2_file']; // Brushes/Tight snare
+      } else if ((noteNum === 42 || noteNum === 46) && window['_drum_' + noteNum + '_0_JCLive_sf2_file']) {
+        fontVar = window['_drum_' + noteNum + '_0_JCLive_sf2_file']; // Mellow hat
+      }
+      if (fontVar) {
+        wafPlayer.queueWaveTable(audioCtx, beatGain, fontVar, time, noteNum, 1.0, vel);
+      }
+    }
+
+    function playGMPerc(noteNum, time, vel = 0.6) {
+      if (!wafPlayer) return;
+      let fontVar = window['_drum_' + noteNum + '_0_FluidR3_GM_sf2_file'];
+      if (fontVar) {
+        wafPlayer.queueWaveTable(audioCtx, percGain, fontVar, time, noteNum, 0.8, vel);
+      }
+    }
+
+    /* ---- Synthesizer Fallbacks (when Soundfont is loading) ---- */
+    function playSynthPiano(midiNotes, time, dur = 0.3, vel = 0.8) {
+      midiNotes.forEach(m => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440 * Math.pow(2, (m - 69) / 12), time);
+
+        gain.gain.setValueAtTime(0.3 * vel, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+
+        osc.connect(gain);
+        gain.connect(pianoGain);
+        osc.start(time);
+        osc.stop(time + dur + 0.05);
+      });
+    }
+
+    function playSynthStrings(midiNotes, time, dur = 1.0, vel = 0.5) {
+      midiNotes.forEach(m => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(440 * Math.pow(2, (m - 69) / 12), time);
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1400, time);
+
+        gain.gain.setValueAtTime(0.01, time);
+        gain.gain.linearRampToValueAtTime(0.2 * vel, time + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(stringsGain);
+        osc.start(time);
+        osc.stop(time + dur + 0.1);
+      });
+    }
+
+    function playSynthBass(midiNote, time, dur = 0.35, vel = 0.9) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(440 * Math.pow(2, (midiNote - 69) / 12), time);
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(800, time);
+      filter.frequency.exponentialRampToValueAtTime(180, time + dur);
+
+      gain.gain.setValueAtTime(0.6 * vel, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(bassGain);
+      osc.start(time);
+      osc.stop(time + dur + 0.05);
+    }
+
+    /* ---- Chord Theory & Pitch Calculation ---- */
+    const CHORD_INTERVALS = {
+      min7: [0, 3, 7, 10],       // m7
+      min9: [0, 3, 7, 10, 14],   // m9
+      maj7: [0, 4, 7, 11],       // M7
+      dom7: [0, 4, 7, 10],       // 7
+      dom9: [0, 4, 7, 10, 14],   // 9
+      dom13: [0, 4, 10, 14, 21], // 13
+      maj:  [0, 4, 7],
+      min:  [0, 3, 7]
+    };
+
+    function getCurrentChordInfo(barIdx) {
+      const prog = PROGRESSIONS[currentProgIdx];
+      let accBars = 0;
+      let chordDef = prog.chords[0];
+      for (let c of prog.chords) {
+        if (barIdx < accBars + c.bars) {
+          chordDef = c;
+          break;
+        }
+        accBars += c.bars;
+      }
+
+      const rootNote = (prog.keyRoot + chordDef.rootRel + keyTranspose) % 12;
+      const intervals = CHORD_INTERVALS[chordDef.quality] || CHORD_INTERVALS.min7;
+
+      // Piano MIDI voicing (Octave 4: 60 = C4)
+      const pianoNotes = intervals.map(semitone => 60 + rootNote + semitone);
+
+      // Strings MIDI voicing (Octave 5: lush high layer)
+      const stringNotes = [rootNote + 60, rootNote + 67, rootNote + 72 + intervals[1]];
+
+      // Bass MIDI root (Octave 2: 36 = C2)
+      const bassRootMidi = 36 + rootNote;
+
+      return {
+        name: NOTE_NAMES[rootNote] + chordDef.quality.replace('min','m').replace('maj','M'),
+        intervals,
+        rootNote,
+        pianoNotes,
+        stringNotes,
+        bassRootMidi
+      };
+    }
+
+    /* ---- 16-Step Sequencer Clock & Scheduling ---- */
+    let nextStepTime = 0;
+    const LOOKAHEAD_MS = 25;
+    const SCHEDULE_AHEAD_TIME = 0.1;
+
+    function scheduler() {
+      while (nextStepTime < audioCtx.currentTime + SCHEDULE_AHEAD_TIME) {
+        scheduleStep(currentStep, currentBar, nextStepTime);
+        advanceStep();
+      }
+      if (isPlaying) {
+        timerId = setTimeout(scheduler, LOOKAHEAD_MS);
+      }
+    }
+
+    function advanceStep() {
+      // Step duration calculation with Ground Beat TAME / SWING
+      const stepDuration = (60 / bpm) / 4; // straight 16th note
+      const isEvenStep = (currentStep % 2 === 0);
+
+      // Swing: even step gets prolonged, odd step gets shortened
+      const delta = (tameRatio - 0.5) * 2 * stepDuration;
+      const dur = isEvenStep ? (stepDuration + delta) : (stepDuration - delta);
+
+      nextStepTime += dur;
+
+      currentStep++;
+      if (currentStep >= 16) {
+        currentStep = 0;
+        currentBar++;
+        const prog = PROGRESSIONS[currentProgIdx];
+        const totalBars = prog.chords.reduce((acc, c) => acc + c.bars, 0);
+        if (currentBar >= totalBars) {
+          currentBar = 0;
+        }
+      }
+    }
+
+    /* ---- Step Performance Scheduling ---- */
+    function scheduleStep(step, bar, time) {
+      const chord = getCurrentChordInfo(bar);
+
+      // Update LED display in sync with UI
+      setTimeout(() => {
+        updateLCDStep(step, bar, chord.name);
+      }, (time - audioCtx.currentTime) * 1000);
+
+      // 1. BEAT (Drums)
+      scheduleDrums(step, time);
+
+      // 2. PERCUSSION (Tambourine, Shaker, Conga)
+      schedulePercussion(step, time);
+
+      // 3. CHORD (Piano - Laid-back Soul II Soul comping pattern)
+      schedulePiano(step, time, chord);
+
+      // 4. STRINGS (Quarter note hit or cinematic sustain)
+      scheduleStrings(step, time, chord);
+
+      // 5. BASS (Groovy Syncopated Baseline auto-following scale)
+      scheduleBass(step, time, chord);
+    }
+
+    /* 1. Ground Beat Drums */
+    function scheduleDrums(step, time) {
+      const is909 = (drumKitMode === "909");
+
+      // Kick: step 0 (beat 1), step 6 (beat 2 16th-off), step 10 (beat 3 off), step 14
+      const kickSteps = [0, 6, 10, 14];
+      if (kickSteps.includes(step)) {
+        if (is909) play909Kick(time, step === 0 ? 1.0 : 0.85);
+        else playGMDrum(36, time, step === 0 ? 1.0 : 0.85);
+      }
+
+      // Snare: step 4 (beat 2) & step 12 (beat 4) + Ghost note at step 15
+      if (step === 4 || step === 12) {
+        if (is909) {
+          play909Snare(time, 1.0);
+          play909Clap(time + 0.005, 0.7); // 909 Snare+Clap layering!
+        } else {
+          playGMDrum(38, time, 1.0);
+        }
+      } else if (step === 15) {
+        // Ghost snare
+        if (is909) play909Snare(time, 0.35);
+        else playGMDrum(38, time, 0.35);
+      }
+
+      // Closed Hi-Hat: 16th-note shuffle (accented 0, 4, 8, 12; ghosted 2, 6, 10, 14)
+      const isAccent = (step % 4 === 0);
+      const isEighth = (step % 2 === 0);
+      const hatVel = isAccent ? 0.9 : (isEighth ? 0.65 : 0.45);
+
+      if (step === 14) {
+        // Open Hat before beat 1
+        if (is909) play909HiHat(time, true, 0.75);
+        else playGMDrum(46, time, 0.75);
+      } else {
+        if (is909) play909HiHat(time, false, hatVel);
+        else playGMDrum(42, time, hatVel);
+      }
+    }
+
+    /* 2. Percussion */
+    function schedulePercussion(step, time) {
+      // Shaker on every 16th step (light)
+      playGMPerc(70, time, (step % 2 === 1) ? 0.6 : 0.4);
+
+      // Tambourine on beats 2 & 4 (steps 4 & 12)
+      if (step === 4 || step === 12) {
+        playGMPerc(54, time, 0.7);
+      }
+
+      // Conga syncopations on steps 2, 7, 11
+      if (step === 2 || step === 7 || step === 11) {
+        playGMPerc(62, time, 0.6);
+      }
+    }
+
+    /* 3. Chord Comping (Piano) */
+    function schedulePiano(step, time, chord) {
+      // Soul II Soul 'Back To Life' rhythm:
+      // Offbeat syncopations: steps 2, 5, 8, 11, 14
+      const compSteps = [2, 5, 8, 11, 14];
+      if (compSteps.includes(step)) {
+        const vel = (step === 2 || step === 8) ? 0.85 : 0.7;
+        const dur = 0.22; // staccato comping
+        if (soundfontPiano) {
+          chord.pianoNotes.forEach(m => {
+            soundfontPiano.play(m, time, { duration: dur, gain: vel * volPiano });
+          });
+        } else {
+          playSynthPiano(chord.pianoNotes, time, dur, vel);
+        }
+      }
+    }
+
+    /* 4. Strings Section */
+    function scheduleStrings(step, time, chord) {
+      // Strings hit on step 0 (downbeat) with rich sustain, and step 10
+      if (step === 0) {
+        const dur = 1.6; // sustain across measures
+        if (soundfontStrings) {
+          chord.stringNotes.forEach(m => {
+            soundfontStrings.play(m, time, { duration: dur, gain: 0.65 * volStrings });
+          });
+        } else {
+          playSynthStrings(chord.stringNotes, time, dur, 0.6);
+        }
+      }
+    }
+
+    /* 5. Bassline (Auto-following Scale) */
+    function scheduleBass(step, time, chord) {
+      // Ground Beat Bassline: 16th note syncopation
+      // Steps: 0 (Root), 3 (5th), 6 (Root Oct), 10 (m7th), 14 (Passing note)
+      let bassNote = null;
+      let dur = 0.25;
+
+      if (step === 0) {
+        bassNote = chord.bassRootMidi; // Root
+        dur = 0.35;
+      } else if (step === 3) {
+        bassNote = chord.bassRootMidi + 7; // 5th
+      } else if (step === 6) {
+        bassNote = chord.bassRootMidi + 12; // Octave
+      } else if (step === 10) {
+        const m7 = chord.intervals[3] || 10;
+        bassNote = chord.bassRootMidi + m7; // 7th
+      } else if (step === 14) {
+        bassNote = chord.bassRootMidi + 5; // 4th passing
+      }
+
+      if (bassNote !== null) {
+        if (soundfontBass) {
+          soundfontBass.play(bassNote, time, { duration: dur, gain: 0.9 * volBass });
+        } else {
+          playSynthBass(bassNote, time, dur, 0.9);
+        }
+      }
+    }
+
+    /* ---- UI & Control Functions ---- */
+    function togglePlay() {
+      initAudio();
+      const btn = document.getElementById('btn-run');
+      if (isPlaying) {
+        isPlaying = false;
+        clearTimeout(timerId);
+        btn.textContent = "▶ RUN";
+        btn.className = "sp-btn btn-run";
+      } else {
+        isPlaying = true;
+        currentStep = 0;
+        currentBar = 0;
+        nextStepTime = audioCtx.currentTime + 0.05;
+        scheduler();
+        btn.textContent = "■ STOP";
+        btn.className = "sp-btn btn-stop";
+      }
+    }
+
+    function toggleDrumKit() {
+      const btn = document.getElementById('btn-kit');
+      const lcdKit = document.getElementById('lcd-kit');
+      if (drumKitMode === "909") {
+        drumKitMode = "gm";
+        btn.textContent = "🥁 KIT: GM STUDIO KIT";
+        lcdKit.textContent = "GM-KIT";
+      } else {
+        drumKitMode = "909";
+        btn.textContent = "🥁 KIT: TR-909 SYNTH";
+        lcdKit.textContent = "TR-909";
+      }
+    }
+
+    function selectProgression(idx) {
+      currentProgIdx = idx;
+      currentBar = 0;
+      document.querySelectorAll('.sp-pad').forEach((pad, i) => {
+        pad.classList.toggle('active', i === idx);
+      });
+      document.getElementById('active-prog-desc').textContent = PROGRESSIONS[idx].desc;
+      updateLCDKey();
+    }
+
+    function onFaderChange(type, val) {
+      val = parseInt(val, 10);
+      switch(type) {
+        case 'bpm':
+          bpm = val;
+          document.getElementById('val-bpm').textContent = val;
+          document.getElementById('lcd-bpm').textContent = "BPM " + val;
+          break;
+        case 'key':
+          keyTranspose = val - 2; // relative to D (2)
+          document.getElementById('val-key').textContent = NOTE_NAMES[val];
+          updateLCDKey();
+          break;
+        case 'tame':
+          tameRatio = val / 100;
+          document.getElementById('val-tame').textContent = val + "%";
+          document.getElementById('lcd-tame').textContent = "TAME " + val + "%";
+          break;
+        case 'volBeat':
+          volBeat = val / 100;
+          if (beatGain && audioCtx) beatGain.gain.setValueAtTime(volBeat, audioCtx.currentTime);
+          document.getElementById('val-vol-beat').textContent = val;
+          break;
+        case 'volBass':
+          volBass = val / 100;
+          if (bassGain && audioCtx) bassGain.gain.setValueAtTime(volBass, audioCtx.currentTime);
+          document.getElementById('val-vol-bass').textContent = val;
+          break;
+        case 'volPiano':
+          volPiano = val / 100;
+          if (pianoGain && audioCtx) pianoGain.gain.setValueAtTime(volPiano, audioCtx.currentTime);
+          document.getElementById('val-vol-piano').textContent = val;
+          break;
+        case 'volStrings':
+          volStrings = val / 100;
+          if (stringsGain && audioCtx) stringsGain.gain.setValueAtTime(volStrings, audioCtx.currentTime);
+          document.getElementById('val-vol-strings').textContent = val;
+          break;
+        case 'volPerc':
+          volPerc = val / 100;
+          if (percGain && audioCtx) percGain.gain.setValueAtTime(volPerc, audioCtx.currentTime);
+          document.getElementById('val-vol-perc').textContent = val;
+          break;
+      }
+    }
+
+    function updateLCDKey() {
+      const chord = getCurrentChordInfo(currentBar);
+      const prog = PROGRESSIONS[currentProgIdx];
+      const root = (prog.keyRoot + keyTranspose + 12) % 12;
+      document.getElementById('lcd-key').textContent = "KEY " + NOTE_NAMES[root] + "m";
+      document.getElementById('lcd-chord').textContent = chord.name;
+    }
+
+    function updateLCDStep(step, bar, chordName) {
+      document.getElementById('lcd-step').textContent = `BAR ${bar + 1}:${Math.floor(step / 4) + 1}.${(step % 4) + 1}`;
+      document.getElementById('lcd-chord').textContent = chordName;
+    }
+
+    // Initialize display values
+    updateLCDKey();
+  </script>
+</body>
+</html>
