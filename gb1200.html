@@ -1053,8 +1053,8 @@
       const rootNote = (prog.keyRoot + chordDef.rootRel + keyTranspose + 120) % 12;
       const intervals = CHORD_INTERVALS[chordDef.quality] || CHORD_INTERVALS.min7;
 
-      // Grand Piano Voicing (Octave 4: C4=60, spread over sweet mid register)
-      const pianoNotes = intervals.map(st => 60 + rootNote + st);
+      // Grand Piano Voicing (Octave 3: 48 = C3, lowered 1 octave for deep mellow soul comping)
+      const pianoNotes = intervals.map(st => 48 + rootNote + st);
 
       // Warm Pad Voicing (Lush octave 4-5 spread)
       const padNotes = [rootNote + 48, rootNote + 55, rootNote + 60, rootNote + 63 + (intervals[1] || 3)];
