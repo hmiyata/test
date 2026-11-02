@@ -11,25 +11,26 @@
   <meta name="apple-mobile-web-app-title" content="GB-1200">
   <meta name="theme-color" content="#3a3d40">
 
-  <!-- Soundfont-player (Free GM Instruments: Piano, Strings, Bass) -->
-  <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+  <!-- WebAudioFont Core Player -->
+  <script src="https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js"></script>
 
-  <!-- WebAudioFont (Free GM Drum Kit & Percussion) -->
-  <script defer src="https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js"></script>
-  <!-- GM Drum notes: 36 kick, 38 snare, 42 closed hat, 46 open hat, 39 clap, 37 rim, 54 tamb, 70 shaker, 62 conga -->
-  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12836_0_FluidR3_GM_sf2_file.js"></script>
-  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12838_27_FluidR3_GM_sf2_file.js"></script>
-  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12842_0_JCLive_sf2_file.js"></script>
-  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12846_0_JCLive_sf2_file.js"></script>
-  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12839_0_FluidR3_GM_sf2_file.js"></script>
-  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js"></script>
-  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12862_0_FluidR3_GM_sf2_file.js"></script>
-  <script defer src="https://surikov.github.io/webaudiofontdata/sound/12870_0_FluidR3_GM_sf2_file.js"></script>
+  <!-- 1. Free GM Acoustic Grand Piano (Multi-sampled Yamaha C7) -->
+  <script src="https://surikov.github.io/webaudiofontdata/sound/0000_FluidR3_GM_sf2_file.js"></script>
+
+  <!-- 2. Free GM Warm Analog Synth Pad (Replacing Strings) -->
+  <script src="https://surikov.github.io/webaudiofontdata/sound/0890_FluidR3_GM_sf2_file.js"></script>
+
+  <!-- 3. Free GM Electric Bass Finger -->
+  <script src="https://surikov.github.io/webaudiofontdata/sound/0330_FluidR3_GM_sf2_file.js"></script>
+
+  <!-- 4. Free GM Percussion (Tambourine, Shaker, Conga) -->
+  <script src="https://surikov.github.io/webaudiofontdata/sound/12854_0_FluidR3_GM_sf2_file.js"></script>
+  <script src="https://surikov.github.io/webaudiofontdata/sound/12870_0_FluidR3_GM_sf2_file.js"></script>
+  <script src="https://surikov.github.io/webaudiofontdata/sound/12862_0_FluidR3_GM_sf2_file.js"></script>
 
   <style>
     :root {
       --case-bg: #404448;
-      --case-metal: #4a4f54;
       --panel-dark: #2c3034;
       --stripe-blue: #0088cc;
       --stripe-orange: #f26522;
@@ -48,7 +49,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: #1e2022;
+      background: #181a1c;
       color: var(--text-cream);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
       display: flex;
@@ -67,10 +68,10 @@
       border: 3px solid #282a2d;
       border-radius: 14px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.15);
-      padding: 18px 18px 24px;
+      padding: 16px 16px 22px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       position: relative;
     }
 
@@ -79,7 +80,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
       font-size: 11px;
       white-space: nowrap;
@@ -89,9 +90,10 @@
       text-decoration: none;
       font-weight: 600;
       background: rgba(0,0,0,0.3);
-      padding: 4px 10px;
-      border-radius: 6px;
+      padding: 3px 8px;
+      border-radius: 5px;
       border: 1px solid rgba(125,211,252,0.3);
+      margin-left: 4px;
     }
 
     /* Header Section */
@@ -99,8 +101,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 12px;
-      position: relative;
+      gap: 10px;
     }
 
     .brand-block {
@@ -108,36 +109,36 @@
       flex-direction: column;
     }
     .brand-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
       letter-spacing: 0.05em;
       color: #ffffff;
       line-height: 1;
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 6px;
     }
     .brand-title .aoi { color: #38bdf8; }
     .brand-subtitle {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
       color: #cbd5e1;
-      margin-top: 5px;
+      margin-top: 4px;
     }
 
     /* Red LED Matrix Display */
     .sp-display-box {
       flex: 1;
-      max-width: 380px;
+      max-width: 360px;
       background: var(--led-bg);
       border: 2px solid #111;
       border-radius: 6px;
       box-shadow: inset 0 2px 6px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.1);
-      padding: 8px 12px;
+      padding: 7px 10px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       font-family: "Courier New", Courier, monospace;
       color: var(--led-red);
       text-shadow: 0 0 6px var(--led-glow);
@@ -145,16 +146,16 @@
     .display-row-1 {
       display: flex;
       justify-content: space-between;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
       letter-spacing: 0.08em;
     }
     .display-row-2 {
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       color: #ff6666;
     }
 
@@ -163,125 +164,22 @@
       display: flex;
       flex-direction: column;
       gap: 3px;
-      margin: 2px 0 6px;
+      margin: 1px 0 4px;
     }
     .stripe-blue { height: 4px; background: var(--stripe-blue); border-radius: 2px; }
     .stripe-orange { height: 4px; background: var(--stripe-orange); border-radius: 2px; }
 
-    /* Faders Container (8 Sliders) */
-    .faders-section {
-      background: #32363a;
-      border: 2px solid #222426;
-      border-radius: 8px;
-      padding: 14px 10px 16px;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
-    }
-    .faders-grid {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 6px;
-      align-items: center;
-    }
-    .fader-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .fader-label {
-      font-size: 10px;
-      font-weight: 800;
-      color: #e2e8f0;
-      letter-spacing: 0.04em;
-      text-align: center;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1.1;
-      white-space: pre-line;
-    }
-    .fader-val {
-      font-size: 10px;
-      font-family: monospace;
-      color: #38bdf8;
-      font-weight: 700;
-    }
-
-    /* Vertical Slider */
-    .slider-wrap {
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .slider-track-bg {
-      position: absolute;
-      width: 6px;
-      height: 120px;
-      background: var(--fader-slot);
-      border-radius: 3px;
-      border: 1px solid #111;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
-    }
-    .slider-ticks {
-      position: absolute;
-      width: 24px;
-      height: 120px;
-      background: repeating-linear-gradient(to bottom,
-        rgba(255,255,255,0.2) 0px,
-        rgba(255,255,255,0.2) 1px,
-        transparent 1px,
-        transparent 12px
-      );
-      pointer-events: none;
-    }
-    input[type=range].v-slider {
-      -webkit-appearance: none;
-      writing-mode: vertical-lr;
-      direction: rtl;
-      width: 28px;
-      height: 120px;
-      background: transparent;
-      outline: none;
-      z-index: 2;
-      cursor: pointer;
-      margin: 0;
-    }
-    input[type=range].v-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 24px;
-      height: 14px;
-      background: linear-gradient(180deg, #333 0%, #151515 50%, #333 100%);
-      border: 1px solid #555;
-      border-radius: 2px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3);
-      cursor: pointer;
-      position: relative;
-    }
-    input[type=range].v-slider::-webkit-slider-thumb:after {
-      content: "";
-      position: absolute;
-      top: 6px;
-      left: 2px;
-      right: 2px;
-      height: 2px;
-      background: #fff;
-    }
-
-    /* Control Panel (Drum engine & Transport) */
+    /* Control Panel (Run/Stop, Kick Mode, Load status) */
     .controls-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      padding: 0 4px;
+      gap: 8px;
       flex-wrap: wrap;
     }
     .btn-group {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
 
@@ -290,14 +188,14 @@
       color: #fff;
       border: 1px solid #1a1b1d;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
-      padding: 8px 14px;
+      padding: 7px 12px;
       cursor: pointer;
       box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       white-space: nowrap;
     }
     .sp-btn:active {
@@ -314,10 +212,114 @@
       border-color: #991b1b;
       color: #fff;
     }
-    .sp-btn.btn-drum-switch {
-      background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%);
-      border-color: #3730a3;
-      font-size: 11px;
+    .sp-btn.btn-kick-mode {
+      background: linear-gradient(180deg, #ea580c 0%, #c2410c 100%);
+      border-color: #9a3412;
+      font-size: 10.5px;
+    }
+
+    .sound-status {
+      font-family: monospace;
+      font-size: 9.5px;
+      color: #38bdf8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 320px;
+    }
+
+    /* Faders Container (8 Sliders) */
+    .faders-section {
+      background: #32363a;
+      border: 2px solid #222426;
+      border-radius: 8px;
+      padding: 12px 8px 14px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .faders-grid {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 4px;
+      align-items: center;
+    }
+    .fader-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .fader-label {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #e2e8f0;
+      letter-spacing: 0.02em;
+      text-align: center;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
+      white-space: pre-line;
+      overflow: hidden;
+    }
+    .fader-val {
+      font-size: 9.5px;
+      font-family: monospace;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    /* Vertical Slider */
+    .slider-wrap {
+      height: 135px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .slider-track-bg {
+      position: absolute;
+      width: 5px;
+      height: 115px;
+      background: var(--fader-slot);
+      border-radius: 3px;
+      border: 1px solid #111;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .slider-ticks {
+      position: absolute;
+      width: 20px;
+      height: 115px;
+      background: repeating-linear-gradient(to bottom,
+        rgba(255,255,255,0.18) 0px,
+        rgba(255,255,255,0.18) 1px,
+        transparent 1px,
+        transparent 11.5px
+      );
+      pointer-events: none;
+    }
+    input[type=range].v-slider {
+      -webkit-appearance: none;
+      writing-mode: vertical-lr;
+      direction: rtl;
+      width: 24px;
+      height: 115px;
+      background: transparent;
+      outline: none;
+      z-index: 2;
+      cursor: pointer;
+      margin: 0;
+    }
+    input[type=range].v-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 13px;
+      background: linear-gradient(180deg, #333 0%, #151515 50%, #333 100%);
+      border: 1px solid #555;
+      border-radius: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3);
+      cursor: pointer;
     }
 
     /* 8 Performance Pads Section */
@@ -325,17 +327,17 @@
       background: #2b2f33;
       border: 2px solid #202224;
       border-radius: 8px;
-      padding: 14px 12px;
+      padding: 12px 10px;
       box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
     }
     .pads-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      font-size: 11px;
+      margin-bottom: 8px;
+      font-size: 10.5px;
       font-weight: 800;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       color: #cbd5e1;
     }
     .pads-grid {
@@ -343,7 +345,7 @@
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
     }
-    @media (min-width: 620px) {
+    @media (min-width: 600px) {
       .pads-grid {
         grid-template-columns: repeat(8, minmax(0, 1fr));
       }
@@ -354,29 +356,27 @@
       border: 2px solid #141517;
       border-radius: 8px;
       min-width: 0;
-      overflow: hidden;
       aspect-ratio: 1;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 6px;
+      padding: 5px;
       cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      box-shadow: 0 3px 5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
       transition: all 0.08s ease;
-      position: relative;
     }
     .sp-pad:active {
-      transform: translateY(2px);
+      transform: translateY(1px);
       box-shadow: 0 1px 2px rgba(0,0,0,0.8);
     }
     .sp-pad.active {
       border-color: var(--pad-active);
-      box-shadow: 0 0 12px rgba(242, 101, 34, 0.7), inset 0 0 8px rgba(242, 101, 34, 0.4);
+      box-shadow: 0 0 10px rgba(242, 101, 34, 0.7), inset 0 0 6px rgba(242, 101, 34, 0.4);
       background: linear-gradient(180deg, #3d2a22 0%, #291a13 100%);
     }
     .pad-led {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: #331515;
       border: 1px solid #111;
@@ -384,16 +384,16 @@
     }
     .sp-pad.active .pad-led {
       background: #ff3333;
-      box-shadow: 0 0 6px #ff3333;
+      box-shadow: 0 0 5px #ff3333;
     }
     .pad-num {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       color: #f1f5f9;
       text-align: center;
     }
     .pad-name {
-      font-size: 8.5px;
+      font-size: 8px;
       font-weight: 700;
       color: #94a3b8;
       text-align: center;
@@ -411,14 +411,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 10px;
+      font-size: 9.5px;
       color: #94a3b8;
-      padding-top: 4px;
-    }
-    .sound-status {
-      font-family: monospace;
-      font-size: 10px;
-      color: #38bdf8;
+      padding-top: 2px;
     }
   </style>
 </head>
@@ -448,9 +443,9 @@
           <span id="lcd-chord">Dm7</span>
         </div>
         <div class="display-row-2">
-          <span id="lcd-tame">TAME 64%</span>
+          <span id="lcd-tame">TAME 66% (3連)</span>
           <span id="lcd-step">BAR 1:1</span>
-          <span id="lcd-kit">TR-909</span>
+          <span id="lcd-kit">TR-909 SP</span>
         </div>
       </div>
     </header>
@@ -461,13 +456,13 @@
       <div class="stripe-orange"></div>
     </div>
 
-    <!-- Controls Row (Run/Stop, Drum Kit, Load status) -->
+    <!-- Controls Row (Run/Stop, Kick Groove Mode, Load status) -->
     <div class="controls-row">
       <div class="btn-group">
         <button id="btn-run" class="sp-btn btn-run" onclick="togglePlay()">▶ RUN</button>
-        <button id="btn-kit" class="sp-btn btn-drum-switch" onclick="toggleDrumKit()">🥁 KIT: TR-909 SYNTH</button>
+        <button id="btn-kick-mode" class="sp-btn btn-kick-mode" onclick="toggleKickPattern()">🥁 KICK: 1拍目+2・3拍裏 (BTL王道)</button>
       </div>
-      <div class="sound-status" id="load-status">GM音源: ロード中 (909シンセ即時発音可)</div>
+      <div class="sound-status" id="load-status">TR-909 & GM音源を準備中...</div>
     </div>
 
     <!-- 8 Vertical Faders Section -->
@@ -495,20 +490,31 @@
           <div class="fader-val" id="val-key">D</div>
         </div>
 
-        <!-- 3. TAME / SWING -->
+        <!-- 3. TAME / タメ (16分3連スウィング) -->
         <div class="fader-col">
           <div class="fader-label">TAME&#10;タメ</div>
           <div class="slider-wrap">
             <div class="slider-track-bg"></div>
             <div class="slider-ticks"></div>
-            <input type="range" class="v-slider" id="fader-tame" min="50" max="74" value="64" oninput="onFaderChange('tame', this.value)">
+            <input type="range" class="v-slider" id="fader-tame" min="50" max="75" value="66" oninput="onFaderChange('tame', this.value)">
           </div>
-          <div class="fader-val" id="val-tame">64%</div>
+          <div class="fader-val" id="val-tame">66%</div>
         </div>
 
-        <!-- 4. BEAT LEVEL -->
+        <!-- 4. 909 KICK (HEAVY LOW-END) -->
         <div class="fader-col">
-          <div class="fader-label">BEAT&#10;909</div>
+          <div class="fader-label">KICK&#10;909重低</div>
+          <div class="slider-wrap">
+            <div class="slider-track-bg"></div>
+            <div class="slider-ticks"></div>
+            <input type="range" class="v-slider" id="fader-vol-kick" min="0" max="100" value="95" oninput="onFaderChange('volKick', this.value)">
+          </div>
+          <div class="fader-val" id="val-vol-kick">95</div>
+        </div>
+
+        <!-- 5. 909 BEAT (SNARE / HAT / CLAP) -->
+        <div class="fader-col">
+          <div class="fader-label">BEAT&#10;909スネア</div>
           <div class="slider-wrap">
             <div class="slider-track-bg"></div>
             <div class="slider-ticks"></div>
@@ -517,9 +523,9 @@
           <div class="fader-val" id="val-vol-beat">85</div>
         </div>
 
-        <!-- 5. BASS LEVEL -->
+        <!-- 6. BASS (SCALE-FOLLOWING ELECTRIC BASS) -->
         <div class="fader-col">
-          <div class="fader-label">BASS</div>
+          <div class="fader-label">BASS&#10;ベース</div>
           <div class="slider-wrap">
             <div class="slider-track-bg"></div>
             <div class="slider-ticks"></div>
@@ -528,37 +534,26 @@
           <div class="fader-val" id="val-vol-bass">85</div>
         </div>
 
-        <!-- 6. PIANO / CHORD LEVEL -->
+        <!-- 7. PIANO (SAMPLED GRAND PIANO) -->
         <div class="fader-col">
-          <div class="fader-label">PIANO</div>
+          <div class="fader-label">PIANO&#10;グランド</div>
           <div class="slider-wrap">
             <div class="slider-track-bg"></div>
             <div class="slider-ticks"></div>
-            <input type="range" class="v-slider" id="fader-vol-piano" min="0" max="100" value="80" oninput="onFaderChange('volPiano', this.value)">
+            <input type="range" class="v-slider" id="fader-vol-piano" min="0" max="100" value="85" oninput="onFaderChange('volPiano', this.value)">
           </div>
-          <div class="fader-val" id="val-vol-piano">80</div>
+          <div class="fader-val" id="val-vol-piano">85</div>
         </div>
 
-        <!-- 7. STRINGS LEVEL -->
+        <!-- 8. PAD (WARM SYNTH PAD - REPLACING STRINGS) -->
         <div class="fader-col">
-          <div class="fader-label">STRINGS</div>
+          <div class="fader-label">PAD&#10;温パッド</div>
           <div class="slider-wrap">
             <div class="slider-track-bg"></div>
             <div class="slider-ticks"></div>
-            <input type="range" class="v-slider" id="fader-vol-strings" min="0" max="100" value="70" oninput="onFaderChange('volStrings', this.value)">
+            <input type="range" class="v-slider" id="fader-vol-pad" min="0" max="100" value="75" oninput="onFaderChange('volPad', this.value)">
           </div>
-          <div class="fader-val" id="val-vol-strings">70</div>
-        </div>
-
-        <!-- 8. PERC LEVEL -->
-        <div class="fader-col">
-          <div class="fader-label">PERC</div>
-          <div class="slider-wrap">
-            <div class="slider-track-bg"></div>
-            <div class="slider-ticks"></div>
-            <input type="range" class="v-slider" id="fader-vol-perc" min="0" max="100" value="65" oninput="onFaderChange('volPerc', this.value)">
-          </div>
-          <div class="fader-val" id="val-vol-perc">65</div>
+          <div class="fader-val" id="val-vol-pad">75</div>
         </div>
       </div>
     </section>
@@ -616,13 +611,18 @@
     <!-- Footer -->
     <footer class="sp-footer">
       <span>AOI GB-1200 GROUND BEAT ENGINE</span>
-      <span>LAID-BACK 16-SHUFFLE GROOVE</span>
+      <span>REAL TR-909 WAV + SAMPLED GRAND PIANO + WARM PAD</span>
     </footer>
   </div>
 
   <script>
     /* ==========================================================
-       AOI GB-1200 Audio & Sequencer Engine
+       AOI GB-1200 Ground Beat Audio Engine (v2)
+       - Real Roland TR-909 WAV Samples (via SP-1200)
+       - Free GM FluidR3 Multi-Sampled Acoustic Grand Piano
+       - Free GM Warm Synth Pad (Replacing Strings)
+       - Free GM Electric Bass (Finger) with auto scale-following
+       - Heavy Low-end Kick on Beat 1 downbeat & 2/3 offbeats with 16th-triplet swing
        ========================================================== */
 
     const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -709,7 +709,7 @@
       },
       {
         name: "Interlude BTL",
-        desc: "8: Back To Life Interlude (Dm7 - A7alt - Dm7 - A7)",
+        desc: "8: Back To Life Interlude (Dm7 - A7 - Dm7 - A7)",
         keyRoot: 2, // D
         scale: "dorian",
         chords: [
@@ -721,37 +721,97 @@
       }
     ];
 
-    // State Variables
+    // Kick Placement Patterns
+    const KICK_PATTERNS = [
+      {
+        name: "1拍目+2・3拍裏 (BTL王道)",
+        // 1拍目オモテ(0), 2拍目ウラ(6), 3拍目ウラ(10)
+        steps: [0, 6, 10]
+      },
+      {
+        name: "16分3連タメ (Triplet Shuffle)",
+        // 1拍目オモテ(0), 2拍目ウラタメ(6), 3拍目ウラタメ(10), 4拍目ウラ(14)
+        steps: [0, 6, 10, 14]
+      },
+      {
+        name: "Keep On Movin (1+2裏+3表+3裏)",
+        // 1拍目オモテ(0), 2拍目ウラ(6), 3拍目オモテ(8), 3拍目ウラ(10)
+        steps: [0, 6, 8, 10]
+      }
+    ];
+    let currentKickPatternIdx = 0;
+
+    // State
     let isPlaying = false;
     let audioCtx = null;
     let currentProgIdx = 0;
     let bpm = 98;
-    let keyTranspose = 0; // semitones from preset default
-    let tameRatio = 0.64; // swing ratio (0.50 ~ 0.74)
-    let drumKitMode = "909"; // "909" or "gm"
+    let keyTranspose = 0; // semitones from D
+    let tameRatio = 0.66; // 66% = 16th-note triplet swing
 
+    // Fader Volumes
+    let volKick = 0.95;
     let volBeat = 0.85;
     let volBass = 0.85;
-    let volPiano = 0.80;
-    let volStrings = 0.70;
-    let volPerc = 0.65;
+    let volPiano = 0.85;
+    let volPad = 0.75;
 
-    let soundfontPiano = null;
-    let soundfontStrings = null;
-    let soundfontBass = null;
+    // Audio Buffers & Nodes
+    const samples909 = {};
     let wafPlayer = null;
 
     let timerId = null;
-    let currentStep = 0; // 0..15 per bar
+    let currentStep = 0;
     let currentBar = 0;
+    let nextStepTime = 0;
 
-    // Master Gains
+    // Gains & Filters
     let masterGain = null;
+    let kickGain = null;
     let beatGain = null;
     let bassGain = null;
     let pianoGain = null;
-    let stringsGain = null;
-    let percGain = null;
+    let padGain = null;
+    let kickSubFilter = null;
+
+    /* ---- 909 Samples Preloading ---- */
+    const SAMPLE_FILES = {
+      kick: 'sounds/kick.wav',
+      kick2: 'sounds/kick-2.wav',
+      snare: 'sounds/snare.wav',
+      snareShort: 'sounds/snare-short.wav',
+      hatClosed: 'sounds/hihat-closed-1.wav',
+      hatOpen: 'sounds/hihat-open-1.wav',
+      clap: 'sounds/clap1.wav',
+      rim: 'sounds/rim.wav',
+      ride: 'sounds/ride.wav',
+      cymbal: 'sounds/cymbal.wav'
+    };
+
+    async function load909Samples() {
+      const statusEl = document.getElementById('load-status');
+      statusEl.textContent = "TR-909サンプリングWAVをロード中...";
+
+      let loadedCount = 0;
+      const total = Object.keys(SAMPLE_FILES).length;
+
+      for (let [name, path] of Object.entries(SAMPLE_FILES)) {
+        try {
+          const res = await fetch(path);
+          const ab = await res.arrayBuffer();
+          audioCtx.decodeAudioData(ab, (buf) => {
+            samples909[name] = buf;
+            loadedCount++;
+            if (loadedCount === total) {
+              statusEl.textContent = "TR-909 WAV & GM音源 準備完了！";
+              statusEl.style.color = "#4ade80";
+            }
+          }, (e) => console.warn("decode err", name, e));
+        } catch (e) {
+          console.warn("fetch err", name, e);
+        }
+      }
+    }
 
     /* ---- Web Audio Initialization ---- */
     function initAudio() {
@@ -760,287 +820,210 @@
         return;
       }
 
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AudioContext();
+      const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioCtxClass();
 
-      // Master output bus
+      // Master output
       masterGain = audioCtx.createGain();
       masterGain.gain.setValueAtTime(0.9, audioCtx.currentTime);
       masterGain.connect(audioCtx.destination);
 
-      beatGain = audioCtx.createGain(); beatGain.gain.setValueAtTime(volBeat, audioCtx.currentTime); beatGain.connect(masterGain);
-      bassGain = audioCtx.createGain(); bassGain.gain.setValueAtTime(volBass, audioCtx.currentTime); bassGain.connect(masterGain);
-      pianoGain = audioCtx.createGain(); pianoGain.gain.setValueAtTime(volPiano, audioCtx.currentTime); pianoGain.connect(masterGain);
-      stringsGain = audioCtx.createGain(); stringsGain.gain.setValueAtTime(volStrings, audioCtx.currentTime); stringsGain.connect(masterGain);
-      percGain = audioCtx.createGain(); percGain.gain.setValueAtTime(volPerc, audioCtx.currentTime); percGain.connect(masterGain);
+      // 1. Kick Channel with dedicated Sub-Bass Low-Shelf EQ (+5dB @ 65Hz for heavy low-end gravity)
+      kickSubFilter = audioCtx.createBiquadFilter();
+      kickSubFilter.type = 'lowshelf';
+      kickSubFilter.frequency.setValueAtTime(65, audioCtx.currentTime);
+      kickSubFilter.gain.setValueAtTime(5.5, audioCtx.currentTime);
 
-      // WebAudioFont
+      kickGain = audioCtx.createGain();
+      kickGain.gain.setValueAtTime(volKick, audioCtx.currentTime);
+      kickGain.connect(kickSubFilter);
+      kickSubFilter.connect(masterGain);
+
+      // 2. Beat Channel (Snare, Hat, Clap)
+      beatGain = audioCtx.createGain();
+      beatGain.gain.setValueAtTime(volBeat, audioCtx.currentTime);
+      beatGain.connect(masterGain);
+
+      // 3. Bass Channel
+      bassGain = audioCtx.createGain();
+      bassGain.gain.setValueAtTime(volBass, audioCtx.currentTime);
+      bassGain.connect(masterGain);
+
+      // 4. Piano Channel (Sampled Grand)
+      pianoGain = audioCtx.createGain();
+      pianoGain.gain.setValueAtTime(volPiano, audioCtx.currentTime);
+      pianoGain.connect(masterGain);
+
+      // 5. Pad Channel (Warm Pad)
+      padGain = audioCtx.createGain();
+      padGain.gain.setValueAtTime(volPad, audioCtx.currentTime);
+      padGain.connect(masterGain);
+
+      // WebAudioFont Player
       if (window.WebAudioFontPlayer) {
         wafPlayer = new WebAudioFontPlayer();
       }
 
-      // Load Soundfonts asynchronously
-      loadSoundfonts();
+      // Load 909 Samples
+      load909Samples();
     }
 
-    async function loadSoundfonts() {
-      const statusEl = document.getElementById('load-status');
-      try {
-        if (!window.Soundfont) return;
-        statusEl.textContent = "Free GM音源: ピアノ/ベース/弦をロード中...";
-
-        // 1. Piano (acoustic_grand_piano or electric_piano_1)
-        Soundfont.instrument(audioCtx, 'acoustic_grand_piano', { destination: pianoGain }).then(inst => {
-          soundfontPiano = inst;
-          checkLoadComplete();
-        }).catch(err => console.warn("Piano load err", err));
-
-        // 2. Strings (string_ensemble_1)
-        Soundfont.instrument(audioCtx, 'string_ensemble_1', { destination: stringsGain }).then(inst => {
-          soundfontStrings = inst;
-          checkLoadComplete();
-        }).catch(err => console.warn("Strings load err", err));
-
-        // 3. Electric Bass (electric_bass_finger)
-        Soundfont.instrument(audioCtx, 'electric_bass_finger', { destination: bassGain }).then(inst => {
-          soundfontBass = inst;
-          checkLoadComplete();
-        }).catch(err => console.warn("Bass load err", err));
-
-      } catch (e) {
-        console.warn("Soundfont loading failed, using synth fallbacks", e);
-      }
-    }
-
-    function checkLoadComplete() {
-      const statusEl = document.getElementById('load-status');
-      if (soundfontPiano && soundfontStrings && soundfontBass) {
-        statusEl.textContent = "GM音源: ロード完了 (高品位実音サンプル)";
-        statusEl.style.color = "#4ade80";
-      }
-    }
-
-    /* ---- Native TR-909 Analog Synthesis Engines ---- */
-    // 909 Kick: Punchy sine with fast pitch envelope + click
+    /* ---- Drum Playback (Real TR-909 Samples) ---- */
     function play909Kick(time, vel = 1.0) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+      // 1. Genuine TR-909 Kick WAV
+      const buf = samples909['kick'] || samples909['kick2'];
+      if (buf) {
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(1.15 * vel, time);
+        src.connect(g);
+        g.connect(kickGain);
+        src.start(time);
+      }
 
-      osc.type = 'sine';
-      // Pitch drop: 150Hz -> 50Hz in 80ms
-      osc.frequency.setValueAtTime(145, time);
-      osc.frequency.exponentialRampToValueAtTime(48, time + 0.08);
-
-      // Amp envelope: sharp attack, punchy decay
-      gain.gain.setValueAtTime(1.1 * vel, time);
-      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.32);
-
-      osc.connect(gain);
-      gain.connect(beatGain);
-
-      osc.start(time);
-      osc.stop(time + 0.35);
-
-      // Click transient
-      const click = audioCtx.createOscillator();
-      const clickGain = audioCtx.createGain();
-      click.type = 'triangle';
-      click.frequency.setValueAtTime(350, time);
-      click.frequency.exponentialRampToValueAtTime(40, time + 0.02);
-      clickGain.gain.setValueAtTime(0.7 * vel, time);
-      clickGain.gain.exponentialRampToValueAtTime(0.001, time + 0.02);
-      click.connect(clickGain);
-      clickGain.connect(beatGain);
-      click.start(time);
-      click.stop(time + 0.025);
+      // 2. Heavy Sub-Bass Sine Transient (Adds low center of gravity to the chest)
+      const sub = audioCtx.createOscillator();
+      const subGain = audioCtx.createGain();
+      sub.type = 'sine';
+      sub.frequency.setValueAtTime(54, time);
+      sub.frequency.exponentialRampToValueAtTime(36, time + 0.12);
+      subGain.gain.setValueAtTime(0.75 * vel, time);
+      subGain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+      sub.connect(subGain);
+      subGain.connect(kickGain);
+      sub.start(time);
+      sub.stop(time + 0.24);
     }
 
-    // 909 Snare: Dual tuned tone oscillators + filtered snappy noise
     function play909Snare(time, vel = 1.0) {
-      // Body tones
-      [185, 335].forEach(freq => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, time);
-        osc.frequency.exponentialRampToValueAtTime(freq * 0.7, time + 0.08);
-
-        gain.gain.setValueAtTime(0.5 * vel, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
-
-        osc.connect(gain);
-        gain.connect(beatGain);
-        osc.start(time);
-        osc.stop(time + 0.18);
-      });
-
-      // Snappy White Noise with Bandpass
-      const bufferSize = audioCtx.sampleRate * 0.25;
-      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const output = noiseBuffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
-
-      const whiteNoise = audioCtx.createBufferSource();
-      whiteNoise.buffer = noiseBuffer;
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'highpass';
-      filter.frequency.setValueAtTime(1200, time);
-
-      const noiseGain = audioCtx.createGain();
-      noiseGain.gain.setValueAtTime(0.75 * vel, time);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
-
-      whiteNoise.connect(filter);
-      filter.connect(noiseGain);
-      noiseGain.connect(beatGain);
-
-      whiteNoise.start(time);
-      whiteNoise.stop(time + 0.24);
+      // 909 Snare + Clap Layering (The trademark Soul II Soul backbeat)
+      if (samples909['snare']) {
+        const src = audioCtx.createBufferSource();
+        src.buffer = samples909['snare'];
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(1.0 * vel, time);
+        src.connect(g);
+        g.connect(beatGain);
+        src.start(time);
+      }
+      if (samples909['clap']) {
+        const src2 = audioCtx.createBufferSource();
+        src2.buffer = samples909['clap'];
+        const g2 = audioCtx.createGain();
+        g2.gain.setValueAtTime(0.7 * vel, time + 0.004); // tiny 4ms delay for wide stereo/depth
+        src2.connect(g2);
+        g2.connect(beatGain);
+        src2.start(time + 0.004);
+      }
     }
 
-    // 909 Closed / Open Hi-Hat: Metallic noise with bandpass
+    function play909GhostSnare(time, vel = 0.4) {
+      const buf = samples909['snareShort'] || samples909['snare'];
+      if (buf) {
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(vel, time);
+        src.connect(g);
+        g.connect(beatGain);
+        src.start(time);
+      }
+    }
+
     function play909HiHat(time, isOpen = false, vel = 0.8) {
-      const dur = isOpen ? 0.35 : 0.055;
-      const bufferSize = audioCtx.sampleRate * dur;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-
-      const noise = audioCtx.createBufferSource();
-      noise.buffer = buffer;
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(8200, time);
-      filter.Q.setValueAtTime(4.5, time);
-
-      const gain = audioCtx.createGain();
-      gain.gain.setValueAtTime(vel * (isOpen ? 0.8 : 0.65), time);
-      gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
-
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(beatGain);
-
-      noise.start(time);
-      noise.stop(time + dur + 0.01);
-    }
-
-    // 909 Hand Clap: Multi-pulse noise burst
-    function play909Clap(time, vel = 0.9) {
-      [0, 0.012, 0.024].forEach((delay, idx) => {
-        const bufferSize = audioCtx.sampleRate * 0.015;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = buffer;
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass'; filter.frequency.setValueAtTime(1100, time + delay); filter.Q.setValueAtTime(2.0, time + delay);
-        const gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0.6 * vel, time + delay);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + delay + 0.015);
-        noise.connect(filter); filter.connect(gain); gain.connect(beatGain);
-        noise.start(time + delay); noise.stop(time + delay + 0.02);
-      });
-
-      // Tail
-      const tailSize = audioCtx.sampleRate * 0.22;
-      const tailBuf = audioCtx.createBuffer(1, tailSize, audioCtx.sampleRate);
-      const tailData = tailBuf.getChannelData(0);
-      for (let i = 0; i < tailSize; i++) tailData[i] = Math.random() * 2 - 1;
-      const tail = audioCtx.createBufferSource(); tail.buffer = tailBuf;
-      const tailFilt = audioCtx.createBiquadFilter(); tailFilt.type = 'bandpass'; tailFilt.frequency.setValueAtTime(1000, time + 0.035);
-      const tailGain = audioCtx.createGain();
-      tailGain.gain.setValueAtTime(0.7 * vel, time + 0.035);
-      tailGain.gain.exponentialRampToValueAtTime(0.001, time + 0.24);
-      tail.connect(tailFilt); tailFilt.connect(tailGain); tailGain.connect(beatGain);
-      tail.start(time + 0.035); tail.stop(time + 0.25);
-    }
-
-    /* ---- GM Drum Kit (WebAudioFont) ---- */
-    function playGMDrum(noteNum, time, vel = 0.8) {
-      if (!wafPlayer) return;
-      let fontVar = window['_drum_' + noteNum + '_0_FluidR3_GM_sf2_file'];
-      if (noteNum === 38 && window['_drum_38_27_FluidR3_GM_sf2_file']) {
-        fontVar = window['_drum_38_27_FluidR3_GM_sf2_file']; // Brushes/Tight snare
-      } else if ((noteNum === 42 || noteNum === 46) && window['_drum_' + noteNum + '_0_JCLive_sf2_file']) {
-        fontVar = window['_drum_' + noteNum + '_0_JCLive_sf2_file']; // Mellow hat
-      }
-      if (fontVar) {
-        wafPlayer.queueWaveTable(audioCtx, beatGain, fontVar, time, noteNum, 1.0, vel);
+      const buf = isOpen ? samples909['hatOpen'] : samples909['hatClosed'];
+      if (buf) {
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(vel * (isOpen ? 0.9 : 0.75), time);
+        src.connect(g);
+        g.connect(beatGain);
+        src.start(time);
       }
     }
 
-    function playGMPerc(noteNum, time, vel = 0.6) {
-      if (!wafPlayer) return;
-      let fontVar = window['_drum_' + noteNum + '_0_FluidR3_GM_sf2_file'];
-      if (fontVar) {
-        wafPlayer.queueWaveTable(audioCtx, percGain, fontVar, time, noteNum, 0.8, vel);
+    /* ---- Free GM Grand Piano (WebAudioFont: Yamaha C7 Multi-sample) ---- */
+    function playGrandPiano(midiNotes, time, dur = 0.28, vel = 0.85) {
+      if (wafPlayer && window._tone_0000_FluidR3_GM_sf2_file) {
+        midiNotes.forEach(m => {
+          wafPlayer.queueWaveTable(audioCtx, pianoGain, window._tone_0000_FluidR3_GM_sf2_file, time, m, dur, vel);
+        });
+      } else {
+        // Fallback acoustic-styled piano synthesis
+        midiNotes.forEach(m => {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440 * Math.pow(2, (m - 69) / 12), time);
+          g.gain.setValueAtTime(0.35 * vel, time);
+          g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+          osc.connect(g); g.connect(pianoGain);
+          osc.start(time); osc.stop(time + dur + 0.05);
+        });
       }
     }
 
-    /* ---- Synthesizer Fallbacks (when Soundfont is loading) ---- */
-    function playSynthPiano(midiNotes, time, dur = 0.3, vel = 0.8) {
-      midiNotes.forEach(m => {
+    /* ---- Free GM Warm Pad (WebAudioFont: Warm Synth Pad) ---- */
+    function playWarmPad(midiNotes, time, dur = 1.8, vel = 0.7) {
+      if (wafPlayer && window._tone_0890_FluidR3_GM_sf2_file) {
+        midiNotes.forEach(m => {
+          wafPlayer.queueWaveTable(audioCtx, padGain, window._tone_0890_FluidR3_GM_sf2_file, time, m, dur, vel);
+        });
+      } else {
+        // Warm dual-saw analog synth pad fallback
+        midiNotes.forEach(m => {
+          [-3, 3].forEach(detune => {
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            const filt = audioCtx.createBiquadFilter();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(440 * Math.pow(2, (m - 69) / 12), time);
+            osc.detune.setValueAtTime(detune, time);
+
+            filt.type = 'lowpass';
+            filt.frequency.setValueAtTime(1100, time);
+
+            g.gain.setValueAtTime(0.01, time);
+            g.gain.linearRampToValueAtTime(0.18 * vel, time + 0.2);
+            g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+
+            osc.connect(filt); filt.connect(g); g.connect(padGain);
+            osc.start(time); osc.stop(time + dur + 0.1);
+          });
+        });
+      }
+    }
+
+    /* ---- Free GM Electric Bass (WebAudioFont: Finger Bass) ---- */
+    function playElectricBass(midiNote, time, dur = 0.35, vel = 0.95) {
+      if (wafPlayer && window._tone_0330_FluidR3_GM_sf2_file) {
+        wafPlayer.queueWaveTable(audioCtx, bassGain, window._tone_0330_FluidR3_GM_sf2_file, time, midiNote, dur, vel);
+      } else {
+        // Punchy sub-bass synth fallback
         const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(440 * Math.pow(2, (m - 69) / 12), time);
-
-        gain.gain.setValueAtTime(0.3 * vel, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
-
-        osc.connect(gain);
-        gain.connect(pianoGain);
-        osc.start(time);
-        osc.stop(time + dur + 0.05);
-      });
-    }
-
-    function playSynthStrings(midiNotes, time, dur = 1.0, vel = 0.5) {
-      midiNotes.forEach(m => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+        const g = audioCtx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(440 * Math.pow(2, (m - 69) / 12), time);
+        osc.frequency.setValueAtTime(440 * Math.pow(2, (midiNote - 69) / 12), time);
+        const f = audioCtx.createBiquadFilter();
+        f.type = 'lowpass'; f.frequency.setValueAtTime(600, time);
+        f.frequency.exponentialRampToValueAtTime(140, time + dur);
+        g.gain.setValueAtTime(0.7 * vel, time);
+        g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+        osc.connect(f); f.connect(g); g.connect(bassGain);
+        osc.start(time); osc.stop(time + dur + 0.05);
+      }
 
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(1400, time);
-
-        gain.gain.setValueAtTime(0.01, time);
-        gain.gain.linearRampToValueAtTime(0.2 * vel, time + 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(stringsGain);
-        osc.start(time);
-        osc.stop(time + dur + 0.1);
-      });
-    }
-
-    function playSynthBass(midiNote, time, dur = 0.35, vel = 0.9) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(440 * Math.pow(2, (midiNote - 69) / 12), time);
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(800, time);
-      filter.frequency.exponentialRampToValueAtTime(180, time + dur);
-
-      gain.gain.setValueAtTime(0.6 * vel, time);
-      gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(bassGain);
-      osc.start(time);
-      osc.stop(time + dur + 0.05);
+      // Reinforce sub-fundamental for massive low-end weight
+      const sub = audioCtx.createOscillator();
+      const sg = audioCtx.createGain();
+      sub.type = 'sine';
+      sub.frequency.setValueAtTime(440 * Math.pow(2, (midiNote - 69) / 12), time);
+      sg.gain.setValueAtTime(0.6 * vel, time);
+      sg.gain.exponentialRampToValueAtTime(0.001, time + dur);
+      sub.connect(sg); sg.connect(bassGain);
+      sub.start(time); sub.stop(time + dur + 0.05);
     }
 
     /* ---- Chord Theory & Pitch Calculation ---- */
@@ -1067,16 +1050,16 @@
         accBars += c.bars;
       }
 
-      const rootNote = (prog.keyRoot + chordDef.rootRel + keyTranspose) % 12;
+      const rootNote = (prog.keyRoot + chordDef.rootRel + keyTranspose + 120) % 12;
       const intervals = CHORD_INTERVALS[chordDef.quality] || CHORD_INTERVALS.min7;
 
-      // Piano MIDI voicing (Octave 4: 60 = C4)
-      const pianoNotes = intervals.map(semitone => 60 + rootNote + semitone);
+      // Grand Piano Voicing (Octave 4: C4=60, spread over sweet mid register)
+      const pianoNotes = intervals.map(st => 60 + rootNote + st);
 
-      // Strings MIDI voicing (Octave 5: lush high layer)
-      const stringNotes = [rootNote + 60, rootNote + 67, rootNote + 72 + intervals[1]];
+      // Warm Pad Voicing (Lush octave 4-5 spread)
+      const padNotes = [rootNote + 48, rootNote + 55, rootNote + 60, rootNote + 63 + (intervals[1] || 3)];
 
-      // Bass MIDI root (Octave 2: 36 = C2)
+      // Electric Bass MIDI root (Octave 2: C2 = 36)
       const bassRootMidi = 36 + rootNote;
 
       return {
@@ -1084,15 +1067,14 @@
         intervals,
         rootNote,
         pianoNotes,
-        stringNotes,
+        padNotes,
         bassRootMidi
       };
     }
 
     /* ---- 16-Step Sequencer Clock & Scheduling ---- */
-    let nextStepTime = 0;
     const LOOKAHEAD_MS = 25;
-    const SCHEDULE_AHEAD_TIME = 0.1;
+    const SCHEDULE_AHEAD_TIME = 0.12;
 
     function scheduler() {
       while (nextStepTime < audioCtx.currentTime + SCHEDULE_AHEAD_TIME) {
@@ -1105,11 +1087,11 @@
     }
 
     function advanceStep() {
-      // Step duration calculation with Ground Beat TAME / SWING
-      const stepDuration = (60 / bpm) / 4; // straight 16th note
+      // 16th-note duration with 16th-triplet TAME (Swing)
+      const stepDuration = (60 / bpm) / 4;
       const isEvenStep = (currentStep % 2 === 0);
 
-      // Swing: even step gets prolonged, odd step gets shortened
+      // At tameRatio = 0.66, even step is 2/3 of 8th, odd step is 1/3 (true triplet shuffle!)
       const delta = (tameRatio - 0.5) * 2 * stepDuration;
       const dur = isEvenStep ? (stepDuration + delta) : (stepDuration - delta);
 
@@ -1131,126 +1113,58 @@
     function scheduleStep(step, bar, time) {
       const chord = getCurrentChordInfo(bar);
 
-      // Update LED display in sync with UI
+      // Update LED display
       setTimeout(() => {
         updateLCDStep(step, bar, chord.name);
       }, (time - audioCtx.currentTime) * 1000);
 
-      // 1. BEAT (Drums)
-      scheduleDrums(step, time);
-
-      // 2. PERCUSSION (Tambourine, Shaker, Conga)
-      schedulePercussion(step, time);
-
-      // 3. CHORD (Piano - Laid-back Soul II Soul comping pattern)
-      schedulePiano(step, time, chord);
-
-      // 4. STRINGS (Quarter note hit or cinematic sustain)
-      scheduleStrings(step, time, chord);
-
-      // 5. BASS (Groovy Syncopated Baseline auto-following scale)
-      scheduleBass(step, time, chord);
-    }
-
-    /* 1. Ground Beat Drums */
-    function scheduleDrums(step, time) {
-      const is909 = (drumKitMode === "909");
-
-      // Kick: step 0 (beat 1), step 6 (beat 2 16th-off), step 10 (beat 3 off), step 14
-      const kickSteps = [0, 6, 10, 14];
+      // 1. KICK: 1拍目オモテ(0), 2拍目ウラ(6), 3拍目ウラ(10) に重心を置いて重く鳴らす！
+      const kickSteps = KICK_PATTERNS[currentKickPatternIdx].steps;
       if (kickSteps.includes(step)) {
-        if (is909) play909Kick(time, step === 0 ? 1.0 : 0.85);
-        else playGMDrum(36, time, step === 0 ? 1.0 : 0.85);
+        const isDownbeat = (step === 0);
+        play909Kick(time, isDownbeat ? 1.0 : 0.95);
       }
 
-      // Snare: step 4 (beat 2) & step 12 (beat 4) + Ghost note at step 15
+      // 2. SNARE & CLAP: 2拍目オモテ(4) & 4拍目オモテ(12)
       if (step === 4 || step === 12) {
-        if (is909) {
-          play909Snare(time, 1.0);
-          play909Clap(time + 0.005, 0.7); // 909 Snare+Clap layering!
-        } else {
-          playGMDrum(38, time, 1.0);
-        }
+        play909Snare(time, 1.0);
       } else if (step === 15) {
-        // Ghost snare
-        if (is909) play909Snare(time, 0.35);
-        else playGMDrum(38, time, 0.35);
+        // Ghost snare roll before beat 1
+        play909GhostSnare(time, 0.35);
       }
 
-      // Closed Hi-Hat: 16th-note shuffle (accented 0, 4, 8, 12; ghosted 2, 6, 10, 14)
-      const isAccent = (step % 4 === 0);
+      // 3. 909 HI-HAT: 16th-note shuffle (Accented on beats, ghosted on swing offbeats)
+      const isQuarter = (step % 4 === 0);
       const isEighth = (step % 2 === 0);
-      const hatVel = isAccent ? 0.9 : (isEighth ? 0.65 : 0.45);
+      const hatVel = isQuarter ? 0.9 : (isEighth ? 0.65 : 0.45);
 
       if (step === 14) {
-        // Open Hat before beat 1
-        if (is909) play909HiHat(time, true, 0.75);
-        else playGMDrum(46, time, 0.75);
+        play909HiHat(time, true, 0.8); // Open Hat before beat 1
       } else {
-        if (is909) play909HiHat(time, false, hatVel);
-        else playGMDrum(42, time, hatVel);
-      }
-    }
-
-    /* 2. Percussion */
-    function schedulePercussion(step, time) {
-      // Shaker on every 16th step (light)
-      playGMPerc(70, time, (step % 2 === 1) ? 0.6 : 0.4);
-
-      // Tambourine on beats 2 & 4 (steps 4 & 12)
-      if (step === 4 || step === 12) {
-        playGMPerc(54, time, 0.7);
+        play909HiHat(time, false, hatVel);
       }
 
-      // Conga syncopations on steps 2, 7, 11
-      if (step === 2 || step === 7 || step === 11) {
-        playGMPerc(62, time, 0.6);
-      }
-    }
-
-    /* 3. Chord Comping (Piano) */
-    function schedulePiano(step, time, chord) {
-      // Soul II Soul 'Back To Life' rhythm:
+      // 4. FREE GM SAMPLED GRAND PIANO: Soul II Soul Laid-back Comping Chords
       // Offbeat syncopations: steps 2, 5, 8, 11, 14
-      const compSteps = [2, 5, 8, 11, 14];
-      if (compSteps.includes(step)) {
-        const vel = (step === 2 || step === 8) ? 0.85 : 0.7;
-        const dur = 0.22; // staccato comping
-        if (soundfontPiano) {
-          chord.pianoNotes.forEach(m => {
-            soundfontPiano.play(m, time, { duration: dur, gain: vel * volPiano });
-          });
-        } else {
-          playSynthPiano(chord.pianoNotes, time, dur, vel);
-        }
+      const pianoSteps = [2, 5, 8, 11, 14];
+      if (pianoSteps.includes(step)) {
+        const vel = (step === 2 || step === 8) ? 0.9 : 0.75;
+        playGrandPiano(chord.pianoNotes, time, 0.26, vel);
       }
-    }
 
-    /* 4. Strings Section */
-    function scheduleStrings(step, time, chord) {
-      // Strings hit on step 0 (downbeat) with rich sustain, and step 10
+      // 5. FREE GM WARM SYNTH PAD (Replacing Strings): Downbeat Lush Chord Sustains
       if (step === 0) {
-        const dur = 1.6; // sustain across measures
-        if (soundfontStrings) {
-          chord.stringNotes.forEach(m => {
-            soundfontStrings.play(m, time, { duration: dur, gain: 0.65 * volStrings });
-          });
-        } else {
-          playSynthStrings(chord.stringNotes, time, dur, 0.6);
-        }
+        playWarmPad(chord.padNotes, time, 1.8, 0.75);
       }
-    }
 
-    /* 5. Bassline (Auto-following Scale) */
-    function scheduleBass(step, time, chord) {
-      // Ground Beat Bassline: 16th note syncopation
-      // Steps: 0 (Root), 3 (5th), 6 (Root Oct), 10 (m7th), 14 (Passing note)
+      // 6. FREE GM ELECTRIC BASS: Auto Scale-following Syncopated Groove
+      // In the pocket with Kick & Snare: steps 0, 3, 6, 10, 14
       let bassNote = null;
-      let dur = 0.25;
+      let dur = 0.28;
 
       if (step === 0) {
         bassNote = chord.bassRootMidi; // Root
-        dur = 0.35;
+        dur = 0.38;
       } else if (step === 3) {
         bassNote = chord.bassRootMidi + 7; // 5th
       } else if (step === 6) {
@@ -1259,19 +1173,15 @@
         const m7 = chord.intervals[3] || 10;
         bassNote = chord.bassRootMidi + m7; // 7th
       } else if (step === 14) {
-        bassNote = chord.bassRootMidi + 5; // 4th passing
+        bassNote = chord.bassRootMidi + 5; // 4th
       }
 
       if (bassNote !== null) {
-        if (soundfontBass) {
-          soundfontBass.play(bassNote, time, { duration: dur, gain: 0.9 * volBass });
-        } else {
-          playSynthBass(bassNote, time, dur, 0.9);
-        }
+        playElectricBass(bassNote, time, dur, 0.95);
       }
     }
 
-    /* ---- UI & Control Functions ---- */
+    /* ---- Controls & Fader Handlers ---- */
     function togglePlay() {
       initAudio();
       const btn = document.getElementById('btn-run');
@@ -1291,18 +1201,10 @@
       }
     }
 
-    function toggleDrumKit() {
-      const btn = document.getElementById('btn-kit');
-      const lcdKit = document.getElementById('lcd-kit');
-      if (drumKitMode === "909") {
-        drumKitMode = "gm";
-        btn.textContent = "🥁 KIT: GM STUDIO KIT";
-        lcdKit.textContent = "GM-KIT";
-      } else {
-        drumKitMode = "909";
-        btn.textContent = "🥁 KIT: TR-909 SYNTH";
-        lcdKit.textContent = "TR-909";
-      }
+    function toggleKickPattern() {
+      currentKickPatternIdx = (currentKickPatternIdx + 1) % KICK_PATTERNS.length;
+      const pat = KICK_PATTERNS[currentKickPatternIdx];
+      document.getElementById('btn-kick-mode').textContent = "🥁 KICK: " + pat.name;
     }
 
     function selectProgression(idx) {
@@ -1331,7 +1233,12 @@
         case 'tame':
           tameRatio = val / 100;
           document.getElementById('val-tame').textContent = val + "%";
-          document.getElementById('lcd-tame').textContent = "TAME " + val + "%";
+          document.getElementById('lcd-tame').textContent = `TAME ${val}% (${val >= 64 ? '3連' : '微'})`;
+          break;
+        case 'volKick':
+          volKick = val / 100;
+          if (kickGain && audioCtx) kickGain.gain.setValueAtTime(volKick, audioCtx.currentTime);
+          document.getElementById('val-vol-kick').textContent = val;
           break;
         case 'volBeat':
           volBeat = val / 100;
@@ -1348,15 +1255,10 @@
           if (pianoGain && audioCtx) pianoGain.gain.setValueAtTime(volPiano, audioCtx.currentTime);
           document.getElementById('val-vol-piano').textContent = val;
           break;
-        case 'volStrings':
-          volStrings = val / 100;
-          if (stringsGain && audioCtx) stringsGain.gain.setValueAtTime(volStrings, audioCtx.currentTime);
-          document.getElementById('val-vol-strings').textContent = val;
-          break;
-        case 'volPerc':
-          volPerc = val / 100;
-          if (percGain && audioCtx) percGain.gain.setValueAtTime(volPerc, audioCtx.currentTime);
-          document.getElementById('val-vol-perc').textContent = val;
+        case 'volPad':
+          volPad = val / 100;
+          if (padGain && audioCtx) padGain.gain.setValueAtTime(volPad, audioCtx.currentTime);
+          document.getElementById('val-vol-pad').textContent = val;
           break;
       }
     }
@@ -1364,7 +1266,7 @@
     function updateLCDKey() {
       const chord = getCurrentChordInfo(currentBar);
       const prog = PROGRESSIONS[currentProgIdx];
-      const root = (prog.keyRoot + keyTranspose + 12) % 12;
+      const root = (prog.keyRoot + keyTranspose + 120) % 12;
       document.getElementById('lcd-key').textContent = "KEY " + NOTE_NAMES[root] + "m";
       document.getElementById('lcd-chord').textContent = chord.name;
     }
